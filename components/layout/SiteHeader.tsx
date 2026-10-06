@@ -33,7 +33,7 @@ export function SiteHeader() {
           : "bg-transparent",
       )}
     >
-      <div className="container-site flex h-[var(--header-h)] items-center justify-between gap-4">
+      <div className="container-site flex min-h-[var(--header-h)] items-center justify-between gap-4 py-2.5 md:gap-5 md:py-3">
         <LogoMark variant="official" />
 
         <nav

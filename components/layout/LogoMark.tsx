@@ -20,19 +20,23 @@ export function LogoMark({
       <Link
         href="/"
         className={cn(
-          "inline-flex shrink-0 items-center focus-visible:outline-offset-4",
+          "group inline-flex shrink-0 items-center focus-visible:outline-offset-4",
           className,
         )}
         aria-label={`${brand.name} — úvodná stránka`}
       >
-        <Image
-          src="/images/osbd-cadca-logo.png"
-          alt={brand.name}
-          width={280}
-          height={164}
-          priority
-          className="h-[48px] w-auto object-contain sm:h-[56px] md:h-[60px] lg:h-[64px]"
-        />
+        <span
+          className="inline-flex items-center justify-center rounded-[8px] border border-white/40 bg-[rgba(255,255,250,0.96)] p-[10px] shadow-[0_8px_28px_rgba(7,35,26,0.12)] sm:rounded-[9px] sm:p-[11px] md:p-[12px]"
+        >
+          <Image
+            src="/images/osbd-cadca-logo.png"
+            alt={brand.name}
+            width={262}
+            height={139}
+            priority
+            className="h-auto w-[100px] object-contain object-center sm:w-[120px] md:w-[130px] lg:w-[138px]"
+          />
+        </span>
       </Link>
     );
   }
