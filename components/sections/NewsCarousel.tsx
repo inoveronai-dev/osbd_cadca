@@ -125,19 +125,19 @@ export function NewsCarousel({ items, variant = "light" }: NewsCarouselProps) {
       <div
         aria-hidden
         className={cn(
-          "pointer-events-none absolute inset-y-0 left-0 z-10 w-10 sm:w-14 md:w-16",
+          "pointer-events-none absolute inset-y-0 left-0 z-10 w-8 sm:w-12 md:w-14",
           dark
             ? "bg-gradient-to-r from-forest to-transparent"
-            : "bg-gradient-to-r from-white to-transparent",
+            : "bg-gradient-to-r from-ivory to-transparent",
         )}
       />
       <div
         aria-hidden
         className={cn(
-          "pointer-events-none absolute inset-y-0 right-0 z-10 w-10 sm:w-14 md:w-16",
+          "pointer-events-none absolute inset-y-0 right-0 z-10 w-8 sm:w-12 md:w-14",
           dark
             ? "bg-gradient-to-l from-forest to-transparent"
-            : "bg-gradient-to-l from-white to-transparent",
+            : "bg-gradient-to-l from-ivory to-transparent",
         )}
       />
 
@@ -158,7 +158,7 @@ export function NewsCarousel({ items, variant = "light" }: NewsCarouselProps) {
             return (
               <li
                 key={`${item.id}-${index}`}
-                className="w-[min(86vw,400px)] shrink-0 sm:w-[360px] md:w-[380px] lg:w-[400px]"
+                className="w-[min(82vw,320px)] shrink-0 sm:w-[300px] md:w-[320px] lg:w-[340px]"
                 aria-hidden={duplicate || undefined}
               >
                 <a
@@ -172,21 +172,21 @@ export function NewsCarousel({ items, variant = "light" }: NewsCarouselProps) {
                     }
                   }}
                   className={cn(
-                    "group/card flex h-full min-h-[11.75rem] flex-col rounded-[var(--radius)] border px-5 py-5 transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-[2px] focus-visible:outline-offset-4 sm:min-h-[12.75rem] sm:px-6 sm:py-6",
+                    "group/card flex h-full min-h-[9.5rem] flex-col border px-4 py-4 transition-[transform,border-color,background-color] duration-200 hover:-translate-y-[2px] focus-visible:outline-offset-4 sm:min-h-[10rem] sm:px-5 sm:py-5",
                     dark
-                      ? "border-forest/25 bg-ivory hover:border-green/40 hover:bg-warm-white hover:shadow-[0_12px_28px_-20px_rgba(0,0,0,0.35)] focus-visible:border-sage"
-                      : "border-[var(--border-strong)] bg-paper hover:border-green/35 hover:bg-white hover:shadow-[0_12px_28px_-20px_rgba(24,77,58,0.35)] focus-visible:border-green",
+                      ? "rounded-[var(--radius)] border-forest/25 bg-ivory hover:border-green/40 hover:bg-warm-white focus-visible:border-sage"
+                      : "rounded-[var(--radius)] border-[var(--border-subtle)] bg-warm-white hover:border-green/30 hover:bg-white focus-visible:border-green",
                   )}
                 >
-                  <span className="text-[0.7rem] font-semibold tracking-[0.12em] text-green uppercase">
+                  <span className="text-[0.65rem] font-semibold tracking-[0.12em] text-green uppercase">
                     Aktuality
                   </span>
-                  <h3 className="mt-4 text-[1.05rem] leading-snug font-semibold tracking-tight text-balance text-ink sm:text-[1.15rem]">
+                  <h3 className="mt-3 text-[0.98rem] leading-snug font-semibold tracking-tight text-balance text-ink sm:text-[1.02rem]">
                     {item.title}
                   </h3>
-                  <span className="mt-auto inline-flex items-center gap-2 pt-8 text-sm font-semibold text-forest">
+                  <span className="mt-auto inline-flex items-center gap-2 pt-5 text-sm font-semibold text-forest">
                     <ArrowRight
-                      className="size-4 transition-transform duration-200 group-hover/card:translate-x-[5px] group-focus-visible/card:translate-x-[5px]"
+                      className="size-3.5 transition-transform duration-200 group-hover/card:translate-x-[4px] group-focus-visible/card:translate-x-[4px]"
                       aria-hidden
                     />
                   </span>

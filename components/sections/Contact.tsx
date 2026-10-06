@@ -1,5 +1,4 @@
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
-import Image from "next/image";
 import { Reveal } from "@/components/motion/Reveal";
 import { contactSection } from "@/lib/content/home";
 
@@ -9,109 +8,79 @@ export function Contact() {
   return (
     <section
       id={contactSection.id}
-      className="section-pad scroll-mt-24 bg-ivory"
+      className="section-pad scroll-mt-24 bg-white"
       aria-labelledby="contact-heading"
     >
-      <div className="container-site grid gap-14 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-start lg:gap-16">
-        <div>
-          <Reveal>
-            <h2 id="contact-heading" className="section-heading">
-              {contactSection.headline}
-            </h2>
-            <p className="mt-5 max-w-xl text-[1.05rem] leading-relaxed text-ink-muted sm:text-lg">
-              {contactSection.support}
-            </p>
-          </Reveal>
+      <div className="container-site max-w-[58rem]">
+        <Reveal>
+          <h2 id="contact-heading" className="section-heading">
+            {contactSection.headline}
+          </h2>
+          <p className="mt-3 max-w-lg text-[0.98rem] leading-relaxed text-ink-muted">
+            {contactSection.support}
+          </p>
+        </Reveal>
 
-          <Reveal delayMs={60}>
-            <ul className="mt-12 space-y-9 border-t border-[var(--border-strong)] pt-10">
-              <li className="flex gap-4 sm:gap-5">
-                <span className="mt-1 inline-flex size-12 shrink-0 items-center justify-center rounded-[var(--radius)] bg-soft-sage text-forest">
-                  <Phone className="size-5" aria-hidden />
-                </span>
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold tracking-wide text-ink-muted uppercase">
-                    Telefón
-                  </p>
-                  <a
-                    href={contact.phoneHref}
-                    className="mt-1.5 block text-2xl font-semibold tracking-tight text-ink transition-colors hover:text-forest sm:text-3xl"
-                  >
-                    {contact.phoneDisplay}
-                  </a>
-                </div>
-              </li>
-              <li className="flex gap-4 sm:gap-5">
-                <span className="mt-1 inline-flex size-12 shrink-0 items-center justify-center rounded-[var(--radius)] bg-soft-sage text-forest">
-                  <Mail className="size-5" aria-hidden />
-                </span>
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold tracking-wide text-ink-muted uppercase">
-                    E-mail
-                  </p>
-                  <a
-                    href={`mailto:${contact.email}`}
-                    className="mt-1.5 block break-all text-xl font-semibold tracking-tight text-ink transition-colors hover:text-forest sm:text-2xl"
-                  >
-                    {contact.email}
-                  </a>
-                </div>
-              </li>
-              <li className="flex gap-4 sm:gap-5">
-                <span className="mt-1 inline-flex size-12 shrink-0 items-center justify-center rounded-[var(--radius)] bg-soft-sage text-forest">
-                  <MapPin className="size-5" aria-hidden />
-                </span>
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold tracking-wide text-ink-muted uppercase">
-                    Adresa
-                  </p>
-                  <p className="mt-1.5 text-xl font-semibold tracking-tight text-ink sm:text-2xl">
-                    {contact.addressLines.map((line) => (
-                      <span key={line} className="block">
-                        {line}
-                      </span>
-                    ))}
-                  </p>
-                </div>
-              </li>
-            </ul>
-          </Reveal>
+        <Reveal delayMs={50}>
+          <ul className="mt-8 grid gap-6 border-t border-[var(--border-subtle)] pt-7 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+            <li>
+              <p className="flex items-center gap-2 text-[0.7rem] font-semibold tracking-[0.1em] text-ink-muted uppercase">
+                <Phone className="size-3.5 text-forest" aria-hidden />
+                Telefón
+              </p>
+              <a
+                href={contact.phoneHref}
+                className="mt-2 block text-[1.2rem] font-semibold tracking-tight text-ink transition-colors hover:text-forest"
+              >
+                {contact.phoneDisplay}
+              </a>
+            </li>
+            <li>
+              <p className="flex items-center gap-2 text-[0.7rem] font-semibold tracking-[0.1em] text-ink-muted uppercase">
+                <Mail className="size-3.5 text-forest" aria-hidden />
+                E-mail
+              </p>
+              <a
+                href={`mailto:${contact.email}`}
+                className="mt-2 block break-all text-[1.05rem] font-semibold tracking-tight text-ink transition-colors hover:text-forest"
+              >
+                {contact.email}
+              </a>
+            </li>
+            <li className="sm:col-span-2 lg:col-span-1">
+              <p className="flex items-center gap-2 text-[0.7rem] font-semibold tracking-[0.1em] text-ink-muted uppercase">
+                <MapPin className="size-3.5 text-forest" aria-hidden />
+                Adresa
+              </p>
+              <p className="mt-2 text-[1.05rem] font-semibold tracking-tight text-ink">
+                {contact.addressLines.map((line) => (
+                  <span key={line} className="block">
+                    {line}
+                  </span>
+                ))}
+              </p>
+            </li>
+          </ul>
+        </Reveal>
 
-          <Reveal delayMs={100}>
-            <div
-              id={contactSection.officeHoursAnchor}
-              className="scroll-mt-28 mt-12 border border-forest/20 bg-forest p-6 text-white sm:p-8"
-            >
-              <div className="flex items-start gap-4">
-                <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-[var(--radius)] bg-white/12">
-                  <Clock className="size-5" aria-hidden />
-                </span>
-                <div>
-                  <h3 className="text-xl font-semibold tracking-tight text-white sm:text-2xl">
-                    Stránkové hodiny
-                  </h3>
-                  <p className="mt-3 text-lg leading-relaxed text-white/88">
-                    {officeHours.note}
-                  </p>
-                  <p className="mt-5 inline-flex w-fit items-center rounded-[var(--radius-sm)] border border-white/30 px-2 py-1 text-xs font-semibold tracking-wide text-white/75 uppercase">
-                    OPEN · Časy budú doplnené
-                  </p>
-                </div>
+        <Reveal delayMs={80}>
+          <div
+            id={contactSection.officeHoursAnchor}
+            className="scroll-mt-28 mt-8 border-t border-[var(--border-subtle)] pt-7"
+          >
+            <div className="flex items-start gap-3">
+              <Clock className="mt-0.5 size-4 shrink-0 text-forest" aria-hidden />
+              <div>
+                <h3 className="text-[1.05rem] font-semibold tracking-tight text-ink">
+                  Stránkové hodiny
+                </h3>
+                <p className="mt-2 text-[0.98rem] leading-relaxed text-ink-muted">
+                  {officeHours.note}
+                </p>
+                <p className="mt-3 inline-flex w-fit items-center border border-[var(--border-subtle)] px-2 py-0.5 text-[0.65rem] font-semibold tracking-wide text-ink-muted uppercase">
+                  OPEN · Časy budú doplnené
+                </p>
               </div>
-            </div>
-          </Reveal>
-        </div>
-
-        <Reveal delayMs={80} className="group lg:sticky lg:top-28">
-          <div className="media-frame aspect-[4/5] min-h-[22rem] border border-[var(--border-subtle)] sm:aspect-[5/6] lg:min-h-[32rem]">
-            <div className="img-zoom relative h-full w-full">
-              <Image
-                src="/images/about-osbd-hq.png"
-                alt="Fotografia sídla OSBD Čadca alebo autentická fotografia zamestnancov"
-                fill
-                sizes="(max-width: 1024px) 100vw, 42vw"
-                className="object-cover object-center"
-              />
             </div>
           </div>
         </Reveal>
