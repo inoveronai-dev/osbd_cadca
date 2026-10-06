@@ -23,6 +23,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="sk" className={`${sourceSans.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col font-sans">
+        <a
+          href="#obsah"
+          className="absolute top-3 left-3 z-[60] -translate-y-20 rounded-md bg-white px-4 py-3 text-base font-semibold text-forest shadow-md transition-transform focus:translate-y-0"
+        >
+          Preskočiť na obsah
+        </a>
         <SiteHeader />
         <div className="flex flex-1 flex-col">{children}</div>
         <SiteFooter />

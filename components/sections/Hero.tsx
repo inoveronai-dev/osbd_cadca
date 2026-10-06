@@ -16,13 +16,13 @@ export function Hero() {
           objectPosition="center"
           className="h-full rounded-none"
         />
-        {/* Left-side forest gradient for text readability */}
+        {/* Stronger full-bleed tint on mobile; left-weighted forest wash on desktop */}
         <div
-          className="absolute inset-0 bg-[linear-gradient(90deg,rgba(24,77,58,0.92)_0%,rgba(24,77,58,0.78)_38%,rgba(24,77,58,0.35)_62%,rgba(24,77,58,0.12)_100%)]"
+          className="absolute inset-0 bg-[linear-gradient(180deg,rgba(24,77,58,0.82)_0%,rgba(24,77,58,0.72)_45%,rgba(24,77,58,0.78)_100%)] md:bg-[linear-gradient(90deg,rgba(24,77,58,0.92)_0%,rgba(24,77,58,0.78)_38%,rgba(24,77,58,0.35)_62%,rgba(24,77,58,0.12)_100%)]"
           aria-hidden
         />
         <div
-          className="absolute inset-0 bg-[linear-gradient(180deg,rgba(24,77,58,0.45)_0%,transparent_28%,transparent_72%,rgba(24,77,58,0.55)_100%)] md:bg-[linear-gradient(180deg,rgba(24,77,58,0.35)_0%,transparent_30%,transparent_70%,rgba(24,77,58,0.5)_100%)]"
+          className="absolute inset-0 bg-[linear-gradient(180deg,rgba(24,77,58,0.35)_0%,transparent_30%,transparent_70%,rgba(24,77,58,0.45)_100%)]"
           aria-hidden
         />
       </div>

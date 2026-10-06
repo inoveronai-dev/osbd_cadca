@@ -8,6 +8,9 @@ type PendingLinkProps = {
   className?: string;
   pendingClassName?: string;
   onNavigate?: () => void;
+  /** Show the “pripravujeme” badge (default true). Hide in compact desktop nav. */
+  showBadge?: boolean;
+  badgeClassName?: string;
 };
 
 /**
@@ -20,6 +23,8 @@ export function PendingLink({
   className,
   pendingClassName,
   onNavigate,
+  showBadge = true,
+  badgeClassName,
 }: PendingLinkProps) {
   if (status === "pending" || !href) {
     return (
@@ -32,9 +37,18 @@ export function PendingLink({
         aria-disabled="true"
       >
         <span>{label}</span>
-        <span className="rounded border border-border px-1.5 py-0.5 text-[0.65rem] font-semibold tracking-wide text-ink-muted uppercase">
-          pripravujeme
-        </span>
+        {showBadge ? (
+          <span
+            className={cn(
+              "rounded border border-current/25 px-1.5 py-0.5 text-[0.65rem] font-semibold tracking-wide uppercase opacity-80",
+              badgeClassName,
+            )}
+          >
+            pripravujeme
+          </span>
+        ) : (
+          <span className="sr-only"> (pripravujeme)</span>
+        )}
       </span>
     );
   }

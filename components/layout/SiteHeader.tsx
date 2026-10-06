@@ -48,6 +48,7 @@ export function SiteHeader() {
               label={item.label}
               href={item.href}
               status={item.status}
+              showBadge={false}
               className={cn(
                 "rounded-md px-3 py-2 text-[0.95rem] font-medium transition-colors",
                 scrolled
