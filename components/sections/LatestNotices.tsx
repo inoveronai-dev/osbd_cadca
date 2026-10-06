@@ -11,11 +11,8 @@ export function LatestNotices() {
       aria-labelledby="notices-heading"
     >
       <div className="container-site">
-        <Reveal className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <h2
-            id="notices-heading"
-            className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
-          >
+        <Reveal className="flex flex-col gap-5 border-b border-[var(--border-subtle)] pb-8 sm:flex-row sm:items-end sm:justify-between">
+          <h2 id="notices-heading" className="section-heading">
             {noticesSection.headline}
           </h2>
           <PendingLink
@@ -27,24 +24,26 @@ export function LatestNotices() {
           />
         </Reveal>
 
-        <ul className="mt-10 grid gap-4 md:grid-cols-3">
+        <ul className="mt-10 grid gap-6 md:grid-cols-3 md:gap-8">
           {noticesSection.items.map((notice, index) => (
             <Reveal key={notice.id} as="li" delayMs={index * 70}>
-              <article className="flex h-full flex-col border-t-2 border-forest bg-paper px-5 py-6 sm:px-6">
-                <p className="text-xs font-semibold tracking-[0.1em] text-green uppercase">
+              <article className="group flex h-full flex-col border-t-[3px] border-forest bg-transparent pt-6">
+                <p className="text-[0.7rem] font-semibold tracking-[0.12em] text-green uppercase">
                   Oznam
                 </p>
-                <h3 className="mt-4 text-xl leading-snug font-semibold tracking-tight text-ink text-balance">
+                <h3 className="mt-5 text-[1.2rem] leading-snug font-semibold tracking-tight text-balance text-ink sm:text-xl">
                   {notice.title}
                 </h3>
-                {/* Dates intentionally omitted — not supplied */}
-                <div className="mt-auto pt-8">
-                  <span className="inline-flex items-center gap-2 text-sm font-semibold text-ink-muted">
+                <div className="mt-auto pt-10">
+                  <span className="inline-flex flex-wrap items-center gap-2 text-sm font-semibold text-ink-muted">
                     Detail oznamu
-                    <span className="rounded border border-border px-1.5 py-0.5 text-[0.65rem] tracking-wide uppercase">
+                    <span className="rounded-[var(--radius-sm)] border border-border px-1.5 py-0.5 text-[0.65rem] tracking-wide uppercase">
                       pripravujeme
                     </span>
-                    <ArrowRight className="size-4 opacity-40" aria-hidden />
+                    <ArrowRight
+                      className="arrow-shift size-4 opacity-50"
+                      aria-hidden
+                    />
                   </span>
                 </div>
               </article>

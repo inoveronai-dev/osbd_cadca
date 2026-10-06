@@ -26,7 +26,7 @@ export function ImagePlaceholder({
   return (
     <div
       className={cn(
-        "relative flex h-full w-full overflow-hidden rounded-[var(--radius-lg)] bg-[linear-gradient(145deg,var(--sage)_0%,color-mix(in_srgb,var(--forest)_18%,var(--sage))_100%)]",
+        "relative flex h-full w-full overflow-hidden rounded-[var(--radius)] bg-[linear-gradient(145deg,var(--sage)_0%,color-mix(in_srgb,var(--forest)_22%,var(--sage))_100%)]",
         className,
       )}
       data-image-slot={slotId}

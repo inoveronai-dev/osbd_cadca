@@ -8,7 +8,7 @@ export function ManagementCta() {
       className="relative isolate overflow-hidden bg-forest text-white"
       aria-labelledby="management-cta-heading"
     >
-      <div className="absolute inset-0 opacity-35" aria-hidden>
+      <div className="absolute inset-0 opacity-40" aria-hidden>
         <ImagePlaceholder
           slotId={managementCta.imageSlot.id}
           label={managementCta.imageSlot.label}
@@ -18,7 +18,7 @@ export function ManagementCta() {
         />
       </div>
       <div
-        className="absolute inset-0 bg-[linear-gradient(105deg,rgba(24,77,58,0.96)_0%,rgba(24,77,58,0.88)_48%,rgba(47,118,91,0.72)_100%)]"
+        className="absolute inset-0 bg-[linear-gradient(115deg,rgba(24,77,58,0.97)_0%,rgba(24,77,58,0.9)_46%,rgba(47,118,91,0.78)_100%)]"
         aria-hidden
       />
 
@@ -26,16 +26,16 @@ export function ManagementCta() {
         <Reveal className="max-w-2xl">
           <h2
             id="management-cta-heading"
-            className="text-3xl font-semibold tracking-tight text-balance text-white sm:text-4xl"
+            className="section-heading text-white"
           >
             {managementCta.headline}
           </h2>
-          <p className="mt-5 text-lg leading-relaxed text-white/88 sm:text-xl">
+          <p className="mt-6 text-lg leading-relaxed text-white/90 sm:text-xl">
             {managementCta.copy}
           </p>
           <a
             href={managementCta.cta.href}
-            className="mt-8 inline-flex min-h-12 items-center justify-center rounded-md bg-white px-6 text-base font-semibold text-forest transition-colors hover:bg-sage"
+            className="mt-9 inline-flex min-h-12 items-center justify-center rounded-[var(--radius)] bg-white px-6 text-base font-semibold text-forest transition-colors hover:bg-sage"
           >
             {managementCta.cta.label}
           </a>

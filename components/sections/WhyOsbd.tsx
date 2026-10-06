@@ -10,18 +10,15 @@ export function WhyOsbd() {
     >
       <div className="container-site">
         <Reveal className="max-w-3xl">
-          <h2
-            id="why-osbd-heading"
-            className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl"
-          >
+          <h2 id="why-osbd-heading" className="section-heading">
             {whyOsbd.headline}
           </h2>
-          <p className="mt-4 text-lg leading-relaxed text-ink-muted sm:text-xl">
+          <p className="mt-5 text-lg leading-relaxed text-ink-muted sm:text-xl">
             {whyOsbd.intro}
           </p>
         </Reveal>
 
-        <ul className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-12">
+        <ul className="mt-14 grid gap-px bg-[var(--border-strong)] md:grid-cols-2 lg:grid-cols-12">
           {whyOsbd.benefits.map((benefit, index) => {
             const featured = index === 0 || index === 3;
             const span =
@@ -39,20 +36,18 @@ export function WhyOsbd() {
               <Reveal
                 key={benefit.number}
                 as="li"
-                delayMs={index * 50}
+                delayMs={index * 45}
                 className={cn(span)}
               >
                 <article
                   className={cn(
-                    "flex h-full min-h-[11.5rem] flex-col rounded-[var(--radius-lg)] border border-border p-6 sm:p-7",
-                    featured
-                      ? "bg-forest text-white"
-                      : "bg-paper text-ink",
+                    "flex h-full min-h-[12.25rem] flex-col px-5 py-7 sm:px-8 sm:py-9",
+                    featured ? "bg-forest text-white" : "bg-white text-ink",
                   )}
                 >
                   <p
                     className={cn(
-                      "font-mono text-sm font-semibold tracking-wider",
+                      "font-mono text-[1.1rem] font-semibold tracking-[0.18em]",
                       featured ? "text-white/55" : "text-green",
                     )}
                   >
@@ -60,7 +55,7 @@ export function WhyOsbd() {
                   </p>
                   <h3
                     className={cn(
-                      "mt-4 text-xl font-semibold tracking-tight text-balance sm:text-2xl",
+                      "mt-5 text-xl font-semibold tracking-tight text-balance sm:text-2xl",
                       featured ? "text-white" : "text-ink",
                     )}
                   >
@@ -68,8 +63,8 @@ export function WhyOsbd() {
                   </h3>
                   <p
                     className={cn(
-                      "mt-3 text-[1.02rem] leading-relaxed",
-                      featured ? "text-white/82" : "text-ink-muted",
+                      "mt-3 max-w-md text-[1.02rem] leading-relaxed",
+                      featured ? "text-white/84" : "text-ink-muted",
                     )}
                   >
                     {benefit.description}

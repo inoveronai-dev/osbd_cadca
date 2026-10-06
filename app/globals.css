@@ -15,8 +15,9 @@
 
   --forest-soft: color-mix(in srgb, var(--forest) 88%, black);
   --green-hover: color-mix(in srgb, var(--green) 88%, black);
-  --ink-muted: color-mix(in srgb, var(--ink) 68%, white);
-  --border-subtle: color-mix(in srgb, var(--ink) 12%, transparent);
+  --ink-muted: color-mix(in srgb, var(--ink) 62%, white);
+  --border-subtle: color-mix(in srgb, var(--ink) 14%, transparent);
+  --border-strong: color-mix(in srgb, var(--ink) 22%, transparent);
 
   --background: var(--paper);
   --foreground: var(--ink);
@@ -37,10 +38,12 @@
   --input: var(--border-subtle);
   --ring: var(--green);
 
-  --radius: 0.5rem;
+  /* Restrained radius — architectural, not pill-heavy */
+  --radius: 0.375rem;
   --container: 72rem;
-  --section-y: clamp(4rem, 8vw, 6.5rem);
+  --section-y: clamp(4.5rem, 9vw, 7.25rem);
   --header-h: 4.5rem;
+  --prose-width: 38rem;
 
   --chart-1: var(--forest);
   --chart-2: var(--green);
@@ -99,13 +102,13 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
+  --radius-sm: calc(var(--radius) * 0.66);
+  --radius-md: calc(var(--radius) * 0.85);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  --radius-xl: calc(var(--radius) * 1.35);
+  --radius-2xl: calc(var(--radius) * 1.7);
+  --radius-3xl: calc(var(--radius) * 2.1);
+  --radius-4xl: calc(var(--radius) * 2.5);
 }
 
 @layer base {
@@ -130,8 +133,8 @@
   h2,
   h3,
   h4 {
-    line-height: 1.2;
-    letter-spacing: -0.02em;
+    line-height: 1.18;
+    letter-spacing: -0.022em;
     font-weight: 600;
     color: var(--ink);
   }
@@ -155,7 +158,7 @@
 
   @media (min-width: 768px) {
     .container-site {
-      width: min(100% - 3rem, var(--container));
+      width: min(100% - 3.5rem, var(--container));
     }
   }
 
@@ -163,25 +166,47 @@
     padding-block: var(--section-y);
   }
 
+  .section-heading {
+    font-size: clamp(1.85rem, 3.4vw, 2.5rem);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    text-wrap: balance;
+  }
+
   .eyebrow {
     font-size: 0.8125rem;
     font-weight: 650;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--green);
+  }
+
+  .prose-measure {
+    max-width: var(--prose-width);
   }
 
   .text-balance {
     text-wrap: balance;
   }
 
+  .divider-soft {
+    border-color: var(--border-subtle);
+  }
+
+  .media-frame {
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: var(--sage);
+  }
+
   /* Reveal motion — gated by prefers-reduced-motion below */
   .reveal {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(18px);
     transition:
-      opacity 0.7s ease,
-      transform 0.7s ease;
+      opacity 0.65s ease,
+      transform 0.65s ease;
   }
 
   .reveal.is-visible {
@@ -190,12 +215,34 @@
   }
 
   .img-zoom {
-    transition: transform 0.6s ease;
+    transition: transform 0.7s ease;
   }
 
   .group:hover .img-zoom,
   .group:focus-within .img-zoom {
-    transform: scale(1.03);
+    transform: scale(1.025);
+  }
+
+  .card-lift {
+    transition:
+      transform 0.25s ease,
+      border-color 0.25s ease,
+      background-color 0.25s ease,
+      box-shadow 0.25s ease;
+  }
+
+  .card-lift:hover,
+  .card-lift:focus-visible {
+    transform: translateY(-3px);
+  }
+
+  .arrow-shift {
+    transition: transform 0.25s ease;
+  }
+
+  .group:hover .arrow-shift,
+  .group:focus-within .arrow-shift {
+    transform: translateX(5px);
   }
 }
 
@@ -210,12 +257,18 @@
     transition: none;
   }
 
-  .img-zoom {
+  .img-zoom,
+  .card-lift,
+  .arrow-shift {
     transition: none;
   }
 
   .group:hover .img-zoom,
-  .group:focus-within .img-zoom {
+  .group:focus-within .img-zoom,
+  .card-lift:hover,
+  .card-lift:focus-visible,
+  .group:hover .arrow-shift,
+  .group:focus-within .arrow-shift {
     transform: none;
   }
 
