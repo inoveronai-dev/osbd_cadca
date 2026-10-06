@@ -5,7 +5,7 @@ import { hero } from "@/lib/content/home";
 export function Hero() {
   return (
     <section
-      className="relative isolate min-h-[78vh] overflow-hidden bg-forest text-white md:min-h-[85vh]"
+      className="relative isolate min-h-[78vh] overflow-x-clip bg-forest text-white md:min-h-[85vh]"
       aria-labelledby="hero-heading"
     >
       <div className="absolute inset-0">
@@ -28,14 +28,14 @@ export function Hero() {
         />
       </div>
 
-      <div className="relative container-site flex min-h-[78vh] flex-col justify-end pb-8 pt-[calc(var(--header-h)+2.5rem)] md:min-h-[85vh] md:pb-10 md:pt-[calc(var(--header-h)+4rem)]">
+      <div className="relative container-site flex min-h-[78vh] flex-col justify-end pb-8 pt-[calc(var(--header-h)+3rem)] md:min-h-[85vh] md:pb-10 md:pt-[calc(var(--header-h)+4.5rem)]">
         <div className="max-w-2xl">
           <p className="text-[0.8rem] font-semibold tracking-[0.1em] text-white/80 uppercase">
             {hero.eyebrow}
           </p>
           <h1
             id="hero-heading"
-            className="mt-4 text-[2.35rem] leading-[1.12] font-semibold tracking-tight text-balance text-white sm:text-5xl md:text-[3.35rem]"
+            className="mt-4 text-[2.15rem] leading-[1.15] font-semibold tracking-tight text-balance text-white sm:text-5xl md:text-[3.35rem] md:leading-[1.12]"
           >
             {hero.headline}
           </h1>
@@ -77,7 +77,7 @@ export function Hero() {
                   {"valueLabel" in item ? item.valueLabel : null}
                 </p>
               )}
-              <p className="mt-1 text-[0.75rem] leading-snug text-white/78 sm:text-[0.95rem]">
+              <p className="mt-1 text-[0.7rem] leading-snug break-words text-white/78 sm:text-[0.95rem]">
                 {item.label}
               </p>
             </div>

@@ -116,11 +116,14 @@
   html {
     @apply font-sans scroll-smooth;
     font-size: 112.5%; /* ~18px root for older readers */
+    scroll-padding-top: calc(var(--header-h) + 0.75rem);
+    overflow-x: clip;
   }
 
   body {
     @apply bg-paper text-ink antialiased;
     line-height: 1.65;
+    overflow-x: clip;
   }
 
   h1,

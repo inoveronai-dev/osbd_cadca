@@ -7,7 +7,6 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet";
 import { LogoMark } from "@/components/layout/LogoMark";
 import { PendingLink } from "@/components/ui/PendingLink";
@@ -38,7 +37,7 @@ export function SiteHeader() {
         <LogoMark tone={scrolled ? "dark" : "light"} />
 
         <nav
-          className="hidden items-center gap-1 lg:flex"
+          className="hidden min-w-0 items-center gap-0.5 xl:gap-1 lg:flex"
           aria-label="Hlavná navigácia"
         >
           {primaryNav.map((item) => (
@@ -49,20 +48,20 @@ export function SiteHeader() {
               status={item.status}
               showBadge={false}
               className={cn(
-                "rounded-md px-3 py-2 text-[0.95rem] font-medium transition-colors",
+                "rounded-md px-2.5 py-2 text-[0.92rem] font-medium transition-colors xl:px-3 xl:text-[0.95rem]",
                 scrolled
                   ? "text-ink hover:bg-sage hover:text-forest"
                   : "text-white/92 hover:bg-white/10 hover:text-white",
               )}
               pendingClassName={cn(
-                "rounded-md px-3 py-2 text-[0.95rem] font-medium",
-                scrolled ? "text-ink/45" : "text-white/45",
+                "rounded-md px-2.5 py-2 text-[0.92rem] font-medium xl:px-3 xl:text-[0.95rem]",
+                scrolled ? "text-ink/60" : "text-white/60",
               )}
             />
           ))}
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2">
           <a
             href={officeHoursCta.href}
             className={cn(
@@ -76,19 +75,25 @@ export function SiteHeader() {
             {officeHoursCta.label}
           </a>
 
+          <button
+            type="button"
+            className={cn(
+              "inline-flex size-11 items-center justify-center rounded-md lg:hidden",
+              scrolled
+                ? "text-ink hover:bg-sage"
+                : "text-white hover:bg-white/15",
+            )}
+            aria-label="Otvoriť menu"
+            aria-expanded={open}
+            aria-controls="mobile-nav"
+            onClick={() => setOpen(true)}
+          >
+            <Menu className="size-6" aria-hidden />
+          </button>
+
           <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger
-              className={cn(
-                "inline-flex size-11 items-center justify-center rounded-md lg:hidden",
-                scrolled
-                  ? "text-ink hover:bg-sage"
-                  : "text-white hover:bg-white/15",
-              )}
-              aria-label="Otvoriť menu"
-            >
-              <Menu className="size-6" />
-            </SheetTrigger>
             <SheetContent
+              id="mobile-nav"
               side="right"
               className="w-[min(100%,22rem)] border-l border-border bg-paper p-0"
             >
@@ -109,7 +114,7 @@ export function SiteHeader() {
                     status={item.status}
                     onNavigate={() => setOpen(false)}
                     className="min-h-14 rounded-md px-4 py-3 text-lg font-medium text-ink hover:bg-sage"
-                    pendingClassName="min-h-14 rounded-md px-4 py-3 text-lg font-medium text-ink/50"
+                    pendingClassName="min-h-14 rounded-md px-4 py-3 text-lg font-medium text-ink/55"
                   />
                 ))}
                 <a
