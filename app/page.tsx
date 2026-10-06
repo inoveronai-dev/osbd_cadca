@@ -7,6 +7,7 @@ import { ManagementCta } from "@/components/sections/ManagementCta";
 import { ManagementOffer } from "@/components/sections/ManagementOffer";
 import { QuickAccess } from "@/components/sections/QuickAccess";
 import { Services } from "@/components/sections/Services";
+import { TrustStatement } from "@/components/sections/TrustStatement";
 import { WhyOsbd } from "@/components/sections/WhyOsbd";
 
 export default function HomePage() {
@@ -18,6 +19,7 @@ export default function HomePage() {
       <WhyOsbd />
       <Services />
       <ManagementOffer />
+      <TrustStatement />
       <MainAdvantages />
       <ManagementCta />
       <LatestNotices />
