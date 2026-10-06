@@ -92,7 +92,7 @@ export function NewsCarousel({ items }: NewsCarouselProps) {
     }
   };
 
-  const endDrag = (_event: React.PointerEvent<HTMLDivElement>) => {
+  const endDrag = () => {
     const el = viewportRef.current;
     if (el && drag.current.pointerId !== null) {
       try {
