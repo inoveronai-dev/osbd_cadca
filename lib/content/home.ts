@@ -191,11 +191,15 @@ export const managementCta = {
 
 export const noticesSection = {
   id: "oznamy",
-  headline: "Najnovšie oznamy",
+  headline: "Najnovšie články",
+  categoryLink: {
+    label: "Aktuality",
+    href: "https://www.osbdcadca.sk/category/aktuality/",
+  },
   allLink: {
     label: "Všetky oznamy",
-    href: null,
-    status: "pending" as const,
+    href: "https://www.osbdcadca.sk/category/aktuality/",
+    status: "ready" as const,
   },
   items: latestNotices,
 } as const;
