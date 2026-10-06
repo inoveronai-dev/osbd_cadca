@@ -14,6 +14,7 @@ export function Hero() {
           label={hero.imageSlot.label}
           description={hero.imageSlot.description}
           objectPosition="center"
+          quiet
           className="h-full rounded-none"
         />
         {/* Stronger full-bleed tint on mobile; left-weighted forest wash on desktop */}
@@ -58,13 +59,13 @@ export function Hero() {
         </div>
 
         <div
-          className="mt-12 grid gap-6 border-t border-white/20 pt-6 sm:grid-cols-3 sm:gap-8 md:mt-16"
+          className="mt-10 grid grid-cols-3 gap-3 border-t border-white/20 pt-5 sm:mt-12 sm:gap-8 sm:pt-6 md:mt-16"
           aria-label="Dôveryhodnosť OSBD Čadca"
         >
           {hero.proof.map((item) => (
             <div key={item.label} className="min-w-0">
               {"value" in item && item.value !== undefined ? (
-                <p className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+                <p className="text-2xl font-semibold tracking-tight text-white sm:text-3xl md:text-4xl">
                   <CountUp
                     value={item.value}
                     suffix={item.suffix ?? ""}
@@ -72,11 +73,13 @@ export function Hero() {
                   />
                 </p>
               ) : (
-                <p className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+                <p className="text-base font-semibold tracking-tight text-white sm:text-2xl md:text-3xl">
                   {"valueLabel" in item ? item.valueLabel : null}
                 </p>
               )}
-              <p className="mt-1 text-[0.95rem] text-white/78">{item.label}</p>
+              <p className="mt-1 text-[0.75rem] leading-snug text-white/78 sm:text-[0.95rem]">
+                {item.label}
+              </p>
             </div>
           ))}
         </div>

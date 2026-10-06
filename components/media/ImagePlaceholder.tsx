@@ -7,6 +7,8 @@ type ImagePlaceholderProps = {
   className?: string;
   /** object-position hint for future photo */
   objectPosition?: string;
+  /** Minimal marking for full-bleed backgrounds (e.g. hero) */
+  quiet?: boolean;
 };
 
 /**
@@ -19,6 +21,7 @@ export function ImagePlaceholder({
   description,
   className,
   objectPosition = "center",
+  quiet = false,
 }: ImagePlaceholderProps) {
   return (
     <div
@@ -39,17 +42,25 @@ export function ImagePlaceholder({
           backgroundSize: "28px 28px",
         }}
       />
-      <div className="relative z-10 flex h-full w-full flex-col justify-between p-5 sm:p-6">
-        <div>
-          <p className="text-[0.7rem] font-semibold tracking-[0.12em] text-forest uppercase">
-            OPEN · Fotografia bude doplnená
+      {quiet ? (
+        <div className="relative z-10 flex h-full w-full items-end justify-end p-4 sm:p-6">
+          <p className="rounded-md bg-forest/35 px-2.5 py-1.5 font-mono text-[0.65rem] tracking-wide text-white/85 backdrop-blur-[2px]">
+            OPEN · {label}
           </p>
-          <p className="mt-2 font-mono text-xs text-ink-muted">{label}</p>
         </div>
-        <p className="max-w-sm text-sm leading-relaxed text-ink/80 sm:text-[0.95rem]">
-          {description}
-        </p>
-      </div>
+      ) : (
+        <div className="relative z-10 flex h-full w-full flex-col justify-between p-5 sm:p-6">
+          <div>
+            <p className="text-[0.7rem] font-semibold tracking-[0.12em] text-forest uppercase">
+              OPEN · Fotografia bude doplnená
+            </p>
+            <p className="mt-2 font-mono text-xs text-ink-muted">{label}</p>
+          </div>
+          <p className="max-w-sm text-sm leading-relaxed text-ink/80 sm:text-[0.95rem]">
+            {description}
+          </p>
+        </div>
+      )}
     </div>
   );
 }

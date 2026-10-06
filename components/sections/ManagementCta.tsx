@@ -13,6 +13,7 @@ export function ManagementCta() {
           slotId={managementCta.imageSlot.id}
           label={managementCta.imageSlot.label}
           description={managementCta.imageSlot.description}
+          quiet
           className="h-full rounded-none"
         />
       </div>
