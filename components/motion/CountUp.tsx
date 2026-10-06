@@ -1,6 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { cn } from "@/lib/utils";
 
 type CountUpProps = {
@@ -19,6 +24,20 @@ function formatValue(value: number, format: "plain" | "sk") {
   return String(Math.round(value));
 }
 
+function subscribeReducedMotion(onChange: () => void) {
+  const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+  media.addEventListener("change", onChange);
+  return () => media.removeEventListener("change", onChange);
+}
+
+function usePrefersReducedMotion() {
+  return useSyncExternalStore(
+    subscribeReducedMotion,
+    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+    () => false,
+  );
+}
+
 export function CountUp({
   value,
   suffix = "",
@@ -27,58 +46,45 @@ export function CountUp({
   durationMs = 1200,
 }: CountUpProps) {
   const ref = useRef<HTMLSpanElement>(null);
+  const reducedMotion = usePrefersReducedMotion();
   const [display, setDisplay] = useState(0);
-  const [started, setStarted] = useState(false);
 
   useEffect(() => {
     const node = ref.current;
     if (!node) return;
 
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (media.matches) {
-      setDisplay(value);
-      setStarted(true);
-      return;
-    }
+    let frame = 0;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setStarted(true);
-          observer.disconnect();
+        if (!entry.isIntersecting) return;
+        observer.disconnect();
+
+        if (reducedMotion) {
+          setDisplay(value);
+          return;
         }
+
+        const start = performance.now();
+        const tick = (now: number) => {
+          const progress = Math.min(1, (now - start) / durationMs);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          setDisplay(value * eased);
+          if (progress < 1) {
+            frame = requestAnimationFrame(tick);
+          }
+        };
+        frame = requestAnimationFrame(tick);
       },
       { threshold: 0.4 },
     );
 
     observer.observe(node);
-    return () => observer.disconnect();
-  }, [value]);
-
-  useEffect(() => {
-    if (!started) return;
-
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (media.matches) {
-      setDisplay(value);
-      return;
-    }
-
-    let frame = 0;
-    const start = performance.now();
-
-    const tick = (now: number) => {
-      const progress = Math.min(1, (now - start) / durationMs);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setDisplay(value * eased);
-      if (progress < 1) {
-        frame = requestAnimationFrame(tick);
-      }
+    return () => {
+      observer.disconnect();
+      cancelAnimationFrame(frame);
     };
-
-    frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
-  }, [started, value, durationMs]);
+  }, [value, durationMs, reducedMotion]);
 
   return (
     <span ref={ref} className={cn("count-up tabular-nums", className)}>

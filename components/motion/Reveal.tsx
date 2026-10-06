@@ -10,6 +10,10 @@ type RevealProps = {
   delayMs?: number;
 };
 
+/**
+ * Intersection reveal. Reduced-motion users get full opacity via CSS
+ * (`prefers-reduced-motion` in globals.css), so we never setState for that case.
+ */
 export function Reveal({
   children,
   className,
@@ -22,12 +26,6 @@ export function Reveal({
   useEffect(() => {
     const node = ref.current;
     if (!node) return;
-
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (media.matches) {
-      setVisible(true);
-      return;
-    }
 
     const observer = new IntersectionObserver(
       ([entry]) => {

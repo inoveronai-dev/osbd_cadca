@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { brand } from "@/lib/content/home";
 import { cn } from "@/lib/utils";
 
@@ -19,7 +20,7 @@ export function LogoMark({ className, tone = "dark" }: LogoMarkProps) {
         : "text-forest border-forest/25";
 
   return (
-    <a
+    <Link
       href="/"
       className={cn(
         "inline-flex items-center gap-3 rounded-md focus-visible:outline-offset-4",
@@ -56,6 +57,6 @@ export function LogoMark({ className, tone = "dark" }: LogoMarkProps) {
           Správa bytových domov
         </span>
       </span>
-    </a>
+    </Link>
   );
 }
