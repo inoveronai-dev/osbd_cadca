@@ -34,7 +34,7 @@ export function SiteHeader() {
       )}
     >
       <div className="container-site flex h-[var(--header-h)] items-center justify-between gap-4">
-        <LogoMark tone={scrolled ? "dark" : "light"} />
+        <LogoMark variant="official" />
 
         <nav
           className="hidden min-w-0 items-center gap-0.5 xl:gap-1 lg:flex"
