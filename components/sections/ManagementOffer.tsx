@@ -13,12 +13,17 @@ export function ManagementOffer() {
         aria-hidden
       />
       <div className="relative container-site">
-        <Reveal className="max-w-[58rem]">
-          <h2 id="management-offer-heading" className="section-heading">
+        <Reveal>
+          <h2
+            id="management-offer-heading"
+            className="section-heading text-center"
+          >
             {managementOfferSource.headline}
           </h2>
+        </Reveal>
 
-          <div className="mt-6 border-t border-[var(--border-subtle)] pt-6">
+        <Reveal className="mx-auto mt-8 max-w-[58rem]" delayMs={40}>
+          <div className="border-t border-[var(--border-subtle)] pt-6">
             <h3 className="section-heading-sm text-forest">
               {managementOfferSource.subheading}
             </h3>
