@@ -1,4 +1,4 @@
-import { ImagePlaceholder } from "@/components/media/ImagePlaceholder";
+import Image from "next/image";
 import { Reveal } from "@/components/motion/Reveal";
 import { services } from "@/lib/content/home";
 
@@ -9,8 +9,8 @@ export function Services() {
       className="section-pad scroll-mt-24 bg-sage/55"
       aria-labelledby="services-heading"
     >
-      <div className="container-site grid gap-12 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.1fr)] lg:items-start lg:gap-16">
-        <Reveal>
+      <div className="container-site grid gap-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:items-start lg:gap-16">
+        <Reveal className="order-2 lg:order-1">
           <h2 id="services-heading" className="section-heading max-w-xl">
             {services.headline}
           </h2>
@@ -38,14 +38,18 @@ export function Services() {
           </ul>
         </Reveal>
 
-        <Reveal delayMs={100} className="group lg:sticky lg:top-28">
-          <div className="media-frame aspect-[4/3] lg:aspect-[5/4]">
-            <div className="img-zoom h-full">
-              <ImagePlaceholder
-                slotId={services.imageSlot.id}
-                label={services.imageSlot.label}
-                description={services.imageSlot.description}
-                className="h-full rounded-[var(--radius)]"
+        <Reveal
+          delayMs={100}
+          className="group order-1 lg:sticky lg:top-28 lg:order-2"
+        >
+          <div className="media-frame aspect-[4/5] border border-[var(--border-subtle)] shadow-[0_18px_40px_-28px_rgba(23,32,28,0.35)]">
+            <div className="img-zoom relative h-full w-full">
+              <Image
+                src="/images/services-renovation.png"
+                alt={services.imageSlot.description}
+                fill
+                sizes="(max-width: 1024px) 100vw, 48vw"
+                className="object-cover object-[center_30%] sm:object-[center_28%]"
               />
             </div>
           </div>
