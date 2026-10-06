@@ -147,21 +147,37 @@ export const services = {
       title: "Technická správa",
       description:
         "Údržba, opravy, technické zariadenia a prevádzka domu.",
+      image: {
+        src: "/images/service-technicka.png",
+        alt: "Technik pri kontrole technických zariadení bytového domu",
+      },
     },
     {
       title: "Ekonomická správa",
       description:
         "Finančné a ekonomické záležitosti spojené so správou domu.",
+      image: {
+        src: "/images/service-ekonomicka.png",
+        alt: "Ekonomická agenda a dokumenty spojené so správou domu",
+      },
     },
     {
       title: "Obnova a modernizácia",
       description:
         "Rekonštrukcie, zateplenie, meranie, regulácia a ďalšie investície.",
+      image: {
+        src: "/images/service-obnova.png",
+        alt: "Zrekonštruovaný bytový dom s upraveným okolím",
+      },
     },
     {
       title: "Odborné poradenstvo",
       description:
         "Pomoc pri správe domu, legislatíve a väčších investičných projektoch.",
+      image: {
+        src: "/images/service-poradenstvo.png",
+        alt: "Odborné poradenstvo a konzultácia s vlastníkmi",
+      },
     },
   ],
   imageSlot: {
