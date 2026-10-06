@@ -10,8 +10,8 @@ export function Services() {
       aria-labelledby="services-heading"
     >
       <div className="container-site">
-        <Reveal>
-          <h2 id="services-heading" className="section-heading max-w-2xl">
+        <Reveal className="mx-auto max-w-[42rem] text-center">
+          <h2 id="services-heading" className="section-heading text-forest">
             {services.headline}
           </h2>
         </Reveal>
