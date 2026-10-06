@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { Clock, Menu } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
@@ -64,10 +63,10 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Button
-            render={<a href={officeHoursCta.href} />}
+          <a
+            href={officeHoursCta.href}
             className={cn(
-              "hidden h-11 gap-2 rounded-md px-4 text-[0.95rem] font-semibold sm:inline-flex",
+              "hidden h-11 items-center justify-center gap-2 rounded-md px-4 text-[0.95rem] font-semibold transition-colors sm:inline-flex",
               scrolled
                 ? "bg-forest text-white hover:bg-[var(--forest-soft)]"
                 : "border border-white/35 bg-white/12 text-white backdrop-blur-sm hover:bg-white/20",
@@ -75,23 +74,17 @@ export function SiteHeader() {
           >
             <Clock className="size-4" aria-hidden />
             {officeHoursCta.label}
-          </Button>
+          </a>
 
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger
-              render={
-                <Button
-                  variant="ghost"
-                  size="icon-lg"
-                  className={cn(
-                    "lg:hidden",
-                    scrolled
-                      ? "text-ink hover:bg-sage"
-                      : "text-white hover:bg-white/15",
-                  )}
-                  aria-label="Otvoriť menu"
-                />
-              }
+              className={cn(
+                "inline-flex size-11 items-center justify-center rounded-md lg:hidden",
+                scrolled
+                  ? "text-ink hover:bg-sage"
+                  : "text-white hover:bg-white/15",
+              )}
+              aria-label="Otvoriť menu"
             >
               <Menu className="size-6" />
             </SheetTrigger>
