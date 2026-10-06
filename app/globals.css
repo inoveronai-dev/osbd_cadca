@@ -244,6 +244,21 @@
   .group:focus-within .arrow-shift {
     transform: translateX(5px);
   }
+
+  /* Hero-only: near-imperceptible photo settle on load */
+  .hero-bg-image {
+    transform: scale(1.015);
+    animation: hero-photo-settle 1.6s ease-out forwards;
+  }
+
+  @keyframes hero-photo-settle {
+    from {
+      transform: scale(1.015);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -261,6 +276,11 @@
   .card-lift,
   .arrow-shift {
     transition: none;
+  }
+
+  .hero-bg-image {
+    transform: none;
+    animation: none;
   }
 
   .group:hover .img-zoom,
