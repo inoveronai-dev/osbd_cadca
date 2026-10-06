@@ -178,7 +178,7 @@ export const managementCta = {
   copy: "Dlhoročné skúsenosti, odborné zázemie a komplexná starostlivosť nám umožňujú riešiť každodennú správu aj väčšie investičné projekty.",
   cta: {
     label: "Pozrieť ponuku správy",
-    href: "#sprava",
+    href: "#ponuka-spravy",
   },
   imageSlot: {
     id: "cta-detail",

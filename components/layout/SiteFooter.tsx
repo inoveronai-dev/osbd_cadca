@@ -6,7 +6,7 @@ import { footerNavGroups } from "@/lib/navigation";
 
 export function SiteFooter() {
   return (
-    <footer className="bg-forest text-white">
+    <footer className="bg-deep-forest text-white">
       <div className="container-site section-pad grid gap-12 md:grid-cols-[1.2fr_1fr_1fr]">
         <div>
           <LogoMark tone="on-dark" />

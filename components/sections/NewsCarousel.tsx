@@ -7,9 +7,11 @@ import { cn } from "@/lib/utils";
 
 type NewsCarouselProps = {
   items: readonly Notice[];
+  variant?: "light" | "dark";
 };
 
-export function NewsCarousel({ items }: NewsCarouselProps) {
+export function NewsCarousel({ items, variant = "light" }: NewsCarouselProps) {
+  const dark = variant === "dark";
   const viewportRef = useRef<HTMLDivElement>(null);
   const [paused, setPaused] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
@@ -122,11 +124,21 @@ export function NewsCarousel({ items }: NewsCarouselProps) {
     >
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-y-0 left-0 z-10 w-10 bg-gradient-to-r from-white to-transparent sm:w-14 md:w-16"
+        className={cn(
+          "pointer-events-none absolute inset-y-0 left-0 z-10 w-10 sm:w-14 md:w-16",
+          dark
+            ? "bg-gradient-to-r from-forest to-transparent"
+            : "bg-gradient-to-r from-white to-transparent",
+        )}
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-y-0 right-0 z-10 w-10 bg-gradient-to-l from-white to-transparent sm:w-14 md:w-16"
+        className={cn(
+          "pointer-events-none absolute inset-y-0 right-0 z-10 w-10 sm:w-14 md:w-16",
+          dark
+            ? "bg-gradient-to-l from-forest to-transparent"
+            : "bg-gradient-to-l from-white to-transparent",
+        )}
       />
 
       <div
@@ -159,7 +171,12 @@ export function NewsCarousel({ items }: NewsCarouselProps) {
                       drag.current.moved = false;
                     }
                   }}
-                  className="group/card flex h-full min-h-[11.75rem] flex-col rounded-[var(--radius)] border border-[var(--border-strong)] bg-paper px-5 py-5 transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-[2px] hover:border-green/35 hover:bg-white hover:shadow-[0_12px_28px_-20px_rgba(24,77,58,0.35)] focus-visible:border-green focus-visible:outline-offset-4 sm:min-h-[12.75rem] sm:px-6 sm:py-6"
+                  className={cn(
+                    "group/card flex h-full min-h-[11.75rem] flex-col rounded-[var(--radius)] border px-5 py-5 transition-[transform,border-color,background-color,box-shadow] duration-200 hover:-translate-y-[2px] focus-visible:outline-offset-4 sm:min-h-[12.75rem] sm:px-6 sm:py-6",
+                    dark
+                      ? "border-forest/25 bg-ivory hover:border-green/40 hover:bg-warm-white hover:shadow-[0_12px_28px_-20px_rgba(0,0,0,0.35)] focus-visible:border-sage"
+                      : "border-[var(--border-strong)] bg-paper hover:border-green/35 hover:bg-white hover:shadow-[0_12px_28px_-20px_rgba(24,77,58,0.35)] focus-visible:border-green",
+                  )}
                 >
                   <span className="text-[0.7rem] font-semibold tracking-[0.12em] text-green uppercase">
                     Aktuality

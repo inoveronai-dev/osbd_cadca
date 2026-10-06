@@ -1,5 +1,5 @@
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
-import { ImagePlaceholder } from "@/components/media/ImagePlaceholder";
+import Image from "next/image";
 import { Reveal } from "@/components/motion/Reveal";
 import { contactSection } from "@/lib/content/home";
 
@@ -9,24 +9,24 @@ export function Contact() {
   return (
     <section
       id={contactSection.id}
-      className="section-pad scroll-mt-24 bg-paper"
+      className="section-pad scroll-mt-24 bg-ivory"
       aria-labelledby="contact-heading"
     >
-      <div className="container-site grid gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-start lg:gap-16">
+      <div className="container-site grid gap-14 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-start lg:gap-16">
         <div>
           <Reveal>
             <h2 id="contact-heading" className="section-heading">
               {contactSection.headline}
             </h2>
-            <p className="mt-4 max-w-xl text-lg leading-relaxed text-ink-muted">
+            <p className="mt-5 max-w-xl text-[1.05rem] leading-relaxed text-ink-muted sm:text-lg">
               {contactSection.support}
             </p>
           </Reveal>
 
           <Reveal delayMs={60}>
-            <ul className="mt-10 space-y-8 border-t border-[var(--border-strong)] pt-8">
+            <ul className="mt-12 space-y-9 border-t border-[var(--border-strong)] pt-10">
               <li className="flex gap-4 sm:gap-5">
-                <span className="mt-1 inline-flex size-12 shrink-0 items-center justify-center rounded-[var(--radius)] bg-sage text-forest">
+                <span className="mt-1 inline-flex size-12 shrink-0 items-center justify-center rounded-[var(--radius)] bg-soft-sage text-forest">
                   <Phone className="size-5" aria-hidden />
                 </span>
                 <div className="min-w-0">
@@ -42,7 +42,7 @@ export function Contact() {
                 </div>
               </li>
               <li className="flex gap-4 sm:gap-5">
-                <span className="mt-1 inline-flex size-12 shrink-0 items-center justify-center rounded-[var(--radius)] bg-sage text-forest">
+                <span className="mt-1 inline-flex size-12 shrink-0 items-center justify-center rounded-[var(--radius)] bg-soft-sage text-forest">
                   <Mail className="size-5" aria-hidden />
                 </span>
                 <div className="min-w-0">
@@ -58,7 +58,7 @@ export function Contact() {
                 </div>
               </li>
               <li className="flex gap-4 sm:gap-5">
-                <span className="mt-1 inline-flex size-12 shrink-0 items-center justify-center rounded-[var(--radius)] bg-sage text-forest">
+                <span className="mt-1 inline-flex size-12 shrink-0 items-center justify-center rounded-[var(--radius)] bg-soft-sage text-forest">
                   <MapPin className="size-5" aria-hidden />
                 </span>
                 <div className="min-w-0">
@@ -80,7 +80,7 @@ export function Contact() {
           <Reveal delayMs={100}>
             <div
               id={contactSection.officeHoursAnchor}
-              className="scroll-mt-28 mt-10 border border-forest/15 bg-forest p-6 text-white sm:p-7"
+              className="scroll-mt-28 mt-12 border border-forest/20 bg-forest p-6 text-white sm:p-8"
             >
               <div className="flex items-start gap-4">
                 <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-[var(--radius)] bg-white/12">
@@ -103,14 +103,14 @@ export function Contact() {
         </div>
 
         <Reveal delayMs={80} className="group lg:sticky lg:top-28">
-          <div className="media-frame aspect-[4/5] min-h-[22rem] sm:aspect-[5/6] lg:min-h-[32rem]">
-            <div className="img-zoom h-full">
-              <ImagePlaceholder
-                slotId="contact-osbd-hq"
-                label="contact-osbd-hq"
-                description="Fotografia sídla OSBD Čadca alebo autentická fotografia zamestnancov"
-                quiet
-                className="h-full rounded-[var(--radius)]"
+          <div className="media-frame aspect-[4/5] min-h-[22rem] border border-[var(--border-subtle)] sm:aspect-[5/6] lg:min-h-[32rem]">
+            <div className="img-zoom relative h-full w-full">
+              <Image
+                src="/images/about-osbd-hq.png"
+                alt="Fotografia sídla OSBD Čadca alebo autentická fotografia zamestnancov"
+                fill
+                sizes="(max-width: 1024px) 100vw, 42vw"
+                className="object-cover object-center"
               />
             </div>
           </div>
