@@ -6,32 +6,29 @@ import { footerNavGroups } from "@/lib/navigation";
 
 export function SiteFooter() {
   return (
-    <footer className="bg-deep-forest text-white">
-      {/* Main footer — brand + navigation */}
-      <div className="container-site pt-14 pb-12 md:pt-16 md:pb-14">
-        <div className="grid gap-12 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:gap-16 xl:gap-24">
-          {/* Brand block */}
+    <footer className="border-t border-white/10 bg-deep-forest text-white">
+      <div className="container-site pt-12 pb-10 md:pt-14 md:pb-12">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:gap-14 xl:gap-20">
           <div className="max-w-md">
             <LogoMark variant="official" tone="on-dark" />
-            <p className="mt-5 text-[0.7rem] font-semibold tracking-[0.14em] text-sage/85 uppercase">
+            <p className="mt-4 text-[0.7rem] font-semibold tracking-[0.12em] text-sage/80 uppercase">
               Správa bytových domov
             </p>
-            <p className="mt-3 text-[1.05rem] font-semibold tracking-tight text-white">
+            <p className="mt-2.5 text-[1.02rem] font-semibold tracking-tight text-white">
               {brand.name}
             </p>
-            <p className="mt-3 max-w-sm text-[0.92rem] leading-relaxed text-white/68">
+            <p className="mt-3 max-w-sm text-[0.92rem] leading-relaxed text-white/70">
               {brand.legalName}. {brand.positioning}
             </p>
           </div>
 
-          {/* Navigation groups */}
-          <div className="grid gap-10 sm:grid-cols-2 sm:gap-12 lg:pt-1">
+          <div className="grid gap-8 sm:grid-cols-2 sm:gap-10 lg:pt-1">
             {footerNavGroups.map((group) => (
               <div key={group.title}>
-                <h2 className="text-[0.7rem] font-semibold tracking-[0.14em] text-white/45 uppercase">
+                <h2 className="text-[0.7rem] font-semibold tracking-[0.12em] text-white/45 uppercase">
                   {group.title}
                 </h2>
-                <ul className="mt-5 space-y-3">
+                <ul className="mt-4 space-y-2.5">
                   {group.items.map((item) => (
                     <li key={item.label}>
                       <PendingLink
@@ -50,27 +47,26 @@ export function SiteFooter() {
         </div>
       </div>
 
-      {/* Bottom meta bar */}
-      <div className="border-t border-white/[0.1]">
-        <div className="container-site flex flex-col gap-4 py-5 text-[0.8rem] leading-relaxed text-white/58 sm:flex-row sm:items-center sm:justify-between sm:gap-8 sm:py-6">
-          <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-0 sm:gap-y-1">
-            <span className="text-white/62">{contact.addressFull}</span>
-            <span className="hidden text-white/22 sm:inline" aria-hidden>
-              <span className="mx-3">|</span>
+      <div className="border-t border-white/10">
+        <div className="container-site flex flex-col gap-3 py-5 text-[0.8rem] leading-relaxed text-white/58 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
+          <div className="flex flex-col gap-1.5 sm:flex-row sm:flex-wrap sm:items-center">
+            <span>{contact.addressFull}</span>
+            <span className="hidden text-white/25 sm:inline" aria-hidden>
+              <span className="mx-2.5">·</span>
             </span>
-            <span className="flex flex-wrap items-center gap-x-0 gap-y-1">
+            <span className="flex flex-wrap items-center gap-y-1">
               <a
                 href={contact.phoneHref}
-                className="text-white/62 transition-colors hover:text-white"
+                className="transition-colors hover:text-white"
               >
                 {contact.phoneDisplay}
               </a>
-              <span className="mx-3 text-white/22" aria-hidden>
-                |
+              <span className="mx-2.5 text-white/25" aria-hidden>
+                ·
               </span>
               <a
                 href={`mailto:${contact.email}`}
-                className="text-white/62 transition-colors hover:text-white"
+                className="transition-colors hover:text-white"
               >
                 {contact.email}
               </a>
