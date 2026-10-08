@@ -14,7 +14,7 @@ export function Services() {
   return (
     <section
       id={services.id}
-      className="scroll-mt-24 bg-transparent pt-10 pb-[clamp(3.5rem,6vw,5rem)] md:pt-12"
+      className="scroll-mt-24 bg-transparent pt-8 pb-[clamp(3.5rem,6vw,5rem)] md:pt-10"
       aria-labelledby="services-heading"
     >
       <div className="container-site">
@@ -30,7 +30,7 @@ export function Services() {
         <ul className="mt-9 grid gap-5 sm:mt-10 sm:grid-cols-2 sm:gap-6 lg:mt-11 lg:gap-7">
           {services.categories.map((category, index) => (
             <Reveal key={category.title} as="li" delayMs={index * 55}>
-              <article className="group card-lift flex h-full flex-col overflow-hidden rounded-[0.5rem] border border-forest/12 bg-[#fcfcf9] transition-[border-color,box-shadow] duration-300 hover:border-forest/28 hover:shadow-[0_10px_24px_-20px_rgba(10,56,44,0.25)]">
+              <article className="group card-lift flex h-full flex-col overflow-hidden rounded-[0.5rem] border border-forest/12 bg-white shadow-[0_8px_28px_-18px_rgba(10,56,44,0.22)] transition-[border-color,box-shadow,transform] duration-300 hover:border-forest/28 hover:shadow-[0_14px_34px_-16px_rgba(10,56,44,0.28)]">
                 <div className="relative h-[11rem] w-full shrink-0 overflow-hidden sm:h-[10.5rem] lg:h-[11.25rem]">
                   <div className="img-zoom relative h-full w-full">
                     <Image
