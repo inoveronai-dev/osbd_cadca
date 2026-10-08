@@ -100,7 +100,7 @@ export function MainAdvantages() {
   return (
     <section
       id={mainAdvantagesSource.id}
-      className="relative isolate overflow-hidden scroll-mt-24 bg-warm-white pt-[clamp(3.25rem,6vw,4.75rem)] pb-[clamp(3.5rem,7vw,5.25rem)]"
+      className="relative isolate overflow-hidden scroll-mt-24 bg-warm-white pt-[clamp(3rem,5.5vw,4.25rem)] pb-[clamp(3.25rem,6vw,4.75rem)]"
       aria-labelledby="main-advantages-heading"
     >
       <div
@@ -127,7 +127,7 @@ export function MainAdvantages() {
       </div>
 
       <div className="relative z-10 container-site flex justify-center">
-        <div className="w-full max-w-[56rem]">
+        <div className="w-full max-w-[60rem]">
           <Reveal>
             <h2
               id="main-advantages-heading"
@@ -137,7 +137,7 @@ export function MainAdvantages() {
             </h2>
           </Reveal>
 
-          <div className="relative mt-8 sm:mt-9 lg:mt-10">
+          <div className="relative mt-7 sm:mt-8 lg:mt-8">
             {size.w > 0 && path ? (
               <svg
                 className="pointer-events-none absolute inset-0 z-0"
@@ -157,7 +157,7 @@ export function MainAdvantages() {
               </svg>
             ) : null}
 
-            <ul ref={listRef} className="relative z-[1] flex flex-col gap-6 sm:gap-0">
+            <ul ref={listRef} className="relative z-[1] flex flex-col gap-4 sm:gap-0">
               {mainAdvantagesSource.items.map((item, index) => {
                 const isLeft = index % 2 === 0;
 
@@ -169,18 +169,18 @@ export function MainAdvantages() {
                     className={cn(
                       "flex w-full",
                       isLeft ? "sm:justify-start" : "sm:justify-end",
-                      // Subtle cascade — light stagger, enough air so same-side cards (e.g. 06 & 08) stay distinct
-                      index > 0 && "sm:mt-5 md:mt-5 lg:mt-6",
+                      // Compact cascade — small downward step only
+                      index > 0 && "sm:mt-2 md:mt-2.5",
                     )}
                   >
                     <article
                       ref={(node) => {
                         itemRefs.current[index] = node;
                       }}
-                      className="group advantage-row relative flex w-full gap-3 overflow-hidden rounded-[0.5rem] border border-forest/10 bg-white/90 px-3.5 py-3 shadow-[0_4px_16px_-12px_rgba(15,74,55,0.18)] transition-[transform,border-color,background-color,box-shadow] duration-300 hover:-translate-y-0.5 hover:border-forest/28 hover:bg-white hover:shadow-[0_12px_30px_-14px_rgba(15,74,55,0.28),inset_0_0_0_1px_rgba(47,118,91,0.06)] sm:w-[calc(50%-2.25rem)] sm:gap-3.5 sm:px-4 sm:py-3.5"
+                      className="group advantage-row relative flex w-full gap-2.5 overflow-hidden rounded-[0.5rem] border border-forest/10 bg-white/90 px-3 py-2.5 shadow-[0_4px_16px_-12px_rgba(15,74,55,0.18)] transition-[transform,border-color,background-color,box-shadow] duration-300 hover:-translate-y-0.5 hover:border-forest/28 hover:bg-white hover:shadow-[0_12px_30px_-14px_rgba(15,74,55,0.28),inset_0_0_0_1px_rgba(47,118,91,0.06)] sm:w-[calc(50%-1.35rem)] sm:gap-3 sm:px-3.5 sm:py-3"
                     >
                       <span
-                        className="absolute inset-y-2.5 left-0 w-[3.5px] rounded-full bg-forest/45 transition-[background-color,box-shadow,width,opacity] duration-300 group-hover:w-[4px] group-hover:bg-green group-hover:shadow-[0_0_14px_rgba(47,118,91,0.55),0_0_4px_rgba(47,118,91,0.4)]"
+                        className="absolute inset-y-2 left-0 w-[3.5px] rounded-full bg-forest/45 transition-[background-color,box-shadow,width,opacity] duration-300 group-hover:w-[4px] group-hover:bg-green group-hover:shadow-[0_0_14px_rgba(47,118,91,0.55),0_0_4px_rgba(47,118,91,0.4)]"
                         aria-hidden
                       />
                       <span
@@ -190,7 +190,7 @@ export function MainAdvantages() {
                       <span className="relative mt-px w-6 shrink-0 pl-1.5 font-mono text-[0.72rem] font-semibold tracking-[0.1em] text-green/70 transition-colors duration-300 group-hover:text-forest">
                         {String(index + 1).padStart(2, "0")}
                       </span>
-                      <p className="relative min-w-0 text-[0.88rem] leading-[1.55] text-ink/90 transition-colors duration-300 group-hover:text-ink sm:text-[0.9rem]">
+                      <p className="relative min-w-0 text-[0.86rem] leading-[1.45] text-ink/90 transition-colors duration-300 group-hover:text-ink sm:text-[0.88rem]">
                         {item}
                       </p>
                     </article>
