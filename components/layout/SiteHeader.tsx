@@ -9,8 +9,11 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { LogoMark } from "@/components/layout/LogoMark";
-import { PendingLink } from "@/components/ui/PendingLink";
-import { officeHoursCta, primaryNav } from "@/lib/navigation";
+import {
+  DesktopHeaderNav,
+  MobileHeaderNav,
+} from "@/components/layout/HeaderNav";
+import { officeHoursCta } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
 
 export function SiteHeader() {
@@ -36,30 +39,7 @@ export function SiteHeader() {
       <div className="container-site flex min-h-[var(--header-h)] items-center justify-between gap-4 py-2.5 md:gap-5 md:py-3">
         <LogoMark variant="official" />
 
-        <nav
-          className="hidden min-w-0 items-center gap-0.5 xl:gap-1 lg:flex"
-          aria-label="Hlavná navigácia"
-        >
-          {primaryNav.map((item) => (
-            <PendingLink
-              key={item.label}
-              label={item.label}
-              href={item.href}
-              status={item.status}
-              showBadge={false}
-              className={cn(
-                "rounded-md px-2.5 py-2 text-[0.92rem] font-medium transition-colors xl:px-3 xl:text-[0.95rem]",
-                scrolled
-                  ? "text-ink hover:bg-sage hover:text-forest"
-                  : "text-white/92 hover:bg-white/10 hover:text-white",
-              )}
-              pendingClassName={cn(
-                "rounded-md px-2.5 py-2 text-[0.92rem] font-medium xl:px-3 xl:text-[0.95rem]",
-                scrolled ? "text-ink/60" : "text-white/60",
-              )}
-            />
-          ))}
-        </nav>
+        <DesktopHeaderNav scrolled={scrolled} />
 
         <div className="flex shrink-0 items-center gap-2">
           <a
@@ -102,30 +82,17 @@ export function SiteHeader() {
                   Navigácia
                 </SheetTitle>
               </SheetHeader>
-              <nav
-                className="flex flex-col gap-1 p-3"
-                aria-label="Mobilná navigácia"
-              >
-                {primaryNav.map((item) => (
-                  <PendingLink
-                    key={item.label}
-                    label={item.label}
-                    href={item.href}
-                    status={item.status}
-                    onNavigate={() => setOpen(false)}
-                    className="min-h-14 rounded-md px-4 py-3 text-lg font-medium text-ink hover:bg-sage"
-                    pendingClassName="min-h-14 rounded-md px-4 py-3 text-lg font-medium text-ink/55"
-                  />
-                ))}
+              <MobileHeaderNav onNavigate={() => setOpen(false)} />
+              <div className="border-t border-border p-3">
                 <a
                   href={officeHoursCta.href}
                   onClick={() => setOpen(false)}
-                  className="mt-3 inline-flex min-h-14 items-center justify-center gap-2 rounded-md bg-forest px-4 text-lg font-semibold text-white hover:bg-[var(--forest-soft)]"
+                  className="inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-md bg-forest px-4 text-lg font-semibold text-white hover:bg-[var(--forest-soft)]"
                 >
                   <Clock className="size-5" aria-hidden />
                   {officeHoursCta.label}
                 </a>
-              </nav>
+              </div>
             </SheetContent>
           </Sheet>
         </div>
