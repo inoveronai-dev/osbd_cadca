@@ -56,19 +56,19 @@ function DesktopDropdown({
   item: PrimaryNavItem;
   scrolled: boolean;
 }) {
-  const [open, setOpen] = useState(false);
+  const [pinned, setPinned] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const menuId = useId();
   const children = item.children ?? [];
   const triggerNavigates = canNavigate(item);
 
   useEffect(() => {
-    if (!open) return;
+    if (!pinned) return;
     const onPointer = (event: MouseEvent) => {
-      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
+      if (!rootRef.current?.contains(event.target as Node)) setPinned(false);
     };
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key === "Escape") setPinned(false);
     };
     document.addEventListener("mousedown", onPointer);
     document.addEventListener("keydown", onKey);
@@ -76,35 +76,33 @@ function DesktopDropdown({
       document.removeEventListener("mousedown", onPointer);
       document.removeEventListener("keydown", onKey);
     };
-  }, [open]);
+  }, [pinned]);
 
   const triggerClass = cn(
     "inline-flex items-center gap-1 rounded-md px-2.5 py-2 text-[0.92rem] font-medium transition-colors xl:px-3 xl:text-[0.95rem]",
     scrolled
       ? "text-ink hover:bg-sage hover:text-forest"
       : "text-white/92 hover:bg-white/10 hover:text-white",
-    open && (scrolled ? "bg-sage text-forest" : "bg-white/10 text-white"),
+    pinned && (scrolled ? "bg-sage text-forest" : "bg-white/10 text-white"),
   );
 
   return (
     <div
       ref={rootRef}
-      className="relative"
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
+      className={cn("group/nav relative", pinned && "is-open")}
+      data-open={pinned ? "true" : undefined}
     >
       {triggerNavigates ? (
         <a
           href={item.href!}
           className={triggerClass}
-          aria-expanded={open}
           aria-haspopup="true"
           aria-controls={menuId}
-          onFocus={() => setOpen(true)}
+          onClick={() => setPinned(false)}
         >
           {item.label}
           <ChevronDown
-            className={cn("size-3.5 opacity-80 transition-transform", open && "rotate-180")}
+            className="size-3.5 opacity-80 transition-transform group-hover/nav:rotate-180 group-focus-within/nav:rotate-180 [[data-open=true]_&]:rotate-180"
             aria-hidden
           />
         </a>
@@ -112,14 +110,14 @@ function DesktopDropdown({
         <button
           type="button"
           className={triggerClass}
-          aria-expanded={open}
+          aria-expanded={pinned}
           aria-haspopup="true"
           aria-controls={menuId}
-          onClick={() => setOpen((value) => !value)}
+          onClick={() => setPinned((value) => !value)}
         >
           {item.label}
           <ChevronDown
-            className={cn("size-3.5 opacity-80 transition-transform", open && "rotate-180")}
+            className="size-3.5 opacity-80 transition-transform group-hover/nav:rotate-180 group-focus-within/nav:rotate-180 [[data-open=true]_&]:rotate-180"
             aria-hidden
           />
         </button>
@@ -127,14 +125,16 @@ function DesktopDropdown({
 
       <div
         id={menuId}
-        hidden={!open}
+        role="menu"
         className={cn(
-          "absolute top-full left-0 z-50 min-w-[13.5rem] pt-1.5",
-          !open && "pointer-events-none",
+          "invisible absolute top-full left-0 z-50 min-w-[13.5rem] pt-1.5 opacity-0 transition-opacity duration-100",
+          "group-hover/nav:visible group-hover/nav:opacity-100",
+          "group-focus-within/nav:visible group-focus-within/nav:opacity-100",
+          "[[data-open=true]_&]:visible [[data-open=true]_&]:opacity-100",
         )}
       >
         <div className="overflow-hidden rounded-md border border-forest/10 bg-warm-white shadow-[0_10px_28px_rgba(7,35,26,0.12)]">
-          <NavChildList items={children} onSelect={() => setOpen(false)} />
+          <NavChildList items={children} onSelect={() => setPinned(false)} />
         </div>
       </div>
     </div>
