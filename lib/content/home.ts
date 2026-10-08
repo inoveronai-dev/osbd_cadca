@@ -189,22 +189,6 @@ export const services = {
   },
 } as const;
 
-export const managementCta = {
-  headline: "Hľadáte spoľahlivého správcu pre váš bytový dom?",
-  copy: "Dlhoročné skúsenosti, odborné zázemie a komplexná starostlivosť nám umožňujú riešiť každodennú správu aj väčšie investičné projekty.",
-  cta: {
-    label: "Pozrieť ponuku správy",
-    href: "#ponuka-spravy",
-  },
-  imageSlot: {
-    id: "cta-detail",
-    label: "cta-detail",
-    description:
-      "Budova OSBD alebo autentický detail bytového domu",
-    aspect: "landscape" as const,
-  },
-} as const;
-
 export const noticesSection = {
   id: "oznamy",
   headline: "Najnovšie články",
@@ -233,5 +217,4 @@ export const imageSlots = [
   hero.imageSlot,
   aboutSection.imageSlot,
   services.imageSlot,
-  managementCta.imageSlot,
 ] as const;

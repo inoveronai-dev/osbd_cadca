@@ -45,14 +45,14 @@ export function Services() {
                   </div>
                 </div>
 
-                <div className="flex flex-1 flex-col px-5 py-5 sm:px-6 sm:py-5 lg:px-6 lg:py-6">
-                  <p className="font-mono text-[0.8rem] font-semibold tracking-[0.12em] text-green/65">
+                <div className="flex w-full flex-1 flex-col items-center justify-center px-5 py-5 text-center sm:px-6 sm:py-5 lg:px-6 lg:py-6">
+                  <p className="w-full text-center font-mono text-[0.8rem] font-semibold tracking-[0.12em] text-green/65">
                     {String(index + 1).padStart(2, "0")}
                   </p>
-                  <h3 className="mt-2 text-[1.25rem] font-semibold tracking-tight text-ink sm:text-[1.35rem]">
+                  <h3 className="mt-2 w-full text-center text-[1.25rem] font-semibold tracking-tight text-ink sm:text-[1.35rem]">
                     {category.title}
                   </h3>
-                  <p className="mt-2 text-[0.95rem] leading-[1.7] text-ink-muted sm:text-[0.98rem]">
+                  <p className="mx-auto mt-2 max-w-[22rem] text-center text-[0.95rem] leading-[1.7] text-ink-muted sm:text-[0.98rem]">
                     {category.description}
                   </p>
                 </div>

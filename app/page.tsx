@@ -4,7 +4,6 @@ import { Contact } from "@/components/sections/Contact";
 import { Hero } from "@/components/sections/Hero";
 import { LatestNotices } from "@/components/sections/LatestNotices";
 import { MainAdvantages } from "@/components/sections/MainAdvantages";
-import { ManagementCta } from "@/components/sections/ManagementCta";
 import { ManagementOffer } from "@/components/sections/ManagementOffer";
 import { QuickAccess } from "@/components/sections/QuickAccess";
 import { Services } from "@/components/sections/Services";
@@ -24,7 +23,6 @@ export default function HomePage() {
       <ManagementOffer />
       <TrustStatement />
       <MainAdvantages />
-      <ManagementCta />
       <LatestNotices />
       <Contact />
     </main>
