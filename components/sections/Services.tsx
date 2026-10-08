@@ -4,9 +4,11 @@ import { services } from "@/lib/content/home";
 import { cn } from "@/lib/utils";
 
 const imagePositions = [
-  "object-[center_20%]",
+  /* 01 Technická správa — show technician + clipboard in hand */
+  "object-[52%_58%]",
   "object-[center_45%]",
-  "object-center",
+  /* 03 Obnova — prioritize entrance / lower central facade */
+  "object-[center_78%]",
   "object-[center_30%]",
 ] as const;
 
