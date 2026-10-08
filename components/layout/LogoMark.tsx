@@ -16,6 +16,7 @@ export function LogoMark({
   variant = "wordmark",
 }: LogoMarkProps) {
   if (variant === "official") {
+    const onDark = tone === "on-dark" || tone === "light";
     return (
       <Link
         href="/"
@@ -25,18 +26,22 @@ export function LogoMark({
         )}
         aria-label={`${brand.name} — úvodná stránka`}
       >
-        <span
-          className="inline-flex items-center justify-center rounded-[8px] border border-white/40 bg-[rgba(255,255,250,0.96)] p-[10px] shadow-[0_8px_28px_rgba(7,35,26,0.12)] sm:rounded-[9px] sm:p-[11px] md:p-[12px]"
-        >
-          <Image
-            src="/images/osbd-cadca-logo.png"
-            alt={brand.name}
-            width={262}
-            height={139}
-            priority
-            className="h-auto w-[100px] object-contain object-center sm:w-[120px] md:w-[130px] lg:w-[138px]"
-          />
-        </span>
+        <Image
+          src={
+            onDark
+              ? "/images/osbd-cadca-logo-on-dark.png"
+              : "/images/osbd-cadca-logo-transparent.png"
+          }
+          alt={brand.name}
+          width={264}
+          height={141}
+          priority={!onDark}
+          className={cn(
+            "h-auto w-[108px] object-contain object-left sm:w-[124px] md:w-[132px] lg:w-[140px]",
+            !onDark &&
+              "drop-shadow-[0_1px_1px_rgba(7,35,26,0.12)]",
+          )}
+        />
       </Link>
     );
   }
