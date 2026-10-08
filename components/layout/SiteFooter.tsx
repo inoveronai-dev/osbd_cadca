@@ -6,29 +6,32 @@ import { footerNavGroups } from "@/lib/navigation";
 
 export function SiteFooter() {
   return (
-    <footer className="bg-deep-forest text-white">
-      <div className="container-site section-pad grid gap-12 md:grid-cols-[1.2fr_1fr_1fr]">
+    <footer className="border-t border-forest/20 bg-deep-forest text-white">
+      <div className="container-site grid gap-10 py-12 md:grid-cols-[1.35fr_1fr_1fr] md:gap-12 md:py-14 lg:gap-16">
         <div>
           <LogoMark tone="on-dark" />
-          <p className="mt-5 max-w-sm text-[0.95rem] leading-relaxed text-white/80">
+          <p className="mt-3 text-[0.78rem] font-semibold tracking-[0.1em] text-sage/90 uppercase">
+            Správa bytových domov
+          </p>
+          <p className="mt-4 max-w-sm text-[0.92rem] leading-relaxed text-white/75">
             {brand.legalName}. {brand.positioning}
           </p>
         </div>
 
         {footerNavGroups.map((group) => (
           <div key={group.title}>
-            <h2 className="text-sm font-semibold tracking-[0.06em] text-white/55 uppercase">
+            <h2 className="text-[0.72rem] font-semibold tracking-[0.12em] text-white/50 uppercase">
               {group.title}
             </h2>
-            <ul className="mt-4 space-y-3">
+            <ul className="mt-4 space-y-2.5">
               {group.items.map((item) => (
                 <li key={item.label}>
                   <PendingLink
                     label={item.label}
                     href={item.href}
                     status={item.status}
-                    className="text-[1.05rem] text-white/90 transition-colors hover:text-white"
-                    pendingClassName="text-[1.05rem] text-white/45"
+                    className="text-[0.98rem] text-white/88 transition-colors hover:text-white"
+                    pendingClassName="text-[0.98rem] text-white/40"
                   />
                 </li>
               ))}
@@ -37,30 +40,33 @@ export function SiteFooter() {
         ))}
       </div>
 
-      <div className="border-t border-white/15">
-        <div className="container-site flex flex-col gap-3 py-6 text-sm text-white/70 sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            {contact.addressFull}
-            <span className="mx-2 text-white/30" aria-hidden>
-              ·
+      <div className="border-t border-white/12">
+        <div className="container-site flex flex-col gap-3 py-5 text-[0.82rem] leading-relaxed text-white/65 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:py-6">
+          <p className="flex flex-col gap-1 sm:block">
+            <span>{contact.addressFull}</span>
+            <span className="hidden sm:inline">
+              <span className="mx-2 text-white/25" aria-hidden>
+                ·
+              </span>
             </span>
-            <a
-              href={contact.phoneHref}
-              className="hover:text-white"
-            >
-              {contact.phoneDisplay}
-            </a>
-            <span className="mx-2 text-white/30" aria-hidden>
-              ·
+            <span>
+              <a href={contact.phoneHref} className="transition-colors hover:text-white">
+                {contact.phoneDisplay}
+              </a>
+              <span className="mx-2 text-white/25" aria-hidden>
+                ·
+              </span>
+              <a
+                href={`mailto:${contact.email}`}
+                className="transition-colors hover:text-white"
+              >
+                {contact.email}
+              </a>
             </span>
-            <a
-              href={`mailto:${contact.email}`}
-              className="hover:text-white"
-            >
-              {contact.email}
-            </a>
           </p>
-          <p>© {new Date().getFullYear()} {brand.name}</p>
+          <p className="shrink-0 text-white/55">
+            © {new Date().getFullYear()} {brand.name}
+          </p>
         </div>
       </div>
     </footer>
