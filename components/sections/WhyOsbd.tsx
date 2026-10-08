@@ -141,7 +141,7 @@ export function WhyOsbd() {
 
   return (
     <section
-      className="relative bg-[#eff3ef] pt-[clamp(3.5rem,6vw,5rem)] pb-10 md:pb-12"
+      className="relative bg-transparent pt-[clamp(3.5rem,6vw,5rem)] pb-10 md:pb-12"
       aria-labelledby="why-osbd-heading"
     >
       <div className="relative container-site">

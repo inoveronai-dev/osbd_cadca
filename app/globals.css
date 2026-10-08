@@ -304,6 +304,15 @@
     }
   }
 
+  /* Shared sage atmosphere ribbon behind Why + Services */
+  .sage-atmosphere-motif {
+    z-index: 0;
+  }
+
+  .sage-atmosphere-motif svg {
+    filter: blur(0.4px);
+  }
+
   /* Why OSBD benefit flip cards */
   .why-flip--3d {
     perspective: 1200px;

@@ -17,7 +17,7 @@ export function Services() {
   return (
     <section
       id={services.id}
-      className="scroll-mt-24 bg-soft-sage pt-10 pb-[clamp(3.5rem,6vw,5rem)] md:pt-12"
+      className="scroll-mt-24 bg-transparent pt-10 pb-[clamp(3.5rem,6vw,5rem)] md:pt-12"
       aria-labelledby="services-heading"
     >
       <div className="container-site">

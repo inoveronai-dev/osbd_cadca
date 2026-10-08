@@ -1,3 +1,4 @@
+import { SageAtmosphere } from "@/components/layout/SageAtmosphere";
 import { About } from "@/components/sections/About";
 import { Contact } from "@/components/sections/Contact";
 import { Hero } from "@/components/sections/Hero";
@@ -16,8 +17,10 @@ export default function HomePage() {
       <Hero />
       <QuickAccess />
       <About />
-      <WhyOsbd />
-      <Services />
+      <SageAtmosphere>
+        <WhyOsbd />
+        <Services />
+      </SageAtmosphere>
       <ManagementOffer />
       <TrustStatement />
       <MainAdvantages />
