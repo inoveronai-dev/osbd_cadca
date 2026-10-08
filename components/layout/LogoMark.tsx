@@ -21,7 +21,7 @@ export function LogoMark({
       <Link
         href="/"
         className={cn(
-          "group inline-flex shrink-0 items-center focus-visible:outline-offset-4",
+          "group inline-flex shrink-0 items-center bg-transparent focus-visible:outline-offset-4",
           className,
         )}
         aria-label={`${brand.name} — úvodná stránka`}
@@ -30,16 +30,16 @@ export function LogoMark({
           src={
             onDark
               ? "/images/osbd-cadca-logo-on-dark.png"
-              : "/images/osbd-cadca-logo-transparent.png"
+              : "/images/osbd-cadca-logo-header.png"
           }
           alt={brand.name}
-          width={264}
-          height={141}
+          width={1774}
+          height={887}
           priority={!onDark}
           className={cn(
-            "h-auto w-[108px] object-contain object-left sm:w-[124px] md:w-[132px] lg:w-[140px]",
+            "h-auto w-[118px] bg-transparent object-contain object-left sm:w-[136px] md:w-[148px] lg:w-[158px]",
             !onDark &&
-              "drop-shadow-[0_1px_1px_rgba(7,35,26,0.12)]",
+              "drop-shadow-[0_1px_2px_rgba(7,35,26,0.18)]",
           )}
         />
       </Link>
