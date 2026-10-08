@@ -5,7 +5,36 @@ import { Reveal } from "@/components/motion/Reveal";
 import { mainAdvantagesSource } from "@/lib/content/osbd-source";
 import { cn } from "@/lib/utils";
 
-type Point = { x: number; y: number; side: "left" | "right" };
+type Point = { x: number; y: number };
+
+/** Continuous rounded cord: each segment bows through the center corridor. */
+function buildCordPath(points: Point[], centerX: number) {
+  if (points.length < 2) return "";
+
+  let d = `M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)}`;
+
+  for (let i = 1; i < points.length; i++) {
+    const a = points[i - 1];
+    const b = points[i];
+    // Soft cubic through center — feels like one rounded cord, not a spine+branches
+    d += ` C ${centerX.toFixed(1)} ${a.y.toFixed(1)}, ${centerX.toFixed(1)} ${b.y.toFixed(1)}, ${b.x.toFixed(1)} ${b.y.toFixed(1)}`;
+  }
+
+  return d;
+}
+
+function buildMobileCordPath(points: Point[]) {
+  if (points.length < 2) return "";
+  const x = 10;
+  let d = `M ${x} ${points[0].y.toFixed(1)}`;
+  for (let i = 1; i < points.length; i++) {
+    const a = points[i - 1];
+    const b = points[i];
+    const midY = (a.y + b.y) / 2;
+    d += ` C ${x} ${midY.toFixed(1)}, ${x} ${midY.toFixed(1)}, ${x} ${b.y.toFixed(1)}`;
+  }
+  return d;
+}
 
 export function MainAdvantages() {
   const listRef = useRef<HTMLUListElement>(null);
@@ -41,7 +70,7 @@ export function MainAdvantages() {
             ? rect.right - listRect.left
             : rect.left - listRect.left
           : rect.left - listRect.left + 2;
-        next.push({ x, y, side });
+        next.push({ x, y });
       });
 
       setPoints(next);
@@ -64,8 +93,9 @@ export function MainAdvantages() {
   }, []);
 
   const centerX = size.w / 2;
-  const spineTop = points.length ? points[0].y : 0;
-  const spineBottom = points.length ? points[points.length - 1].y : 0;
+  const path = isDesktop
+    ? buildCordPath(points, centerX)
+    : buildMobileCordPath(points);
 
   return (
     <section
@@ -97,7 +127,7 @@ export function MainAdvantages() {
       </div>
 
       <div className="relative z-10 container-site flex justify-center">
-        <div className="w-full max-w-[54rem]">
+        <div className="w-full max-w-[56rem]">
           <Reveal>
             <h2
               id="main-advantages-heading"
@@ -108,7 +138,7 @@ export function MainAdvantages() {
           </Reveal>
 
           <div className="relative mt-8 sm:mt-9 lg:mt-10">
-            {size.w > 0 && points.length > 1 ? (
+            {size.w > 0 && path ? (
               <svg
                 className="pointer-events-none absolute inset-0 z-0"
                 width={size.w}
@@ -116,60 +146,18 @@ export function MainAdvantages() {
                 viewBox={`0 0 ${size.w} ${size.h}`}
                 aria-hidden
               >
-                {isDesktop ? (
-                  <>
-                    <path
-                      d={`M ${centerX} ${spineTop} L ${centerX} ${spineBottom}`}
-                      fill="none"
-                      stroke="rgba(47, 118, 91, 0.36)"
-                      strokeWidth="1.75"
-                      strokeLinecap="round"
-                    />
-                    {points.map((point, index) => (
-                      <path
-                        key={index}
-                        d={`M ${centerX} ${point.y} L ${point.x} ${point.y}`}
-                        fill="none"
-                        stroke="rgba(47, 118, 91, 0.36)"
-                        strokeWidth="1.75"
-                        strokeLinecap="round"
-                      />
-                    ))}
-                    {points.map((point, index) => (
-                      <circle
-                        key={`n-${index}`}
-                        cx={centerX}
-                        cy={point.y}
-                        r="2"
-                        fill="rgba(47, 118, 91, 0.4)"
-                      />
-                    ))}
-                  </>
-                ) : (
-                  <>
-                    <path
-                      d={`M 8 ${spineTop} L 8 ${spineBottom}`}
-                      fill="none"
-                      stroke="rgba(47, 118, 91, 0.34)"
-                      strokeWidth="1.75"
-                      strokeLinecap="round"
-                    />
-                    {points.map((point, index) => (
-                      <path
-                        key={index}
-                        d={`M 8 ${point.y} L ${Math.max(point.x, 8)} ${point.y}`}
-                        fill="none"
-                        stroke="rgba(47, 118, 91, 0.34)"
-                        strokeWidth="1.75"
-                        strokeLinecap="round"
-                      />
-                    ))}
-                  </>
-                )}
+                <path
+                  d={path}
+                  fill="none"
+                  stroke="rgba(47, 118, 91, 0.4)"
+                  strokeWidth="1.85"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
             ) : null}
 
-            <ul ref={listRef} className="relative z-[1] flex flex-col gap-5 sm:gap-0">
+            <ul ref={listRef} className="relative z-[1] flex flex-col gap-6 sm:gap-0">
               {mainAdvantagesSource.items.map((item, index) => {
                 const isLeft = index % 2 === 0;
 
@@ -181,14 +169,15 @@ export function MainAdvantages() {
                     className={cn(
                       "flex w-full",
                       isLeft ? "sm:justify-start" : "sm:justify-end",
-                      index > 0 && "sm:-mt-6 md:-mt-7 lg:-mt-8",
+                      // Subtle cascade — light stagger, enough air so same-side cards (e.g. 06 & 08) stay distinct
+                      index > 0 && "sm:mt-5 md:mt-5 lg:mt-6",
                     )}
                   >
                     <article
                       ref={(node) => {
                         itemRefs.current[index] = node;
                       }}
-                      className="group advantage-row relative flex w-full gap-3 overflow-hidden rounded-[0.5rem] border border-forest/10 bg-white/90 px-3.5 py-3 shadow-[0_4px_16px_-12px_rgba(15,74,55,0.18)] transition-[transform,border-color,background-color,box-shadow] duration-300 hover:-translate-y-0.5 hover:border-forest/28 hover:bg-white hover:shadow-[0_12px_30px_-14px_rgba(15,74,55,0.28),inset_0_0_0_1px_rgba(47,118,91,0.06)] sm:w-[calc(50%-1.5rem)] sm:gap-3.5 sm:px-4 sm:py-3.5"
+                      className="group advantage-row relative flex w-full gap-3 overflow-hidden rounded-[0.5rem] border border-forest/10 bg-white/90 px-3.5 py-3 shadow-[0_4px_16px_-12px_rgba(15,74,55,0.18)] transition-[transform,border-color,background-color,box-shadow] duration-300 hover:-translate-y-0.5 hover:border-forest/28 hover:bg-white hover:shadow-[0_12px_30px_-14px_rgba(15,74,55,0.28),inset_0_0_0_1px_rgba(47,118,91,0.06)] sm:w-[calc(50%-2.25rem)] sm:gap-3.5 sm:px-4 sm:py-3.5"
                     >
                       <span
                         className="absolute inset-y-2.5 left-0 w-[3.5px] rounded-full bg-forest/45 transition-[background-color,box-shadow,width,opacity] duration-300 group-hover:w-[4px] group-hover:bg-green group-hover:shadow-[0_0_14px_rgba(47,118,91,0.55),0_0_4px_rgba(47,118,91,0.4)]"
