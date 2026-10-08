@@ -304,6 +304,47 @@
     }
   }
 
+  /* Why OSBD benefit flip cards */
+  .why-flip--3d {
+    perspective: 1200px;
+  }
+
+  .why-flip--3d .why-flip-inner {
+    transform-style: preserve-3d;
+    transition: transform 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+
+  .why-flip--3d .why-flip-inner.is-flipped {
+    transform: rotateY(180deg);
+  }
+
+  .why-flip--3d .why-flip-face {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .why-flip--3d .why-flip-back {
+    transform: rotateY(180deg);
+  }
+
+  /* Reduced-motion / non-3d: cross-fade */
+  .why-flip:not(.why-flip--3d) .why-flip-front,
+  .why-flip:not(.why-flip--3d) .why-flip-back {
+    transition: opacity 0.35s ease;
+  }
+
+  .why-flip:not(.why-flip--3d) .why-flip-back {
+    opacity: 0;
+  }
+
+  .why-flip:not(.why-flip--3d) .why-flip-inner.is-flipped .why-flip-front {
+    opacity: 0;
+  }
+
+  .why-flip:not(.why-flip--3d) .why-flip-inner.is-flipped .why-flip-back {
+    opacity: 1;
+  }
+
   .eyebrow {
     font-size: 0.8125rem;
     font-weight: 650;
@@ -415,6 +456,32 @@
 
   .trust-statement-bg {
     background-attachment: scroll !important;
+  }
+
+  .why-flip--3d .why-flip-inner,
+  .why-flip--3d .why-flip-inner.is-flipped {
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .why-flip--3d .why-flip-front,
+  .why-flip--3d .why-flip-back {
+    backface-visibility: visible !important;
+    -webkit-backface-visibility: visible !important;
+    transform: none !important;
+    transition: opacity 0.35s ease !important;
+  }
+
+  .why-flip--3d .why-flip-back {
+    opacity: 0;
+  }
+
+  .why-flip--3d .why-flip-inner.is-flipped .why-flip-front {
+    opacity: 0;
+  }
+
+  .why-flip--3d .why-flip-inner.is-flipped .why-flip-back {
+    opacity: 1;
   }
 
   .group:hover .img-zoom,
