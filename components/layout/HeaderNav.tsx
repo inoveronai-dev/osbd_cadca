@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { ChevronDown } from "lucide-react";
+import { AppLink } from "@/components/ui/AppLink";
 import { primaryNav, type NavItem, type PrimaryNavItem } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
 
@@ -46,13 +47,13 @@ function NavChildList({
         return (
           <li key={child.label}>
             {active ? (
-              <a
+              <AppLink
                 href={resolveHref(child.href!, pathname)}
                 onClick={onSelect}
                 className="block px-3.5 py-2 text-[0.9rem] text-ink transition-colors hover:bg-sage hover:text-forest"
               >
                 {child.label}
-              </a>
+              </AppLink>
             ) : (
               <span
                 className="block cursor-default px-3.5 py-2 text-[0.9rem] text-ink/70"
@@ -116,7 +117,7 @@ function DesktopDropdown({
       data-open={pinned ? "true" : undefined}
     >
       {triggerNavigates ? (
-        <a
+        <AppLink
           href={resolveHref(item.href!, pathname)}
           className={triggerClass}
           aria-haspopup="true"
@@ -128,7 +129,7 @@ function DesktopDropdown({
             className="size-3.5 opacity-80 transition-transform group-hover/nav:rotate-180 group-focus-within/nav:rotate-180 [[data-open=true]_&]:rotate-180"
             aria-hidden
           />
-        </a>
+        </AppLink>
       ) : (
         <button
           type="button"
@@ -194,7 +195,7 @@ function DesktopLink({
   }
 
   return (
-    <a
+    <AppLink
       href={resolveHref(item.href!, pathname)}
       aria-current={active ? "page" : undefined}
       className={cn(
@@ -209,7 +210,7 @@ function DesktopLink({
       )}
     >
       {item.label}
-    </a>
+    </AppLink>
   );
 }
 
@@ -267,7 +268,7 @@ export function MobileHeaderNav({ onNavigate }: { onNavigate: () => void }) {
           }
 
           return (
-            <a
+            <AppLink
               key={item.label}
               href={resolveHref(item.href!, pathname)}
               onClick={onNavigate}
@@ -278,7 +279,7 @@ export function MobileHeaderNav({ onNavigate }: { onNavigate: () => void }) {
               )}
             >
               {item.label}
-            </a>
+            </AppLink>
           );
         }
 
@@ -286,13 +287,13 @@ export function MobileHeaderNav({ onNavigate }: { onNavigate: () => void }) {
           <div key={item.label} className="rounded-md">
             <div className="flex min-h-14 items-stretch">
               {canNavigate(item) ? (
-                <a
+                <AppLink
                   href={resolveHref(item.href!, pathname)}
                   onClick={onNavigate}
                   className="flex flex-1 items-center rounded-md px-4 py-3 text-lg font-medium text-ink hover:bg-sage"
                 >
                   {item.label}
-                </a>
+                </AppLink>
               ) : (
                 <button
                   type="button"
@@ -335,13 +336,13 @@ export function MobileHeaderNav({ onNavigate }: { onNavigate: () => void }) {
                   return (
                     <li key={child.label}>
                       {childActive ? (
-                        <a
+                        <AppLink
                           href={resolveHref(child.href!, pathname)}
                           onClick={onNavigate}
                           className="block rounded-md px-3 py-2.5 text-[1.02rem] text-ink hover:bg-sage hover:text-forest"
                         >
                           {child.label}
-                        </a>
+                        </AppLink>
                       ) : (
                         <span
                           className="block rounded-md px-3 py-2.5 text-[1.02rem] text-ink/60"

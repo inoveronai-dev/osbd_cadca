@@ -10,10 +10,9 @@ export function HashScroll() {
       if (!id) return;
       const el = document.getElementById(id);
       if (!el) return;
-      // Instant scroll after paint so the fixed header offset (scroll-margin) applies reliably.
-      window.setTimeout(() => {
+      requestAnimationFrame(() => {
         el.scrollIntoView({ behavior: "instant", block: "start" });
-      }, 50);
+      });
     };
 
     scrollToHash();

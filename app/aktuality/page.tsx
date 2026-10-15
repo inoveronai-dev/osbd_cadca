@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { ArrowUpRight } from "lucide-react";
-import { Reveal } from "@/components/motion/Reveal";
 import { noticesSection } from "@/lib/content/home";
 
 export const metadata: Metadata = {
@@ -13,19 +12,17 @@ export default function AktualityPage() {
     <main id="obsah" className="bg-ivory">
       <section className="border-b border-forest/8 pt-[calc(var(--header-h)+2rem)] pb-12 md:pb-14">
         <div className="container-site">
-          <Reveal>
-            <p className="eyebrow text-forest">OSBD Čadca</p>
-            <h1 className="mt-2 font-semibold tracking-[-0.02em] text-forest text-[clamp(2rem,3.2vw,2.75rem)] leading-[1.12]">
-              {noticesSection.headline}
-            </h1>
-            <p className="mt-3.5 max-w-xl text-[0.98rem] leading-relaxed text-ink-muted">
-              {noticesSection.support}
-            </p>
-          </Reveal>
+          <p className="eyebrow text-forest">OSBD Čadca</p>
+          <h1 className="mt-2 font-semibold tracking-[-0.02em] text-forest text-[clamp(2rem,3.2vw,2.75rem)] leading-[1.12]">
+            {noticesSection.headline}
+          </h1>
+          <p className="mt-3.5 max-w-xl text-[0.98rem] leading-relaxed text-ink-muted">
+            {noticesSection.support}
+          </p>
 
           <ul className="mt-10 grid gap-3 sm:mt-12 sm:grid-cols-2 sm:gap-3.5">
-            {noticesSection.items.map((item, index) => (
-              <Reveal key={item.id} as="li" delayMs={Math.min(index * 30, 180)}>
+            {noticesSection.items.map((item) => (
+              <li key={item.id}>
                 <a
                   href={item.href}
                   target="_blank"
@@ -45,7 +42,7 @@ export default function AktualityPage() {
                     aria-hidden
                   />
                 </a>
-              </Reveal>
+              </li>
             ))}
           </ul>
         </div>

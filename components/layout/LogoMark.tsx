@@ -8,12 +8,15 @@ type LogoMarkProps = {
   tone?: "light" | "dark" | "on-dark";
   /** Official raster logo for the header; wordmark retained elsewhere */
   variant?: "official" | "wordmark";
+  /** Only the homepage hero header should priority-load the logo. */
+  priority?: boolean;
 };
 
 export function LogoMark({
   className,
   tone = "dark",
   variant = "wordmark",
+  priority = false,
 }: LogoMarkProps) {
   if (variant === "official") {
     const onDark = tone === "on-dark" || tone === "light";
@@ -35,7 +38,8 @@ export function LogoMark({
           alt={brand.name}
           width={1774}
           height={887}
-          priority={!onDark}
+          priority={priority}
+          sizes="(max-width: 640px) 118px, (max-width: 768px) 136px, (max-width: 1024px) 148px, 158px"
           className={cn(
             "h-auto w-[118px] bg-transparent object-contain object-left sm:w-[136px] md:w-[148px] lg:w-[158px]",
             !onDark &&

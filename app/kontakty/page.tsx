@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { HashScroll } from "@/components/navigation/HashScroll";
-import { Reveal } from "@/components/motion/Reveal";
+import { ContactOfficeHoursCompact } from "@/components/sections/ContactOfficeHoursCompact";
+import { ContactPageHero } from "@/components/sections/ContactPageHero";
 import { FaultContacts } from "@/components/sections/FaultContacts";
 import { LocationMap } from "@/components/sections/LocationMap";
 import { StaffDirectory } from "@/components/sections/StaffDirectory";
@@ -15,26 +16,19 @@ export default function KontaktyPage() {
   return (
     <main id="obsah" className="bg-ivory">
       <HashScroll />
-      <section className="border-b border-forest/8 pt-[calc(var(--header-h)+2rem)] pb-10 md:pb-12">
-        <div className="container-site">
-          <Reveal>
-            <p className="eyebrow text-forest">OSBD Čadca</p>
-            <h1 className="mt-2 font-semibold tracking-[-0.02em] text-forest text-[clamp(2rem,3.2vw,2.75rem)] leading-[1.12]">
-              {contactSection.headline}
-            </h1>
-            <p className="mt-3.5 max-w-xl text-[0.98rem] leading-relaxed text-ink-muted">
-              {contactSection.support}
-            </p>
-          </Reveal>
+      <ContactPageHero />
+      <ContactOfficeHoursCompact />
 
-          <div className="mt-10 space-y-12 sm:mt-12 sm:space-y-14">
-            <StaffDirectory />
+      <section className="border-b border-forest/8 pt-9 pb-5 sm:pt-10 sm:pb-6 md:pt-11 md:pb-7">
+        <div className="container-site space-y-11 md:space-y-14">
+          <StaffDirectory />
+          <div className="border-t border-forest/10 pt-10 md:pt-12">
             <FaultContacts />
           </div>
         </div>
       </section>
 
-      <LocationMap />
+      <LocationMap className="border-t border-forest/8 bg-warm-white pt-6 pb-[clamp(3.25rem,6vw,4.75rem)] sm:pt-7 md:pt-8" />
     </main>
   );
 }

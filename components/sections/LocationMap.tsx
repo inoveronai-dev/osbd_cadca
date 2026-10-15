@@ -1,5 +1,5 @@
 import { ExternalLink } from "lucide-react";
-import { Reveal } from "@/components/motion/Reveal";
+import { LazyMapEmbed } from "@/components/sections/LazyMapEmbed";
 import { contact } from "@/lib/content/contact";
 
 const embedSrc = `https://maps.google.com/maps?q=${encodeURIComponent(contact.mapsEmbedQuery)}&z=16&output=embed`;
@@ -18,24 +18,19 @@ export function LocationMap({ className }: LocationMapProps) {
       aria-labelledby="location-heading"
     >
       <div className="container-site">
-        <Reveal>
-          <h2
-            id="location-heading"
-            className="text-center font-semibold tracking-[-0.02em] text-forest text-[clamp(1.8rem,2.6vw,2.35rem)] leading-[1.16]"
-          >
-            Kde nás nájdete
-          </h2>
-        </Reveal>
+        <h2
+          id="location-heading"
+          className="text-center font-semibold tracking-[-0.02em] text-forest text-[clamp(1.8rem,2.6vw,2.35rem)] leading-[1.16]"
+        >
+          Kde nás nájdete
+        </h2>
 
-        <Reveal delayMs={40} className="mt-7 sm:mt-8">
+        <div className="mt-7 sm:mt-8">
           <div className="overflow-hidden rounded-[var(--radius)] border border-forest/10 bg-white">
-            <iframe
-              title={`Mapa — ${contact.orgName}, ${contact.addressFull}`}
+            <LazyMapEmbed
               src={embedSrc}
-              className="block h-[340px] w-full border-0 md:h-[480px]"
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              allowFullScreen
+              title={`Mapa — ${contact.orgName}, ${contact.addressFull}`}
+              className="h-[340px] w-full md:h-[480px]"
             />
           </div>
           <div className="mt-4 flex justify-center">
@@ -49,7 +44,7 @@ export function LocationMap({ className }: LocationMapProps) {
               <ExternalLink className="size-3.5 opacity-70" aria-hidden />
             </a>
           </div>
-        </Reveal>
+        </div>
       </div>
     </section>
   );

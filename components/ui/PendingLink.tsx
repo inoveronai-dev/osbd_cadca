@@ -1,3 +1,4 @@
+import { AppLink } from "@/components/ui/AppLink";
 import { cn } from "@/lib/utils";
 import type { NavStatus } from "@/lib/navigation";
 
@@ -54,8 +55,8 @@ export function PendingLink({
   }
 
   return (
-    <a href={href} className={className} onClick={onNavigate}>
+    <AppLink href={href} className={className} onClick={onNavigate}>
       {label}
-    </a>
+    </AppLink>
   );
 }

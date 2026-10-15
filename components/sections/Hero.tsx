@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { CountUp } from "@/components/motion/CountUp";
 import { Reveal } from "@/components/motion/Reveal";
+import { AppLink } from "@/components/ui/AppLink";
 import { hero } from "@/lib/content/home";
 
 export function Hero() {
@@ -74,18 +75,18 @@ export function Hero() {
 
             <Reveal delayMs={190}>
               <div className="mt-7 flex flex-col gap-3 sm:mt-9 sm:flex-row sm:items-center">
-                <a
+                <AppLink
                   href={hero.primaryCta.href}
                   className="inline-flex min-h-12 items-center justify-center rounded-[var(--radius)] bg-[#f7f7f2] px-7 text-base font-semibold text-forest transition-[transform,background-color] duration-200 hover:-translate-y-px hover:bg-sage"
                 >
                   {hero.primaryCta.label}
-                </a>
-                <a
+                </AppLink>
+                <AppLink
                   href={hero.secondaryCta.href}
                   className="inline-flex min-h-12 items-center justify-center rounded-[var(--radius)] border border-white/40 bg-transparent px-7 text-base font-semibold text-white transition-[transform,background-color,border-color] duration-200 hover:-translate-y-px hover:border-white/65 hover:bg-white/10"
                 >
                   {hero.secondaryCta.label}
-                </a>
+                </AppLink>
               </div>
             </Reveal>
           </div>

@@ -1,5 +1,4 @@
 import { Mail, MapPin, Phone } from "lucide-react";
-import { Reveal } from "@/components/motion/Reveal";
 import { contact, telHref } from "@/lib/content/contact";
 import { staffDirectory } from "@/lib/content/staff-directory";
 import { cn } from "@/lib/utils";
@@ -31,18 +30,16 @@ export function StaffDirectory() {
       className="scroll-mt-[calc(var(--header-h)+1rem)]"
       aria-labelledby="staff-directory-heading"
     >
-      <Reveal>
-        <h2
-          id="staff-directory-heading"
-          className="text-[1.35rem] font-semibold tracking-tight text-forest sm:text-[1.5rem]"
-        >
-          {staffDirectory.headline}
-        </h2>
-      </Reveal>
+      <h2
+        id="staff-directory-heading"
+        className="text-[1.35rem] font-semibold tracking-tight text-forest sm:text-[1.5rem]"
+      >
+        {staffDirectory.headline}
+      </h2>
 
-      <Reveal delayMs={40} className="mt-5">
+      <div className="mt-5 sm:mt-6">
         <div className="rounded-[0.5rem] border border-forest/10 bg-white px-5 py-5 sm:px-7 sm:py-6">
-          <div className="rounded-[0.375rem] border border-forest/8 bg-soft-sage/40 px-4 py-4 sm:px-5">
+          <div className="rounded-[0.375rem] border border-forest/10 bg-soft-sage/35 px-4 py-4 sm:px-5">
             <p className="text-[1.02rem] font-semibold text-ink">
               {contact.orgName}
             </p>
@@ -121,7 +118,7 @@ export function StaffDirectory() {
             ))}
           </div>
         </div>
-      </Reveal>
+      </div>
     </section>
   );
 }

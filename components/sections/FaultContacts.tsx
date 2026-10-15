@@ -6,7 +6,6 @@ import {
   Waves,
   Zap,
 } from "lucide-react";
-import { Reveal } from "@/components/motion/Reveal";
 import { telHref } from "@/lib/content/contact";
 import { faultContacts } from "@/lib/content/fault-contacts";
 import { cn } from "@/lib/utils";
@@ -29,26 +28,22 @@ export function FaultContacts() {
       className="scroll-mt-[calc(var(--header-h)+1rem)]"
       aria-labelledby="fault-contacts-heading"
     >
-      <Reveal>
-        <h2
-          id="fault-contacts-heading"
-          className="text-[1.35rem] font-semibold tracking-tight text-forest sm:text-[1.5rem]"
-        >
-          {faultContacts.headline}
-        </h2>
-        <p className="mt-2 max-w-2xl text-[0.95rem] leading-relaxed text-ink-muted">
-          {faultContacts.support}
-        </p>
-      </Reveal>
+      <h2
+        id="fault-contacts-heading"
+        className="text-[1.35rem] font-semibold tracking-tight text-forest sm:text-[1.5rem]"
+      >
+        {faultContacts.headline}
+      </h2>
+      <p className="mt-2.5 max-w-2xl text-[0.95rem] leading-relaxed text-ink-muted">
+        {faultContacts.support}
+      </p>
 
-      <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:gap-3.5">
-        {faultContacts.blocks.map((block, index) => {
+      <ul className="mt-6 grid gap-3 sm:mt-7 sm:grid-cols-2 lg:gap-3.5">
+        {faultContacts.blocks.map((block) => {
           const Icon = faultIcons[block.icon];
           return (
-            <Reveal
+            <li
               key={block.id}
-              as="li"
-              delayMs={Math.min(index * 25, 150)}
               className={cn(
                 "rounded-[0.5rem] border px-4 py-4 sm:px-5 sm:py-4.5",
                 block.primary
@@ -170,7 +165,7 @@ export function FaultContacts() {
                   ) : null}
                 </div>
               </div>
-            </Reveal>
+            </li>
           );
         })}
       </ul>

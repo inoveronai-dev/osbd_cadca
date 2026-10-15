@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { Reveal } from "@/components/motion/Reveal";
 import { OfficeHoursPanel } from "@/components/sections/OfficeHoursPanel";
+import { AppLink } from "@/components/ui/AppLink";
 import { quickAccess } from "@/lib/content/home";
 import { cn } from "@/lib/utils";
 
@@ -108,9 +109,9 @@ export function QuickAccess() {
                       {content}
                     </div>
                   ) : (
-                    <a href={item.href} className={shared}>
+                    <AppLink href={item.href} className={shared}>
                       {content}
-                    </a>
+                    </AppLink>
                   )}
                 </Reveal>
               );
