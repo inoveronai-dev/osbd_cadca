@@ -48,6 +48,7 @@ export function QuickAccess() {
         </Reveal>
 
         <div className="mt-8 grid items-start gap-5 lg:mt-9 lg:grid-cols-[minmax(0,1.65fr)_minmax(0,1fr)] lg:gap-7 xl:gap-8">
+          <div className="lg:sticky lg:top-[calc(var(--header-h)+1.75rem)] lg:self-start">
           <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-3">
             {quickAccess.items.map((item, index) => {
               const Icon = icons[item.icon];
@@ -115,6 +116,7 @@ export function QuickAccess() {
               );
             })}
           </ul>
+          </div>
 
           <Reveal delayMs={80}>
             <OfficeHoursPanel compact />

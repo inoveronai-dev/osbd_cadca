@@ -1,7 +1,7 @@
 import { SageAtmosphere } from "@/components/layout/SageAtmosphere";
 import { About } from "@/components/sections/About";
-import { Contact } from "@/components/sections/Contact";
 import { Hero } from "@/components/sections/Hero";
+import { LocationMap } from "@/components/sections/LocationMap";
 import { MainAdvantages } from "@/components/sections/MainAdvantages";
 import { ManagementOffer } from "@/components/sections/ManagementOffer";
 import { QuickAccess } from "@/components/sections/QuickAccess";
@@ -22,7 +22,7 @@ export default function HomePage() {
       <ManagementOffer />
       <TrustStatement />
       <MainAdvantages />
-      <Contact />
+      <LocationMap />
     </main>
   );
 }

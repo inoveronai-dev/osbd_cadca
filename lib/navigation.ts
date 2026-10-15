@@ -44,7 +44,7 @@ export const primaryNav: PrimaryNavItem[] = [
     ],
   },
   { label: "Aktuality", href: "/aktuality", status: "ready" },
-  { label: "Kontakty", href: "#kontakt", status: "anchor" },
+  { label: "Kontakty", href: "/kontakty", status: "ready" },
 ];
 
 export const footerNavGroups: { title: string; items: NavItem[] }[] = [
@@ -61,7 +61,7 @@ export const footerNavGroups: { title: string; items: NavItem[] }[] = [
     items: [
       { label: "Dokumenty", href: null, status: "pending" },
       { label: "Aktuality", href: "/aktuality", status: "ready" },
-      { label: "Kontakty", href: "#kontakt", status: "anchor" },
+      { label: "Kontakty", href: "/kontakty", status: "ready" },
     ],
   },
 ];

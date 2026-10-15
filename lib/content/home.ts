@@ -19,7 +19,7 @@ export const hero = {
   },
   secondaryCta: {
     label: "Kontaktovať nás",
-    href: "#kontakt",
+    href: "/kontakty",
   },
   proof: [
     { value: 60, suffix: "+", label: "rokov skúseností" },
@@ -61,14 +61,14 @@ export const quickAccess = {
       id: "poruchy",
       title: "Kontakty na hlásenie závad a porúch",
       description: "Havárie, poruchy a núdzové kontakty",
-      href: "#poruchy-zavady",
+      href: "/kontakty#poruchy-zavady",
       icon: "wrench" as const,
     },
     {
       id: "kontakty-druzstva",
       title: "Kontakty družstva",
       description: "Nájdite správny kontakt podľa oddelenia",
-      href: "#kontakty-druzstva",
+      href: "/kontakty#kontakty-druzstva",
       icon: "phone" as const,
     },
   ],
