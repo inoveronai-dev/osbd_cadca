@@ -23,9 +23,9 @@ export const primaryNav: PrimaryNavItem[] = [
     status: "anchor",
     children: [
       { label: "O nás", href: "#o-nas", status: "anchor" },
-      { label: "História", href: null, status: "pending" },
-      { label: "Orgány družstva", href: null, status: "pending" },
-      { label: "Stanovy OSBD", href: null, status: "pending" },
+      { label: "História", href: "/historia", status: "ready" },
+      { label: "Orgány družstva", href: "/organy-druzstva", status: "ready" },
+      { label: "Stanovy OSBD", href: "/stanovy-osbd", status: "ready" },
     ],
   },
   {
@@ -36,11 +36,19 @@ export const primaryNav: PrimaryNavItem[] = [
   {
     label: "Pre vlastníkov",
     href: null,
-    status: "pending",
+    status: "ready",
     children: [
-      { label: "Dokumenty, tlačivá", href: null, status: "pending" },
-      { label: "Domový poriadok", href: null, status: "pending" },
-      { label: "Káblová TV a internet", href: null, status: "pending" },
+      {
+        label: "Dokumenty a tlačivá",
+        href: "/dokumenty-tlaciva",
+        status: "ready",
+      },
+      { label: "Domový poriadok", href: "/domovy-poriadok", status: "ready" },
+      {
+        label: "Káblová TV a internet",
+        href: "/kablova-tv-internet",
+        status: "ready",
+      },
     ],
   },
   { label: "Aktuality", href: "/aktuality", status: "ready" },
@@ -52,15 +60,26 @@ export const footerNavGroups: { title: string; items: NavItem[] }[] = [
     title: "O spoločnosti",
     items: [
       { label: "O nás", href: "#o-nas", status: "anchor" },
-      { label: "Správa bytových domov", href: "#sprava", status: "anchor" },
+      { label: "História", href: "/historia", status: "ready" },
+      { label: "Orgány družstva", href: "/organy-druzstva", status: "ready" },
+      { label: "Stanovy OSBD", href: "/stanovy-osbd", status: "ready" },
       { label: "Aktuality", href: "/aktuality", status: "ready" },
     ],
   },
   {
     title: "Pre vlastníkov",
     items: [
-      { label: "Dokumenty", href: null, status: "pending" },
-      { label: "Aktuality", href: "/aktuality", status: "ready" },
+      {
+        label: "Dokumenty a tlačivá",
+        href: "/dokumenty-tlaciva",
+        status: "ready",
+      },
+      { label: "Domový poriadok", href: "/domovy-poriadok", status: "ready" },
+      {
+        label: "Káblová TV a internet",
+        href: "/kablova-tv-internet",
+        status: "ready",
+      },
       { label: "Kontakty", href: "/kontakty", status: "ready" },
     ],
   },

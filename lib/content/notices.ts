@@ -1,65 +1,109 @@
 /**
- * Latest articles for the homepage carousel.
- * Titles and URLs are locked to the live OSBD Čadca site.
- * Do not invent publication dates.
+ * Aktuality content hosted on this site.
+ * PDF notices link directly to PDF files.
+ * Text notices expand on /aktuality — never send visitors to old WordPress article pages.
+ * Do not invent missing notices, dates, or body copy.
  */
-export type Notice = {
-  id: string;
+
+export type NoticeAttachment = {
   title: string;
   href: string;
 };
 
+export type NoticePdf = {
+  id: string;
+  kind: "pdf";
+  title: string;
+  /** ISO date (YYYY-MM-DD) from the published post. */
+  publishedAt: string;
+  pdfHref: string;
+};
+
+export type NoticeArticle = {
+  id: string;
+  kind: "article";
+  title: string;
+  publishedAt: string;
+  /** Exact body paragraphs for on-page expand. */
+  body: string[];
+  attachments?: NoticeAttachment[];
+  /** When true, known phone numbers in body become tel: links. */
+  linkifyPhones?: boolean;
+};
+
+export type Notice = NoticePdf | NoticeArticle;
+
 export const latestNotices: Notice[] = [
   {
     id: "elektricke-zariadenia",
+    kind: "pdf",
     title:
       "Zmena dodávateľa odborných prehliadok a odborných skúšok elektrických zariadení",
-    href: "https://www.osbdcadca.sk/oznam-zmena-dodavatela-odbornych-prehliadok-a-odbornych-skusok-elektrickych-zariadeni/",
+    publishedAt: "2026-07-01",
+    pdfHref:
+      "https://osbdcadca.sk/wp-content/uploads/2026/07/Ozn%C3%A1menie-o-zmene-dod%C3%A1vate%C4%BEa-odborn%C3%BDch-prehliadok-a-odobrn%C3%BDch-sk%C3%BA%C5%A1ok-elektrick%C3%BDch-zariaden%C3%AD.pdf",
   },
   {
     id: "energopomoc",
-    title: "ENERGOPOMOC",
-    href: "https://www.osbdcadca.sk/oznam-energopomoc/",
+    kind: "pdf",
+    title: "ENERGOPOMOC r. 2026",
+    publishedAt: "2026-02-08",
+    pdfHref:
+      "https://osbdcadca.sk/wp-content/uploads/2026/07/Oznam-energopomoc.pdf",
   },
   {
     id: "vodne-stocne-2026",
+    kind: "pdf",
     title:
       "Zmena ceny vodného a stočného od 05. 01. 2026 – SEVAK, a.s. Žilina",
-    href: "https://www.osbdcadca.sk/oznam-zmena-ceny-vody-od-05-01-2026/",
-  },
-  {
-    id: "vodne-stocne-do-2026",
-    title: "Cena vodného a stočného do 04. 01. 2026 – SEVAK, a.s. Žilina",
-    href: "https://www.osbdcadca.sk/oznam-o-zmene-ceny-vody/",
+    publishedAt: "2026-02-07",
+    pdfHref:
+      "https://osbdcadca.sk/wp-content/uploads/2026/07/Ozn%C3%A1menie-o-zmene-ceny-od-05.-01.-2026.pdf",
   },
   {
     id: "cena-tepla-2025-2026",
+    kind: "article",
     title: "Jednozložková cena tepla roky 2025, 2026",
-    href: "https://www.osbdcadca.sk/oznam-jednozlozkova-cena-tepla-roky-2025-2026/",
-  },
-  {
-    id: "dph-zmena",
-    title: "ZMENA ZÁKLADNEJ SADZBY DANE Z PRIDANEJ HODNOTY (DPH)",
-    href: "https://www.osbdcadca.sk/oznam-o-zmene-zakladnej-sadzby-dane-z-pridanej-hodnoty-dph/",
-  },
-  {
-    id: "vykurovanie",
-    title: "VEĽKÉ ZMENY PRI VYKUROVANÍ",
-    href: "https://www.osbdcadca.sk/velke-zmeny-pri-vykurovani-2/",
-  },
-  {
-    id: "ochrana-udajov",
-    title: "OCHRANA OSOBNÝCH ÚDAJOV",
-    href: "https://www.osbdcadca.sk/ochrana-osobnych-udajov/",
-  },
-  {
-    id: "zmluvy-sprava",
-    title: "ZMLUVY O VÝKONE SPRÁVY (ZoVS)",
-    href: "https://www.osbdcadca.sk/zmluvy-o-vykone-spravy/",
+    publishedAt: "2025-12-17",
+    body: [
+      "Vážení vlastníci bytov a nebytových priestorov, v zmysle zákona o adresnej energopomoci č. 260/2025 Z.z. v nadväznosti na §11 odst.9 písm. a), Vám v prílohách uvádzame jednozložkovú cenu tepla za rok 2025 a rok 2026, ktorá nám bola doručená od dodávateľov tepla:",
+      "Mestská teplárenská spoločnosť a.s., skrátený názov MTS a.s., Čadca,",
+      "ENERGETIKA TURZOVKA, s.r.o.,",
+      "Krasbyt, s.r.o., Krásno nad Kysucou.",
+      "V závere dávame do pozornosti, že v zmysle uvedených cien tepla platných pre rok 2026 , správca je nútený pristúpiť k úprave zálohových predpisov v položkách „teplo na vykurovanie“ a „ohrev teplej vody“, aby sa predišlo vzniku nedoplatkov .",
+      "O uvedenej úprave Vás správca bude informovať v mesiaci január 2026.",
+    ],
+    attachments: [
+      {
+        title: "MTS a.s. Čadca",
+        href: "https://osbdcadca.sk/wp-content/uploads/2026/07/MTS-a.s.-%C4%8Cadca.pdf",
+      },
+      {
+        title: "ENERGETIKA TURZOVKA s.r.o.",
+        href: "https://osbdcadca.sk/wp-content/uploads/2026/07/ENERGETIKA-TURZOVKA-s.r.o..pdf",
+      },
+      {
+        title: "KRASBYT s.r.o. Krásno nad Kysucou",
+        href: "https://osbdcadca.sk/wp-content/uploads/2026/07/KRASBYT-s.r.o.-Kr%C3%A1sno-nad-Kysucou.pdf",
+      },
+    ],
   },
   {
     id: "diagnostika-kamera",
+    kind: "article",
     title: "Diagnostika kamerovým systémom",
-    href: "https://www.osbdcadca.sk/diagnostika-kamerovym-systemom-2/",
+    publishedAt: "2020-02-17",
+    body: [
+      "OSBD Čadca ponúka bytovým a rodinným domom novú službu v podobe kontroly kanalizácie a odpadu prostredníctvom inšpekčného kamerového systému, ktorého súčasťou je zobrazovacia jednotka, ktorá rýchlo diagnostikuje danú závadu. OSBD Čadca odporúča využívať túto možnosť kamerového systému. Akékoľvek závady na kanalizáciach nahlasujte na tel. č. 0905 713 605 a 0907 269 023.",
+    ],
+    linkifyPhones: true,
   },
 ];
+
+export function formatNoticeDate(isoDate: string): string {
+  return new Intl.DateTimeFormat("sk-SK", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(new Date(`${isoDate}T12:00:00`));
+}
