@@ -43,7 +43,7 @@ export const primaryNav: PrimaryNavItem[] = [
       { label: "Káblová TV a internet", href: null, status: "pending" },
     ],
   },
-  { label: "Aktuality", href: "#oznamy", status: "anchor" },
+  { label: "Aktuality", href: "/aktuality", status: "ready" },
   { label: "Kontakty", href: "#kontakt", status: "anchor" },
 ];
 
@@ -53,21 +53,24 @@ export const footerNavGroups: { title: string; items: NavItem[] }[] = [
     items: [
       { label: "O nás", href: "#o-nas", status: "anchor" },
       { label: "Správa bytových domov", href: "#sprava", status: "anchor" },
-      { label: "Aktuality", href: "#oznamy", status: "anchor" },
+      { label: "Aktuality", href: "/aktuality", status: "ready" },
     ],
   },
   {
     title: "Pre vlastníkov",
     items: [
       { label: "Dokumenty", href: null, status: "pending" },
-      { label: "Oznamy", href: "#oznamy", status: "anchor" },
+      { label: "Aktuality", href: "/aktuality", status: "ready" },
       { label: "Kontakty", href: "#kontakt", status: "anchor" },
     ],
   },
 ];
 
-export const officeHoursCta = {
-  label: "Stránkové hodiny",
-  href: "#strankove-hodiny",
-  status: "anchor" as const,
-};
+export const emergencyCta = {
+  label: "Havarijná služba",
+  phoneDisplay: "0905 713 605",
+  href: "tel:0905713605",
+} as const;
+
+/** @deprecated Use emergencyCta — kept alias during migration */
+export const officeHoursCta = emergencyCta;

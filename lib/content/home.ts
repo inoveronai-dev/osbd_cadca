@@ -43,10 +43,10 @@ export const quickAccess = {
   support: "Najčastejšie hľadané informácie na jednom mieste.",
   items: [
     {
-      id: "oznamy",
-      title: "Oznamy",
+      id: "aktuality",
+      title: "Aktuality",
       description: "Najnovšie informácie pre vlastníkov",
-      href: "#oznamy",
+      href: "/aktuality",
       icon: "megaphone" as const,
     },
     {
@@ -58,17 +58,17 @@ export const quickAccess = {
       icon: "file" as const,
     },
     {
-      id: "hodiny",
-      title: "Stránkové hodiny",
-      description: "Pozrite si, kedy nás môžete navštíviť",
-      href: "#strankove-hodiny",
-      icon: "clock" as const,
+      id: "poruchy",
+      title: "Kontakty na hlásenie závad a porúch",
+      description: "Havárie, poruchy a núdzové kontakty",
+      href: "#poruchy-zavady",
+      icon: "wrench" as const,
     },
     {
-      id: "kontakty",
-      title: "Kontakty",
-      description: "Nájdite správny kontakt",
-      href: "#kontakt",
+      id: "kontakty-druzstva",
+      title: "Kontakty družstva",
+      description: "Nájdite správny kontakt podľa oddelenia",
+      href: "#kontakty-druzstva",
       icon: "phone" as const,
     },
   ],
@@ -190,24 +190,16 @@ export const services = {
 } as const;
 
 export const noticesSection = {
-  id: "oznamy",
-  headline: "Najnovšie články",
-  categoryLink: {
-    label: "Aktuality",
-    href: "https://www.osbdcadca.sk/category/aktuality/",
-  },
-  allLink: {
-    label: "Všetky oznamy",
-    href: "https://www.osbdcadca.sk/category/aktuality/",
-    status: "ready" as const,
-  },
+  headline: "Aktuality",
+  support: "Aktuálne oznamy a informácie pre vlastníkov bytov.",
   items: latestNotices,
 } as const;
 
 export const contactSection = {
   id: "kontakt",
   headline: "Kontakty",
-  support: "Sme tu pre vlastníkov bytov aj záujemcov o správu.",
+  support:
+    "Oddelené kontakty družstva a rýchle čísla na hlásenie závad a porúch.",
   contact,
   officeHours,
   officeHoursAnchor: "strankove-hodiny",

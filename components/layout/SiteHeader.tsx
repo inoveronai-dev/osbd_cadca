@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Clock, Menu } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { Menu, Phone } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -13,19 +14,25 @@ import {
   DesktopHeaderNav,
   MobileHeaderNav,
 } from "@/components/layout/HeaderNav";
-import { officeHoursCta } from "@/lib/navigation";
+import { emergencyCta } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
 
 export function SiteHeader() {
-  const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
+  const onHome = pathname === "/";
+  const [scrolled, setScrolled] = useState(!onHome);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
+    if (!onHome) {
+      setScrolled(true);
+      return;
+    }
     const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [onHome]);
 
   return (
     <header
@@ -43,16 +50,23 @@ export function SiteHeader() {
 
         <div className="flex shrink-0 items-center gap-2">
           <a
-            href={officeHoursCta.href}
+            href={emergencyCta.href}
             className={cn(
-              "hidden h-11 items-center justify-center gap-2 rounded-md px-4 text-[0.95rem] font-semibold transition-colors sm:inline-flex",
+              "hidden h-11 items-center gap-2.5 rounded-md px-3.5 transition-colors sm:inline-flex",
               scrolled
                 ? "bg-forest text-white hover:bg-[var(--forest-soft)]"
                 : "border border-white/35 bg-white/12 text-white backdrop-blur-sm hover:bg-white/20",
             )}
           >
-            <Clock className="size-4" aria-hidden />
-            {officeHoursCta.label}
+            <Phone className="size-4 shrink-0" aria-hidden />
+            <span className="flex flex-col leading-tight">
+              <span className="text-[0.72rem] font-semibold tracking-wide uppercase opacity-85">
+                {emergencyCta.label}
+              </span>
+              <span className="text-[0.95rem] font-semibold tabular-nums">
+                {emergencyCta.phoneDisplay}
+              </span>
+            </span>
           </a>
 
           <button
@@ -85,12 +99,19 @@ export function SiteHeader() {
               <MobileHeaderNav onNavigate={() => setOpen(false)} />
               <div className="border-t border-border p-3">
                 <a
-                  href={officeHoursCta.href}
+                  href={emergencyCta.href}
                   onClick={() => setOpen(false)}
-                  className="inline-flex min-h-14 w-full items-center justify-center gap-2 rounded-md bg-forest px-4 text-lg font-semibold text-white hover:bg-[var(--forest-soft)]"
+                  className="inline-flex min-h-14 w-full items-center justify-center gap-3 rounded-md bg-forest px-4 text-white hover:bg-[var(--forest-soft)]"
                 >
-                  <Clock className="size-5" aria-hidden />
-                  {officeHoursCta.label}
+                  <Phone className="size-5 shrink-0" aria-hidden />
+                  <span className="flex flex-col leading-tight">
+                    <span className="text-[0.75rem] font-semibold tracking-wide uppercase opacity-85">
+                      {emergencyCta.label}
+                    </span>
+                    <span className="text-lg font-semibold tabular-nums">
+                      {emergencyCta.phoneDisplay}
+                    </span>
+                  </span>
                 </a>
               </div>
             </SheetContent>

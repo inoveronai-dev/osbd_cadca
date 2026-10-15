@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { ChevronDown } from "lucide-react";
 import { primaryNav, type NavItem, type PrimaryNavItem } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
@@ -13,12 +14,30 @@ function canNavigate(item: NavItem) {
   return Boolean(item.href) && item.status !== "pending";
 }
 
+/** Resolve hash links so they work from non-home routes like /aktuality. */
+function resolveHref(href: string, pathname: string) {
+  if (href.startsWith("#") && pathname !== "/") {
+    return `/${href}`;
+  }
+  return href;
+}
+
+function isActiveHref(href: string | null, pathname: string) {
+  if (!href) return false;
+  if (href.startsWith("/")) {
+    return pathname === href || pathname.startsWith(`${href}/`);
+  }
+  return false;
+}
+
 function NavChildList({
   items,
   onSelect,
+  pathname,
 }: {
   items: NavItem[];
   onSelect?: () => void;
+  pathname: string;
 }) {
   return (
     <ul className="py-1.5">
@@ -28,7 +47,7 @@ function NavChildList({
           <li key={child.label}>
             {active ? (
               <a
-                href={child.href!}
+                href={resolveHref(child.href!, pathname)}
                 onClick={onSelect}
                 className="block px-3.5 py-2 text-[0.9rem] text-ink transition-colors hover:bg-sage hover:text-forest"
               >
@@ -52,15 +71,18 @@ function NavChildList({
 function DesktopDropdown({
   item,
   scrolled,
+  pathname,
 }: {
   item: PrimaryNavItem;
   scrolled: boolean;
+  pathname: string;
 }) {
   const [pinned, setPinned] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const menuId = useId();
   const children = item.children ?? [];
   const triggerNavigates = canNavigate(item);
+  const active = isActiveHref(item.href, pathname);
 
   useEffect(() => {
     if (!pinned) return;
@@ -83,7 +105,8 @@ function DesktopDropdown({
     scrolled
       ? "text-ink hover:bg-sage hover:text-forest"
       : "text-white/92 hover:bg-white/10 hover:text-white",
-    pinned && (scrolled ? "bg-sage text-forest" : "bg-white/10 text-white"),
+    (pinned || active) &&
+      (scrolled ? "bg-sage text-forest" : "bg-white/10 text-white"),
   );
 
   return (
@@ -94,7 +117,7 @@ function DesktopDropdown({
     >
       {triggerNavigates ? (
         <a
-          href={item.href!}
+          href={resolveHref(item.href!, pathname)}
           className={triggerClass}
           aria-haspopup="true"
           aria-controls={menuId}
@@ -134,7 +157,11 @@ function DesktopDropdown({
         )}
       >
         <div className="overflow-hidden rounded-md border border-forest/10 bg-warm-white shadow-[0_10px_28px_rgba(7,35,26,0.12)]">
-          <NavChildList items={children} onSelect={() => setPinned(false)} />
+          <NavChildList
+            items={children}
+            pathname={pathname}
+            onSelect={() => setPinned(false)}
+          />
         </div>
       </div>
     </div>
@@ -144,10 +171,14 @@ function DesktopDropdown({
 function DesktopLink({
   item,
   scrolled,
+  pathname,
 }: {
   item: PrimaryNavItem;
   scrolled: boolean;
+  pathname: string;
 }) {
+  const active = isActiveHref(item.href, pathname);
+
   if (!canNavigate(item)) {
     return (
       <span
@@ -164,12 +195,17 @@ function DesktopLink({
 
   return (
     <a
-      href={item.href!}
+      href={resolveHref(item.href!, pathname)}
+      aria-current={active ? "page" : undefined}
       className={cn(
         "rounded-md px-2.5 py-2 text-[0.92rem] font-medium transition-colors xl:px-3 xl:text-[0.95rem]",
         scrolled
-          ? "text-ink hover:bg-sage hover:text-forest"
-          : "text-white/92 hover:bg-white/10 hover:text-white",
+          ? active
+            ? "bg-sage text-forest"
+            : "text-ink hover:bg-sage hover:text-forest"
+          : active
+            ? "bg-white/15 text-white"
+            : "text-white/92 hover:bg-white/10 hover:text-white",
       )}
     >
       {item.label}
@@ -178,6 +214,8 @@ function DesktopLink({
 }
 
 export function DesktopHeaderNav({ scrolled }: HeaderNavProps) {
+  const pathname = usePathname();
+
   return (
     <nav
       className="hidden min-w-0 items-center gap-0.5 xl:gap-1 lg:flex"
@@ -185,9 +223,19 @@ export function DesktopHeaderNav({ scrolled }: HeaderNavProps) {
     >
       {primaryNav.map((item) =>
         item.children?.length ? (
-          <DesktopDropdown key={item.label} item={item} scrolled={scrolled} />
+          <DesktopDropdown
+            key={item.label}
+            item={item}
+            scrolled={scrolled}
+            pathname={pathname}
+          />
         ) : (
-          <DesktopLink key={item.label} item={item} scrolled={scrolled} />
+          <DesktopLink
+            key={item.label}
+            item={item}
+            scrolled={scrolled}
+            pathname={pathname}
+          />
         ),
       )}
     </nav>
@@ -195,6 +243,7 @@ export function DesktopHeaderNav({ scrolled }: HeaderNavProps) {
 }
 
 export function MobileHeaderNav({ onNavigate }: { onNavigate: () => void }) {
+  const pathname = usePathname();
   const [expanded, setExpanded] = useState<string | null>(null);
 
   return (
@@ -202,6 +251,7 @@ export function MobileHeaderNav({ onNavigate }: { onNavigate: () => void }) {
       {primaryNav.map((item) => {
         const hasChildren = Boolean(item.children?.length);
         const isOpen = expanded === item.label;
+        const active = isActiveHref(item.href, pathname);
 
         if (!hasChildren) {
           if (!canNavigate(item)) {
@@ -219,9 +269,13 @@ export function MobileHeaderNav({ onNavigate }: { onNavigate: () => void }) {
           return (
             <a
               key={item.label}
-              href={item.href!}
+              href={resolveHref(item.href!, pathname)}
               onClick={onNavigate}
-              className="min-h-14 rounded-md px-4 py-3 text-lg font-medium text-ink hover:bg-sage"
+              aria-current={active ? "page" : undefined}
+              className={cn(
+                "min-h-14 rounded-md px-4 py-3 text-lg font-medium hover:bg-sage",
+                active ? "bg-sage text-forest" : "text-ink",
+              )}
             >
               {item.label}
             </a>
@@ -233,7 +287,7 @@ export function MobileHeaderNav({ onNavigate }: { onNavigate: () => void }) {
             <div className="flex min-h-14 items-stretch">
               {canNavigate(item) ? (
                 <a
-                  href={item.href!}
+                  href={resolveHref(item.href!, pathname)}
                   onClick={onNavigate}
                   className="flex flex-1 items-center rounded-md px-4 py-3 text-lg font-medium text-ink hover:bg-sage"
                 >
@@ -277,12 +331,12 @@ export function MobileHeaderNav({ onNavigate }: { onNavigate: () => void }) {
             {isOpen ? (
               <ul className="mb-1 ml-2 border-l border-forest/10 py-1 pl-2">
                 {item.children!.map((child) => {
-                  const active = canNavigate(child);
+                  const childActive = canNavigate(child);
                   return (
                     <li key={child.label}>
-                      {active ? (
+                      {childActive ? (
                         <a
-                          href={child.href!}
+                          href={resolveHref(child.href!, pathname)}
                           onClick={onNavigate}
                           className="block rounded-md px-3 py-2.5 text-[1.02rem] text-ink hover:bg-sage hover:text-forest"
                         >
