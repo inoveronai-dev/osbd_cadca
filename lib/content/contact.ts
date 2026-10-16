@@ -7,8 +7,15 @@ export const contact = {
   ico: "31 622 704",
   addressLines: ["Gočárova 252", "022 47 ČADCA"],
   addressFull: "Gočárova 252, 022 47 Čadca",
-  mapsUrl: "https://maps.app.goo.gl/ExovRi11RmcDKtG98",
-  mapsEmbedQuery: "Gočárova 252, 022 47 Čadca",
+  /** Official OSBD place pin on Google Maps. */
+  mapsUrl: "https://maps.app.goo.gl/ejPbEpvCDgjfsWvNA",
+  /**
+   * Exact building coordinates for the embed.
+   * Address-only queries can resolve to the street instead of OSBD.
+   */
+  mapsLat: 49.4374479,
+  mapsLng: 18.7796565,
+  mapsZoom: 17,
 } as const;
 
 export type OfficeHoursRow = {

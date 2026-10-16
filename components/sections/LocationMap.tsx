@@ -2,7 +2,7 @@ import { ExternalLink } from "lucide-react";
 import { LazyMapEmbed } from "@/components/sections/LazyMapEmbed";
 import { contact } from "@/lib/content/contact";
 
-const embedSrc = `https://maps.google.com/maps?q=${encodeURIComponent(contact.mapsEmbedQuery)}&z=16&output=embed`;
+const embedSrc = `https://maps.google.com/maps?q=${contact.mapsLat},${contact.mapsLng}&z=${contact.mapsZoom}&output=embed`;
 
 type LocationMapProps = {
   className?: string;
