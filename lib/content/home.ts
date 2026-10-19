@@ -1,92 +1,65 @@
-import { contact, officeHours } from "./contact";
-import { latestNotices } from "./notices";
+import {
+  loadHomepage,
+  loadKontakty,
+  loadPublicAktuality,
+  loadSite,
+} from "@/lib/content/load";
 
-export const brand = {
-  name: "OSBD Čadca",
-  legalName: "Okresné stavebné bytové družstvo so sídlom v Čadci",
-  positioning:
-    "Dlhoročné bytové družstvo so sídlom v Čadci, ktoré zabezpečuje správu bytových domov v regióne Kysúc.",
-} as const;
+export function getBrand() {
+  return loadSite().brand;
+}
 
-export const hero = {
-  eyebrow: "Správa bytových domov • Čadca",
-  headline: "Pomáhame lepšie bývať.",
-  support:
-    "Už viac ako 60 rokov zabezpečujeme odbornú a spoľahlivú správu bytových domov v regióne Kysúc.",
-  primaryCta: {
-    label: "Ponuka správy bytových domov",
-    href: "#sprava",
-  },
-  secondaryCta: {
-    label: "Kontaktovať nás",
-    href: "/kontakty",
-  },
-  proof: [
-    { value: 60, suffix: "+", label: "rokov skúseností" },
-    { value: 3200, suffix: "+", label: "spravovaných bytov", format: "sk" },
-    {
-      valueLabel: "Komplexná správa",
-      label: "pod jednou strechou",
-    },
-  ],
-  imageSlot: {
-    id: "hero-cadca-kysuce",
-    label: "hero-cadca-kysuce",
-    description:
-      "Široká autentická fotografia Čadce / Kysúc s bytovými domami a krajinou",
-    aspect: "wide" as const,
-  },
-} as const;
+export function getHero() {
+  return loadHomepage().hero;
+}
 
-export const quickAccess = {
-  headline: "Čo potrebujete vybaviť?",
-  support: "Najčastejšie hľadané informácie na jednom mieste.",
-  items: [
-    {
-      id: "aktuality",
-      title: "Aktuality",
-      description: "Najnovšie informácie pre vlastníkov",
-      href: "/aktuality",
-      icon: "megaphone" as const,
-    },
-    {
-      id: "dokumenty",
-      title: "Dokumenty a tlačivá",
-      description: "Potrebné dokumenty na jednom mieste",
-      href: null,
-      status: "pending" as const,
-      icon: "file" as const,
-    },
-    {
-      id: "poruchy",
-      title: "Kontakty na hlásenie závad a porúch",
-      description: "Havárie, poruchy a núdzové kontakty",
-      href: "/kontakty#poruchy-zavady",
-      icon: "wrench" as const,
-    },
-    {
-      id: "kontakty-druzstva",
-      title: "Kontakty družstva",
-      description: "Nájdite správny kontakt podľa oddelenia",
-      href: "/kontakty#kontakty-druzstva",
-      icon: "phone" as const,
-    },
-  ],
-} as const;
+export function getQuickAccess() {
+  return loadHomepage().quickAccess;
+}
+
+export function getWhyOsbd() {
+  return loadHomepage().whyOsbd;
+}
+
+export function getServices() {
+  return loadHomepage().services;
+}
+
+export function getNoticesSection() {
+  const aktuality = loadPublicAktuality();
+  return {
+    headline: aktuality.headline,
+    support: aktuality.support,
+    items: aktuality.items,
+  };
+}
+
+export function getContactSection() {
+  const kontakty = loadKontakty();
+  return {
+    id: "kontakt" as const,
+    headline: kontakty.headline,
+    support: kontakty.support,
+    contact: loadSite().contact,
+    officeHours: kontakty.officeHours,
+    officeHoursAnchor: "strankove-hodiny" as const,
+  };
+}
+
+export const brand = getBrand();
+export const hero = getHero();
+export const quickAccess = getQuickAccess();
+export const whyOsbd = getWhyOsbd();
+export const services = getServices();
+export const noticesSection = getNoticesSection();
+export const contactSection = getContactSection();
 
 export const aboutSection = {
-  id: "o-nas",
-  eyebrow: "O nás",
-  headline: "Viac ako 60 rokov skúseností so správou bývania.",
-  paragraphs: [
-    "Okresné stavebné bytové družstvo so sídlom v Čadci patrí medzi dlhoročných správcov bytových domov v regióne Kysúc. Spravujeme viac ako 3 200 bytov a našim klientom poskytujeme odborné zázemie v technickej, ekonomickej aj právnej oblasti.",
-    "Našou prioritou je kvalitná a transparentná správa založená na spolupráci s vlastníkmi bytov.",
-  ],
-  link: {
-    label: "Viac o OSBD Čadca",
-    href: null,
-    status: "pending" as const,
-  },
+  id: "o-nas" as const,
+  eyebrow: loadHomepage().about.eyebrow,
+  headline: loadHomepage().about.leadTitle,
+  paragraphs: loadHomepage().about.introParagraphs,
+  link: loadHomepage().about.link,
   imageSlot: {
     id: "about-osbd-hq",
     label: "about-osbd-hq",
@@ -94,116 +67,7 @@ export const aboutSection = {
       "Fotografia sídla OSBD Čadca alebo autentická fotografia zamestnancov",
     aspect: "portrait" as const,
   },
-} as const;
-
-export const whyOsbd = {
-  headline: "Prečo OSBD Čadca",
-  intro:
-    "Správa domu nie je iba administratíva. Je to dlhodobá starostlivosť o spoločný majetok, financie aj kvalitu bývania.",
-  benefits: [
-    {
-      number: "01",
-      title: "Viac ako 60 rokov skúseností",
-      description:
-        "Dlhodobá prax so správou bytových domov v regióne Kysúc.",
-    },
-    {
-      number: "02",
-      title: "Transparentné hospodárenie",
-      description:
-        "Prehľadné vedenie financií a účtov bytového domu.",
-    },
-    {
-      number: "03",
-      title: "Individuálny prístup",
-      description:
-        "Riešenia podľa potrieb konkrétneho domu a jeho vlastníkov.",
-    },
-    {
-      number: "04",
-      title: "Odborné zázemie",
-      description:
-        "Technická, ekonomická a právna odbornosť pod jednou strechou.",
-    },
-    {
-      number: "05",
-      title: "Komplexná správa",
-      description:
-        "Od každodennej prevádzky až po obnovu a väčšie investičné projekty.",
-    },
-    {
-      number: "06",
-      title: "Partnerstvo s vlastníkmi",
-      description: "Vlastníci rozhodujú. OSBD zabezpečuje, radí a pomáha.",
-    },
-  ],
-} as const;
-
-export const services = {
-  id: "sprava",
-  headline: "O váš dom sa staráme komplexne.",
-  categories: [
-    {
-      title: "Technická správa",
-      description:
-        "Údržba, opravy, technické zariadenia a prevádzka domu.",
-      image: {
-        src: "/images/service-technicka.png",
-        alt: "Technik pri kontrole technických zariadení bytového domu",
-      },
-    },
-    {
-      title: "Ekonomická správa",
-      description:
-        "Finančné a ekonomické záležitosti spojené so správou domu.",
-      image: {
-        src: "/images/service-ekonomicka.png",
-        alt: "Ekonomická agenda a dokumenty spojené so správou domu",
-      },
-    },
-    {
-      title: "Obnova a modernizácia",
-      description:
-        "Rekonštrukcie, zateplenie, meranie, regulácia a ďalšie investície.",
-      image: {
-        src: "/images/service-obnova.png",
-        alt: "Zrekonštruovaný bytový dom s upraveným okolím",
-      },
-    },
-    {
-      title: "Odborné poradenstvo",
-      description:
-        "Pomoc pri správe domu, legislatíve a väčších investičných projektoch.",
-      image: {
-        src: "/images/service-poradenstvo.png",
-        alt: "Odborné poradenstvo a konzultácia s vlastníkmi",
-      },
-    },
-  ],
-  imageSlot: {
-    id: "services-renovation",
-    label: "services-renovation",
-    description:
-      "Zrekonštruovaný bytový dom v Čadci / na Kysuciach",
-    aspect: "landscape" as const,
-  },
-} as const;
-
-export const noticesSection = {
-  headline: "Aktuality",
-  support: "Aktuálne oznamy a informácie pre vlastníkov bytov.",
-  items: latestNotices,
-} as const;
-
-export const contactSection = {
-  id: "kontakt",
-  headline: "Kontakty",
-  support:
-    "Oddelené kontakty družstva a rýchle čísla na hlásenie závad a porúch.",
-  contact,
-  officeHours,
-  officeHoursAnchor: "strankove-hodiny",
-} as const;
+};
 
 export const imageSlots = [
   hero.imageSlot,

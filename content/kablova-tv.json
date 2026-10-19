@@ -1,0 +1,109 @@
+{
+  "intro": {
+    "heading": "DIGITÁLNA TELEVÍZIA od OSBD Čadca",
+    "subheading": "„OTT SLUŽBA“ – televízia cez internet",
+    "paragraphs": [
+      "OSBD Čadca Vám prináša cez internet Vaše obľúbené televízne stanice bez ohľadu na to, kde sa práve nachádzate.",
+      "Čo k tomu potrebujete?",
+      "Stačí mať len internetové pripojenie, mobilné alebo pevné a zariadenie, na ktorom budete televízne programy pozerať, napríklad Váš smartfón, tablet alebo smart televízor."
+    ]
+  },
+  "benefitsTitle": "Výhody televízie cez internet",
+  "benefits": [
+    "televízne programy môžete sledovať kdekoľvek a kedykoľvek",
+    "televízia v mobile, či v tablete",
+    "funguje s internetom od ľubovoľného poskytovateľa",
+    "ponúka Vám pohodlie a komfort",
+    "nemusíte nič vŕtať, búrať, ani zložito montovať",
+    "stačí zadať do Vášho smart televízora, tabletu alebo mobilného telefónu prihlasovacie údaje a okamžite môžete sledovať svoje obľúbené programy",
+    "zriadenie služby bez akéhokoľvek čakania",
+    "balíčky televíznych programov v OTT službe sú tie isté ako pre digitálnu televíziu podľa ponuky /viď programová štruktúra digitálnej televízie od 01. 02. 2024/"
+  ],
+  "documentGroups": [
+    {
+      "id": "cennik-programova",
+      "title": "Cenník digitálnej televízie a internetu, programová štruktúra digitálnej televízie",
+      "defaultOpen": true,
+      "documents": [
+        {
+          "title": "Základný cenník televízie a internetu od 01. 01. 2017",
+          "href": "http://osbdcadca.sk/wp-content/uploads/2020/02/Cennik_TV__INT__od_1.1.2017-aktualizovan_002-upraven.pdf"
+        },
+        {
+          "title": "Akciový cenník služieb platný od 01. 01. 2025",
+          "href": "https://osbdcadca.sk/wp-content/uploads/2026/08/Akciov%C3%BD-cenn%C3%ADk-slu%C5%BEieb-platn%C3%BD-od-1.-1.-2025-%E2%80%93-zmena-DPH-23-1.pdf"
+        },
+        {
+          "title": "Programová štruktúra digitálnej televízie platná od 15. 08. 2026",
+          "href": "https://osbdcadca.sk/wp-content/uploads/2026/08/Programova-struktura-DIGI-TKR-od-15.-08.-2026-nov%C3%A9-n%C3%A1zvy-Arena-Sport.pdf"
+        }
+      ]
+    },
+    {
+      "id": "oznam-zmena-ceny",
+      "title": "Oznam o zmene ceny televízie a internetu",
+      "defaultOpen": true,
+      "documents": [
+        {
+          "title": "Zmena ceny televízie a internetu od 01. 01. 2025 – zmena výšky DPH",
+          "href": "https://osbdcadca.sk/wp-content/uploads/2026/07/Oznam-o-zv%C3%BD%C5%A1en%C3%AD-DPH.pdf"
+        },
+        {
+          "title": "Zmena ceny televízie a internetu od 01. 02. 2023",
+          "href": "https://osbdcadca.sk/wp-content/uploads/2026/08/ZMENA-CENY-DIGITAL-a-INTERNET-od-01.-02.-2023.pdf"
+        }
+      ]
+    },
+    {
+      "id": "dalsie-clanky",
+      "title": "Ďalšie články a oznamy",
+      "defaultOpen": false,
+      "documents": [
+        {
+          "title": "Odporúčaný postup naladenia TV prijímača pre príjem digitálneho vysielania",
+          "href": "https://osbdcadca.sk/wp-content/uploads/2026/04/Postup-naladenia-CAM-modulu-x.pdf"
+        },
+        {
+          "title": "Technické parametre pre naladenie digitálneho príjmu v pásme DVB-C",
+          "href": "http://osbdcadca.sk/wp-content/uploads/2020/02/TECHNICK_PARAMETRE_PRE_NALADENIE_DIGITLNHO_PRJMU_V_PSME_DVB_C.pdf"
+        },
+        {
+          "title": "Zmena poradia televíznych programov spoločnosti JOJ GROUP",
+          "href": "https://osbdcadca.sk/wp-content/uploads/2024/07/Zmena-poradia-TV-programov-JOJ.pdf"
+        },
+        {
+          "title": "Zmena vysielania TV programov CS Film, CS History, CS Mystery, CS Horror",
+          "href": "https://osbdcadca.sk/wp-content/uploads/2023/10/Zmena-TV-bal%C3%ADku-programov-CS-Film-2x.pdf"
+        },
+        {
+          "title": "Prechod analógového vysielania na digitálne vysielanie od 01. 09. 2019",
+          "href": "https://osbdcadca.sk/wp-content/uploads/2026/08/Ozn%C3%A1menie-o-ukon%C4%8Den%C3%AD-anal%C3%B3gov%C3%A9ho-vysielania-list-FIN%C3%81L-%E2%80%93-oprava.pdf"
+        },
+        {
+          "title": "Všeobecné obchodné podmienky TKR",
+          "href": "http://osbdcadca.sk/wp-content/uploads/2020/02/Veobecn_obchodn_podmienky_TKR.pdf"
+        },
+        {
+          "title": "Všeobecné zmluvné podmienky pre službu INTERNET OSBD",
+          "href": "http://osbdcadca.sk/wp-content/uploads/2020/02/Veobecn_zmluvn_podmienky_pre__slubu_INTERNET_OSBD_-_5a.pdf"
+        },
+        {
+          "title": "Reklamačný poriadok pre koncové zariadenia",
+          "href": "http://osbdcadca.sk/wp-content/uploads/2020/02/Reklaman_poriadok_-_internet.pdf"
+        },
+        {
+          "title": "Prevádzkový poriadok INTERNETU OSBD",
+          "href": "http://osbdcadca.sk/wp-content/uploads/2020/02/Prevdzkov_poriadok_INTERNETU_OSBD.pdf"
+        },
+        {
+          "title": "Rozhranie OSBD Čadca – internet",
+          "href": "http://osbdcadca.sk/wp-content/uploads/2020/02/Rozhranie_OSBD_adca_-_internet.pdf"
+        },
+        {
+          "title": "Informácie o nariadeniach Európskeho parlamentu a Rady 2015/2120",
+          "href": "http://osbdcadca.sk/wp-content/uploads/2020/02/INFORMCIE__o_nariadeniach_Europskho_parlamentu__a_Rady_2015-2120.pdf"
+        }
+      ]
+    }
+  ]
+}

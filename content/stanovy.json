@@ -1,0 +1,34 @@
+{
+  "groups": [
+    {
+      "id": "stanovy",
+      "title": "Stanovy OSBD Čadca",
+      "documents": [
+        {
+          "title": "Stanovy platné od 19. 06. 2023",
+          "href": "https://osbdcadca.sk/wp-content/uploads/2024/06/STANOVY-od-19.06.2023.pdf"
+        }
+      ]
+    },
+    {
+      "id": "rokovaci-poriadok",
+      "title": "Rokovací poriadok",
+      "documents": [
+        {
+          "title": "Rokovací poriadok platný od 18. 06. 2018",
+          "href": "https://osbdcadca.sk/wp-content/uploads/2024/06/Rokovac%C3%AD-poriadok-od-18.06.2018.pdf"
+        }
+      ]
+    },
+    {
+      "id": "volebny-poriadok",
+      "title": "Volebný poriadok OSBD Čadca",
+      "documents": [
+        {
+          "title": "Volebný poriadok platný od 10. 06. 2019",
+          "href": "https://osbdcadca.sk/wp-content/uploads/2024/06/Volebn%C3%BD-poriadok-od-10.06.2019.pdf"
+        }
+      ]
+    }
+  ]
+}

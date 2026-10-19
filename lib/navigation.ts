@@ -1,3 +1,5 @@
+import { loadSite } from "@/lib/content/load";
+
 export type NavStatus = "ready" | "pending" | "anchor";
 
 export type NavItem = {
@@ -13,8 +15,7 @@ export type PrimaryNavItem = NavItem & {
 };
 
 /**
- * Primary header navigation. Pending destinations must not invent empty pages.
- * Use status: "pending" until a real in-page section or route exists.
+ * Primary header navigation. Developer-owned in V1 — not CMS-editable.
  */
 export const primaryNav: PrimaryNavItem[] = [
   {
@@ -85,11 +86,12 @@ export const footerNavGroups: { title: string; items: NavItem[] }[] = [
   },
 ];
 
-export const emergencyCta = {
-  label: "Havarijná služba",
-  phoneDisplay: "0905 713 605",
-  href: "tel:0905713605",
-} as const;
+export function getEmergencyCta() {
+  return loadSite().emergencyCta;
+}
 
-/** @deprecated Use emergencyCta — kept alias during migration */
+/** Editable via Základné údaje; values come from content/site.json. */
+export const emergencyCta = getEmergencyCta();
+
+/** @deprecated Use emergencyCta */
 export const officeHoursCta = emergencyCta;

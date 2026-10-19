@@ -1,0 +1,34 @@
+{
+  "brand": {
+    "name": "OSBD Čadca",
+    "legalName": "Okresné stavebné bytové družstvo so sídlom v Čadci",
+    "positioning": "Dlhoročné bytové družstvo so sídlom v Čadci, ktoré zabezpečuje správu bytových domov v regióne Kysúc."
+  },
+  "contact": {
+    "orgName": "Okresné stavebné bytové družstvo Čadca",
+    "phoneDisplay": "041/433 33 90",
+    "phoneHref": "tel:+421414333390",
+    "email": "osbdcadca@osbdcadca.sk",
+    "ico": "31 622 704",
+    "addressLines": [
+      "Gočárova 252",
+      "022 47 ČADCA"
+    ],
+    "addressFull": "Gočárova 252, 022 47 Čadca",
+    "mapsUrl": "https://maps.app.goo.gl/ejPbEpvCDgjfsWvNA",
+    "mapsLat": 49.4374479,
+    "mapsLng": 18.7796565,
+    "mapsZoom": 17
+  },
+  "emergencyCta": {
+    "label": "Havarijná služba",
+    "phoneDisplay": "0905 713 605",
+    "href": "tel:0905713605"
+  },
+  "map": {
+    "mapsUrl": "https://maps.app.goo.gl/ejPbEpvCDgjfsWvNA",
+    "mapsLat": 49.4374479,
+    "mapsLng": 18.7796565,
+    "mapsZoom": 17
+  }
+}

@@ -1,0 +1,202 @@
+{
+  "hero": {
+    "eyebrow": "Správa bytových domov • Čadca",
+    "headline": "Pomáhame lepšie bývať.",
+    "support": "Už viac ako 60 rokov zabezpečujeme odbornú a spoľahlivú správu bytových domov v regióne Kysúc.",
+    "primaryCta": {
+      "label": "Ponuka správy bytových domov",
+      "href": "#sprava"
+    },
+    "secondaryCta": {
+      "label": "Kontaktovať nás",
+      "href": "/kontakty"
+    },
+    "proof": [
+      {
+        "value": 60,
+        "suffix": "+",
+        "label": "rokov skúseností"
+      },
+      {
+        "value": 3200,
+        "suffix": "+",
+        "label": "spravovaných bytov",
+        "format": "sk"
+      },
+      {
+        "valueLabel": "Komplexná správa",
+        "label": "pod jednou strechou"
+      }
+    ],
+    "imageSlot": {
+      "id": "hero-cadca-kysuce",
+      "label": "hero-cadca-kysuce",
+      "description": "Široká autentická fotografia Čadce / Kysúc s bytovými domami a krajinou",
+      "aspect": "wide"
+    }
+  },
+  "quickAccess": {
+    "headline": "Čo potrebujete vybaviť?",
+    "support": "Najčastejšie hľadané informácie na jednom mieste.",
+    "items": [
+      {
+        "id": "aktuality",
+        "title": "Aktuality",
+        "description": "Najnovšie informácie pre vlastníkov",
+        "href": "/aktuality",
+        "icon": "megaphone"
+      },
+      {
+        "id": "dokumenty",
+        "title": "Dokumenty a tlačivá",
+        "description": "Potrebné dokumenty na jednom mieste",
+        "href": "/dokumenty-tlaciva",
+        "icon": "file"
+      },
+      {
+        "id": "poruchy",
+        "title": "Kontakty na hlásenie závad a porúch",
+        "description": "Havárie, poruchy a núdzové kontakty",
+        "href": "/kontakty#poruchy-zavady",
+        "icon": "wrench"
+      },
+      {
+        "id": "kontakty-druzstva",
+        "title": "Kontakty družstva",
+        "description": "Nájdite správny kontakt podľa oddelenia",
+        "href": "/kontakty#kontakty-druzstva",
+        "icon": "phone"
+      }
+    ]
+  },
+  "about": {
+    "id": "o-nas",
+    "eyebrow": "O nás",
+    "leadTitle": "OSBD ČADCA – pomáhame lepšie bývať",
+    "introParagraphs": [
+      "Správu bytových domov zabezpečujeme už vyše 60 rokov. Vďaka našim skúsenostiam pomáhame našim zákazníkom neustále zlepšovať kvalitu ich bývania.",
+      "Okresné stavebné bytové družstvo so sídlom v Čadci je modernou a najväčšou správcovskou spoločnosťou v regióne Kysúc, ktorá spravuje viac ako 3200 bytov a bola založená za účelom vykonávania správy, prevádzky a údržby bytových domov."
+    ],
+    "bodyParagraphs": [
+      "Disponujeme dlhoročnými skúsenosťami, kvalifikovanými pracovníkmi, informáciami o bytových domoch, sieťou kontaktov, modernými informačnými systémami a stabilným finančným zabezpečením. Pre svojich klientov ponúkame čo najlepšie služby založené na ich spokojnosti a nie so striktne komerčnými zámermi.",
+      "Kvalitné spravovanie bytov si vyžaduje skúsenosti, znalosť množstva zákonov, vykonávacích vyhlášok, noriem, predpisov a zručnosť správne ich aplikovať v praxi. Dbáme, aby naši zamestnanci boli odborne spôsobilí za každú oblasť – ekonomickú, technickú, právnu, za ktorú zodpovedajú, preto sa zúčastňujú všetkých foriem vzdelávania súvisiacich so správcovskou činnosťou. Činnosť bytového družstva je kontrolovaná orgánmi štátnej správy i viacstupňovou vnútornou kontrolou orgánov bytového družstva."
+    ],
+    "closingStatement": "Ďakujeme za dôveru, ktorú nám vyjadrujete zverením svojho bytového domu do našej správy.",
+    "link": {
+      "label": "Viac o OSBD Čadca",
+      "href": null,
+      "status": "pending"
+    }
+  },
+  "whyOsbd": {
+    "headline": "Prečo OSBD Čadca",
+    "intro": "Správa domu nie je iba administratíva. Je to dlhodobá starostlivosť o spoločný majetok, financie aj kvalitu bývania.",
+    "benefits": [
+      {
+        "number": "01",
+        "title": "Viac ako 60 rokov skúseností",
+        "description": "Dlhodobá prax so správou bytových domov v regióne Kysúc."
+      },
+      {
+        "number": "02",
+        "title": "Transparentné hospodárenie",
+        "description": "Prehľadné vedenie financií a účtov bytového domu."
+      },
+      {
+        "number": "03",
+        "title": "Individuálny prístup",
+        "description": "Riešenia podľa potrieb konkrétneho domu a jeho vlastníkov."
+      },
+      {
+        "number": "04",
+        "title": "Odborné zázemie",
+        "description": "Technická, ekonomická a právna odbornosť pod jednou strechou."
+      },
+      {
+        "number": "05",
+        "title": "Komplexná správa",
+        "description": "Od každodennej prevádzky až po obnovu a väčšie investičné projekty."
+      },
+      {
+        "number": "06",
+        "title": "Partnerstvo s vlastníkmi",
+        "description": "Vlastníci rozhodujú. OSBD zabezpečuje, radí a pomáha."
+      }
+    ]
+  },
+  "services": {
+    "id": "sprava",
+    "headline": "O váš dom sa staráme komplexne.",
+    "categories": [
+      {
+        "title": "Technická správa",
+        "description": "Údržba, opravy, technické zariadenia a prevádzka domu.",
+        "image": {
+          "src": "/images/service-technicka.png",
+          "alt": "Technik pri kontrole technických zariadení bytového domu"
+        }
+      },
+      {
+        "title": "Ekonomická správa",
+        "description": "Finančné a ekonomické záležitosti spojené so správou domu.",
+        "image": {
+          "src": "/images/service-ekonomicka.png",
+          "alt": "Ekonomická agenda a dokumenty spojené so správou domu"
+        }
+      },
+      {
+        "title": "Obnova a modernizácia",
+        "description": "Rekonštrukcie, zateplenie, meranie, regulácia a ďalšie investície.",
+        "image": {
+          "src": "/images/service-obnova.png",
+          "alt": "Zrekonštruovaný bytový dom s upraveným okolím"
+        }
+      },
+      {
+        "title": "Odborné poradenstvo",
+        "description": "Pomoc pri správe domu, legislatíve a väčších investičných projektoch.",
+        "image": {
+          "src": "/images/service-poradenstvo.png",
+          "alt": "Odborné poradenstvo a konzultácia s vlastníkmi"
+        }
+      }
+    ],
+    "imageSlot": {
+      "id": "services-renovation",
+      "label": "services-renovation",
+      "description": "Zrekonštruovaný bytový dom v Čadci / na Kysuciach",
+      "aspect": "landscape"
+    }
+  },
+  "managementOffer": {
+    "id": "ponuka-spravy",
+    "headline": "Ponuka správy bytových domov",
+    "subheading": "Prečo si vybrať za správcu Vášho bytového domu práve OSBD Čadca ?",
+    "paragraphs": [
+      "Dlhoročné skúsenosti nás predurčujú stať sa aj Vašim partnerom v oblasti správy bytov a nebytových priestorov a dávajú záruku kvality, znalostí a zručností v tejto oblasti.",
+      "Ponúkame komplexné služby pod jednou strechou, pričom prioritou je kvalita poskytovaných služieb a nielen ich rozsah. Vlastníci bytov a NP sú našimi partnermi a rozhodujú o spoločných častiach a zariadeniach bytového domu a my sa snažíme zabezpečiť, poradiť a pomôcť pri výbere kvalitných služieb za optimálnu cenu. Vykonávame nielen bežné činnosti súvisiace so správou bytov a nebytových priestorov, ale aj činnosti pri modernizácii, komplexnej obnove, zateplení bytových priestorov a NP (nebytových priestorov), meraní a regulácii, starostlivosť o rozvody ÚK,TÚV a SV, elektroinštalácie a iné. Sprostredkúvame aj služby dodávateľským spôsobom od firiem, s ktorými máme dlhodobé a dobré skúsenosti. Dlhoročné skúsenosti sú spojené s poznatkami, ktoré sú stále obnovované, zamestnanci sú neustále preškoľovaní, aby sme dokázali zabezpečovať kvalitné služby zosúladené s aktuálnymi legislatívnymi požiadavkami."
+    ]
+  },
+  "mainAdvantages": {
+    "id": "hlavne-prednosti",
+    "headline": "Hlavné prednosti poskytovania správcovských služieb od OSBD Čadca:",
+    "items": [
+      "Partnerstvo založené na obojstrannej dôvere",
+      "Individuálny prístup ku klientovi, individuálne riešenie problémov",
+      "Spoľahlivé zabezpečenie služieb v oblasti správy bytových domov",
+      "Skúsenosť so spravovaním bytových domov, znalosť stavebných sústav, či problematiky správy",
+      "Transparentné správcovstvo bez zvýhodňovania ktoréhokoľvek klienta",
+      "Efektívne nakladanie s finančnými prostriedkami domu, ktoré si môžete kedykoľvek skontrolovať",
+      "Absolútna transparentnosť vo vedení účtov vášho domu",
+      "Istotu, nakoľko sme na trhu viac ako 60 rokov a vlastníkom sú členovia družstva pre ktorých vykonávame správu bytových domov",
+      "Uprednostňujeme spokojné bývanie klientov pred dosahovaním vysokého komerčného zisku spoločnosti.",
+      "Poskytovanie bezplatnej osvety a vzdelávania v oblasti problematiky týkajúcej sa správy domov a energetiky (osvetové semináre, stretnutia s vlastníkmi, emailové poradenstvo, atď…)",
+      "Poskytovanie odborného poradenstva, týkajúceho sa správy domov a väčších investičných projektov,",
+      "Znižovania spotreby energie, či poskytnutia úveru …",
+      "Efektívne vymáhanie nedoplatkov výlučne zákonnými prostriedkami"
+    ]
+  },
+  "trustStatement": {
+    "sentence": "Ďakujeme za dôveru, ktorú nám vyjadrujete zverením svojho bytového domu do našej správy."
+  }
+}

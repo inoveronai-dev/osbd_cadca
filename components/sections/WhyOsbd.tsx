@@ -23,7 +23,11 @@ const benefitIcons: LucideIcon[] = [
   Handshake,
 ];
 
-type Benefit = (typeof whyOsbd.benefits)[number];
+type Benefit = {
+  number: string;
+  title: string;
+  description: string;
+};
 
 function BenefitFlipCard({
   benefit,

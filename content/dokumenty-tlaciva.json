@@ -1,0 +1,111 @@
+{
+  "groups": [
+    {
+      "id": "cennik",
+      "title": "Cenník služieb",
+      "defaultOpen": true,
+      "documents": [
+        {
+          "title": "Cenník poplatkov za služby nad rámec zmluvy o výkone správy platný od 01. 02. 2026",
+          "href": "https://osbdcadca.sk/wp-content/uploads/2026/07/cenn%C3%ADk_2026_01.02.2026.pdf"
+        }
+      ]
+    },
+    {
+      "id": "elektronicke-dorucovanie",
+      "title": "Elektronické doručovanie dokumentov",
+      "defaultOpen": true,
+      "documents": [
+        {
+          "title": "Dohoda o elektronickom doručovaní dokumentov",
+          "href": "https://osbdcadca.sk/wp-content/uploads/2026/07/Dohoda-o-elektronickom-doru%C4%8Dovan%C3%AD.pdf"
+        },
+        {
+          "title": "Informácia k elektronickému doručovaniu dokumentov",
+          "href": "https://osbdcadca.sk/wp-content/uploads/2026/07/Inform%C3%A1cia-k-elektronick%C3%A9mu-doru%C4%8Dovaniu-dokumentov_.pdf"
+        }
+      ]
+    },
+    {
+      "id": "pisomne-hlasovanie",
+      "title": "Písomné hlasovanie na bytovom dome – vchode",
+      "defaultOpen": true,
+      "documents": [
+        {
+          "title": "Žiadosť o elektronické hlasovanie na písomnom hlasovaní",
+          "href": "https://osbdcadca.sk/wp-content/uploads/2025/02/%C5%BDiados%C5%A5-o-elektronick%C3%A9-p%C3%ADsomn%C3%A9-hlasovanie.pdf"
+        }
+      ]
+    },
+    {
+      "id": "dokumenty-tlaciva",
+      "title": "Dokumenty a tlačivá",
+      "defaultOpen": false,
+      "documents": [
+        {
+          "title": "Odpočty meračov studenej a teplej vody",
+          "href": "https://osbdcadca.sk/wp-content/uploads/2026/07/Odpo%C4%8Dty-mera%C4%8Dov-studenej-a-teplej-vody.pdf"
+        },
+        {
+          "title": "Čestné prehlásenie o počte bývajúcich v byte",
+          "href": "https://osbdcadca.sk/wp-content/uploads/2026/04/%C4%8Cestn%C3%A9-prehl%C3%A1senie-o-po%C4%8Dte-b%C3%BDvaj%C3%BAcich-v-byte.pdf"
+        },
+        {
+          "title": "Čestné prehlásenie o nevykonávaní činnosti počas PN",
+          "href": "http://osbdcadca.sk/wp-content/uploads/2020/02/estn_prehlsenie.pdf"
+        },
+        {
+          "title": "Výkaz činností výťahára.pdf",
+          "href": "http://osbdcadca.sk/wp-content/uploads/2020/02/Vkaz_innost_vahra.pdf"
+        },
+        {
+          "title": "Žiadanka na vykonanie prác v družstevnom byte",
+          "href": "http://osbdcadca.sk/wp-content/uploads/2020/02/iadanka_na_vykonanie_prc_v_drustevnom_byte.pdf"
+        },
+        {
+          "title": "Reklamačný poriadok",
+          "href": "https://osbdcadca.sk/wp-content/uploads/2023/10/Reklama%C4%8Dn%C3%BD-poriadok-xxxxx.pdf"
+        },
+        {
+          "title": "Zákon č. 182/1993 – novelizácia.pdf",
+          "href": "http://osbdcadca.sk/wp-content/uploads/2020/02/ZZ_1993_182_20190101.pdf"
+        },
+        {
+          "title": "Metodický list pre ZV k novele zákona č.182/1993.pdf",
+          "href": "http://osbdcadca.sk/wp-content/uploads/2020/02/Metodicklist_pre_ZV_k_novele_zkona_182-1993.pdf"
+        },
+        {
+          "title": "Vyhláška č.358/2009.pdf",
+          "href": "http://osbdcadca.sk/wp-content/uploads/2020/02/vyhlaska_358_rok_2009_rozpocet_tepla.pdf"
+        },
+        {
+          "title": "Vyhláška č.630/2005.pdf",
+          "href": "http://osbdcadca.sk/wp-content/uploads/2020/02/vyhl_630-2005.pdf"
+        },
+        {
+          "title": "Zákon o energetickej efektívnosti č.321/2014.pdf",
+          "href": "http://osbdcadca.sk/wp-content/uploads/2020/02/z_321_2014.pdf"
+        },
+        {
+          "title": "Zákon č. 657/2004.pdf",
+          "href": "http://osbdcadca.sk/wp-content/uploads/2020/02/kz_657_2004_01-12-2014.pdf"
+        },
+        {
+          "title": "Zákon č.476/2008.pdf",
+          "href": "http://osbdcadca.sk/wp-content/uploads/2020/02/Zkon_.476-2008.pdf"
+        }
+      ]
+    },
+    {
+      "id": "postup-obstaravania",
+      "title": "Postup obstarávania tovarov a služieb",
+      "defaultOpen": false,
+      "documents": [
+        {
+          "title": "Postup obstarávania tovarov a služieb",
+          "href": "http://osbdcadca.sk/wp-content/uploads/2020/02/Postup_obst_tov_a_sl_CA.pdf"
+        }
+      ]
+    }
+  ]
+}

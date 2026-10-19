@@ -1,0 +1,384 @@
+{
+  "headline": "Kontakty",
+  "support": "Oddelené kontakty družstva a rýchle čísla na hlásenie závad a porúch.",
+  "officeHours": {
+    "status": "ready",
+    "title": "Stránkové hodiny",
+    "schedule": [
+      {
+        "day": "Pondelok",
+        "hours": [
+          "7:00 – 11:00",
+          "12:00 – 17:00"
+        ]
+      },
+      {
+        "day": "Utorok",
+        "hours": "nestránkový deň"
+      },
+      {
+        "day": "Streda",
+        "hours": [
+          "7:00 – 11:00",
+          "12:00 – 17:00"
+        ]
+      },
+      {
+        "day": "Štvrtok",
+        "hours": "nestránkový deň"
+      },
+      {
+        "day": "Piatok",
+        "hours": "7:00 – 11:00"
+      }
+    ],
+    "lunchBreak": {
+      "title": "Obedná prestávka",
+      "detail": "od 11:00 hod. – do 12:00 hod."
+    },
+    "extras": [
+      {
+        "title": "Stránkový deň – predseda predstavenstva",
+        "detail": "Streda: 13:00 – 15:00"
+      },
+      {
+        "title": "Stránkový deň – právnik",
+        "detail": "Streda: 13:00 – 16:00"
+      }
+    ],
+    "emergency": {
+      "title": "Havarijná služba",
+      "lines": [
+        "Piatok: 14:00 – 21:00",
+        "Sobota, nedeľa, sviatok: 7:00 – 21:00"
+      ]
+    }
+  },
+  "staffDirectory": {
+    "sectionId": "kontakty-druzstva",
+    "headline": "Kontakty družstva",
+    "groups": [
+      {
+        "id": "predstavenstvo",
+        "title": "Predstavenstvo",
+        "people": [
+          {
+            "name": "predseda predstavenstva Ing. Marián Sihelník",
+            "emails": [
+              "predsedapredstavenstva@osbdcadca.sk"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "kontrolna-komisia",
+        "title": "Kontrolná komisia",
+        "people": [
+          {
+            "name": "predseda kontrolnej komisie Ing. Alojz Kozoň",
+            "emails": [
+              "kontrolnakomisia@osbdcadca.sk"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "riaditelka",
+        "title": "Riaditeľka OSBD Čadca",
+        "people": [
+          {
+            "name": "Bc. Alena Gužíková",
+            "room": "č. dverí 201",
+            "phones": [
+              "0907 620 118"
+            ],
+            "emails": [
+              "riaditel@osbdcadca.sk",
+              "ekonom@osbdcadca.sk"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "sekretariat",
+        "title": "Sekretariát, bytový referát, členské vzťahy",
+        "people": [
+          {
+            "name": "Mgr. Adela Truchliková",
+            "room": "č. dverí 202",
+            "phones": [
+              "0905 300 722"
+            ],
+            "emails": [
+              "bytreferent@osbdcadca.sk"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "kablovka",
+        "title": "Káblová televízia a internet, faktúry údržby, odpočty bytových vodomerov",
+        "people": [
+          {
+            "name": "Mária Jurišová",
+            "room": "č. dverí 204",
+            "phones": [
+              "0948 871 744",
+              "041/432 29 32"
+            ],
+            "emails": [
+              "kablovka@osbdcadca.sk"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "udrzba",
+        "title": "Zástupca riaditeľa, vedúci údržby, revízie, poruchy",
+        "people": [
+          {
+            "name": "Ing. Ján Šurlák",
+            "room": "č. dverí 205",
+            "phones": [
+              "0907 269 023"
+            ],
+            "emails": [
+              "udrzba@osbdcadca.sk"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "energetik",
+        "title": "Energetik, výťahy, závady elektro, stavebné úpravy v bytoch",
+        "people": [
+          {
+            "name": "Ing. Pavol Klimek",
+            "room": "č. dverí 206",
+            "phones": [
+              "0915 835 160"
+            ],
+            "emails": [
+              "energetik@osbdcadca.sk"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "najomne",
+        "title": "Oddelenie nájomného, pokladňa",
+        "people": [
+          {
+            "name": "Mgr. Monika Poláčková",
+            "room": "č. dverí 207",
+            "phones": [
+              "0918 803 243"
+            ],
+            "emails": [
+              "pokladna@osbdcadca.sk"
+            ]
+          },
+          {
+            "name": "Marcela Slováková",
+            "room": "č. dverí 207",
+            "phones": [
+              "0918 803 243"
+            ],
+            "emails": [
+              "najomne@osbdcadca.sk"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "uctaren",
+        "title": "Účtáreň, fond prevádzky údržby a opráv, dodávateľské faktúry, poistné udalosti",
+        "people": [
+          {
+            "name": "Bc. Štefánia Minarčíková",
+            "room": "č. dverí 208",
+            "phones": [
+              "0905 791 760"
+            ],
+            "emails": [
+              "finuctaren@osbdcadca.sk"
+            ]
+          },
+          {
+            "name": "Eva Gregušová",
+            "room": "č. dverí 208",
+            "phones": [
+              "0905 791 760"
+            ],
+            "emails": [
+              "fondyoprav@osbdcadca.sk"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "faultContacts": {
+    "sectionId": "poruchy-zavady",
+    "headline": "Kontakty na hlásenie závad a porúch",
+    "support": "Rýchle kontakty pre havárie a poruchy. Volajte podľa typu závady.",
+    "blocks": [
+      {
+        "id": "havarijna-voda",
+        "title": "Havarijná služba – voda, kúrenie a kanalizácia",
+        "person": "Pavel Hrabec",
+        "phones": [
+          "0905 713 605"
+        ],
+        "primary": true,
+        "icon": "droplets"
+      },
+      {
+        "id": "kablovka-pracovna",
+        "title": "Káblová televízia – počas pracovnej doby OSBD Čadca",
+        "person": "Mária Jurišová",
+        "phones": [
+          "0948 871 744"
+        ],
+        "emails": [
+          "kablovka@osbdcadca.sk"
+        ],
+        "schedule": [
+          {
+            "day": "Pondelok",
+            "hours": "7:00 – 17:00"
+          },
+          {
+            "day": "Utorok",
+            "hours": "7:00 – 14:00"
+          },
+          {
+            "day": "Streda",
+            "hours": "7:00 – 17:00"
+          },
+          {
+            "day": "Štvrtok",
+            "hours": "7:00 – 14:00"
+          },
+          {
+            "day": "Piatok",
+            "hours": "7:00 – 13:00"
+          }
+        ],
+        "icon": "tv"
+      },
+      {
+        "id": "kablovka-mimo",
+        "title": "Káblová televízia – mimo pracovnej doby",
+        "emails": [
+          "kablovka@osbdcadca.sk"
+        ],
+        "phones": [
+          "041/432 29 32"
+        ],
+        "phoneNotes": [
+          "odkazová služba"
+        ],
+        "icon": "tv"
+      },
+      {
+        "id": "vytahy",
+        "title": "Závady výťahov",
+        "person": "CA VÝŤAHY – p. Kubica",
+        "phones": [
+          "0911 905 015",
+          "0911 426 953",
+          "0908 515 306",
+          "0902 115 929"
+        ],
+        "icon": "elevator"
+      },
+      {
+        "id": "sevak",
+        "title": "SEVAK havarijná služba",
+        "subtitle": "závady kanalizácie v správe SeVaK, a.s.",
+        "phones": [
+          "041/707 17 29",
+          "041/700 31 50",
+          "0905 575 347"
+        ],
+        "icon": "waves"
+      },
+      {
+        "id": "teplo-tuv",
+        "title": "Dodávatelia tepla a TÚV",
+        "providers": [
+          {
+            "name": "Mestská teplárenská spol., a.s. Čadca",
+            "phones": [
+              "041/432 68 58"
+            ]
+          },
+          {
+            "name": "Energetika Turzovka",
+            "phones": [
+              "0915 668 379",
+              "0915 668 398",
+              "041/435 27 19"
+            ]
+          },
+          {
+            "name": "KRASBYT, Krásno nad Kysucou",
+            "phones": [
+              "0948 319 027",
+              "041/438 52 12"
+            ]
+          }
+        ],
+        "icon": "flame"
+      },
+      {
+        "id": "sse",
+        "title": "Stredoslovenské energetické závody",
+        "subtitle": "infolinka Žilina / havarijná služba",
+        "phones": [
+          "0850 111 468",
+          "0800 159 000"
+        ],
+        "icon": "zap"
+      },
+      {
+        "id": "elektro",
+        "title": "Závady elektroinštalácie",
+        "person": "Stanislav Chovanec – STAMI",
+        "phones": [
+          "0918 082 772"
+        ],
+        "icon": "zap"
+      },
+      {
+        "id": "plyn",
+        "title": "Závady plynoinštalácie",
+        "providers": [
+          {
+            "name": "SPP",
+            "phones": [
+              "0850 111 727"
+            ]
+          },
+          {
+            "name": "p. Kajánek",
+            "phones": [
+              "0903 826 468"
+            ]
+          }
+        ],
+        "icon": "gas"
+      },
+      {
+        "id": "klucova",
+        "title": "Kľúčová služba Čadca",
+        "subtitle": "núdzové otváranie dverí, servis dverí a zámkov",
+        "phones": [
+          "0909 194 126"
+        ],
+        "icon": "key"
+      }
+    ]
+  }
+}
