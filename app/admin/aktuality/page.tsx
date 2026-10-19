@@ -1,324 +1,491 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { Field, inputClass, textareaClass } from "@/components/admin/Field";
-import { SaveBar } from "@/components/admin/SaveBar";
+import { EditPanel } from "@/components/admin/EditPanel";
+import { KindBadge, ListRow, StatusBadge } from "@/components/admin/ListRow";
+import { PdfAttachment } from "@/components/admin/PdfAttachment";
+import {
+  btnPrimary,
+  formatDateSk,
+  helperClass,
+} from "@/components/admin/admin-ui";
 import { useContentEditor } from "@/components/admin/useContentEditor";
 import type { AktualityContent, Notice } from "@/lib/content/schema";
 
-function emptyPdf(): Notice {
+type Attachment = { title: string; href: string };
+
+type Draft = {
+  id: string;
+  title: string;
+  publishedAt: string;
+  bodyText: string;
+  attachments: Attachment[];
+  active: boolean;
+  linkifyPhones?: boolean;
+};
+
+function todayIso() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function noticeToDraft(item: Notice): Draft {
+  if (item.kind === "pdf") {
+    return {
+      id: item.id,
+      title: item.title,
+      publishedAt: item.publishedAt,
+      bodyText: "",
+      attachments: item.pdfHref
+        ? [{ title: "Príloha", href: item.pdfHref }]
+        : [],
+      active: item.active,
+    };
+  }
   return {
-    id: `oznam-${Date.now()}`,
-    kind: "pdf",
+    id: item.id,
+    title: item.title,
+    publishedAt: item.publishedAt,
+    bodyText: item.body.join("\n\n"),
+    attachments: [...(item.attachments ?? [])],
+    active: item.active,
+    linkifyPhones: item.linkifyPhones,
+  };
+}
+
+function emptyDraft(): Draft {
+  return {
+    id: `aktualita-${Date.now()}`,
     title: "",
-    publishedAt: new Date().toISOString().slice(0, 10),
-    pdfHref: "",
+    publishedAt: todayIso(),
+    bodyText: "",
+    attachments: [],
     active: true,
   };
 }
 
-function emptyArticle(): Notice {
+/** Derive stored notice kind from form content — client never chooses type. */
+function draftToNotice(draft: Draft): Notice | { error: string } {
+  const title = draft.title.trim();
+  if (!title) return { error: "Zadajte nadpis aktuality." };
+
+  const body = draft.bodyText
+    .split(/\n\s*\n/)
+    .map((p) => p.trim())
+    .filter(Boolean);
+  const attachments = draft.attachments.filter((a) => a.href.trim());
+  const hasBody = body.length > 0;
+  const hasPdf = attachments.length > 0;
+
+  if (!hasBody && !hasPdf) {
+    return {
+      error: "Pridajte text aktuality alebo PDF prílohu.",
+    };
+  }
+
+  // PDF-only → public “Otvoriť oznámenie”
+  if (!hasBody && attachments.length === 1) {
+    return {
+      id: draft.id,
+      kind: "pdf",
+      title,
+      publishedAt: draft.publishedAt,
+      pdfHref: attachments[0].href,
+      active: draft.active,
+    };
+  }
+
+  // Text and/or multiple PDFs → article
   return {
-    id: `clanok-${Date.now()}`,
+    id: draft.id,
     kind: "article",
-    title: "",
-    publishedAt: new Date().toISOString().slice(0, 10),
-    body: [""],
-    attachments: [],
-    active: true,
+    title,
+    publishedAt: draft.publishedAt,
+    body: hasBody ? body : [],
+    attachments: hasPdf ? attachments : undefined,
+    linkifyPhones: draft.linkifyPhones,
+    active: draft.active,
   };
+}
+
+function kindLabel(item: Notice): string {
+  if (item.kind === "pdf") return "PDF";
+  const hasPdf = (item.attachments?.length ?? 0) > 0;
+  const hasText = item.body.some((p) => p.trim());
+  if (hasText && hasPdf) return "Text + PDF";
+  if (hasPdf) return "PDF";
+  return "Text";
 }
 
 export default function AdminAktualityPage() {
   const editor = useContentEditor<AktualityContent>("aktuality.json");
   const data = editor.data;
 
-  function updateItem(index: number, next: Notice) {
-    if (!data) return;
-    const items = [...data.items];
-    items[index] = next;
-    editor.setData({ ...data, items });
+  const [mode, setMode] = useState<"closed" | "create" | "edit">("closed");
+  const [editIndex, setEditIndex] = useState<number | null>(null);
+  const [draft, setDraft] = useState<Draft | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  const items = data?.items ?? [];
+
+  const panelTitle = useMemo(() => {
+    if (mode === "create") return "Nová aktualita";
+    return "Upraviť aktualitu";
+  }, [mode]);
+
+  function openCreate() {
+    setDraft(emptyDraft());
+    setEditIndex(null);
+    setMode("create");
+    setFormError(null);
+    setConfirmDelete(false);
+    editor.setError(null);
+    editor.setMessage(null);
   }
 
-  function move(index: number, dir: -1 | 1) {
+  function openEdit(index: number) {
+    if (!data) return;
+    setDraft(noticeToDraft(data.items[index]));
+    setEditIndex(index);
+    setMode("edit");
+    setFormError(null);
+    setConfirmDelete(false);
+    editor.setError(null);
+    editor.setMessage(null);
+  }
+
+  function closePanel() {
+    setMode("closed");
+    setDraft(null);
+    setEditIndex(null);
+    setFormError(null);
+    setConfirmDelete(false);
+  }
+
+  function moveItem(index: number, dir: -1 | 1) {
     if (!data) return;
     const target = index + dir;
     if (target < 0 || target >= data.items.length) return;
-    const items = [...data.items];
-    const [row] = items.splice(index, 1);
-    items.splice(target, 0, row);
-    editor.setData({ ...data, items });
+    const next = [...data.items];
+    const [row] = next.splice(index, 1);
+    next.splice(target, 0, row);
+    editor.setData({ ...data, items: next });
+    void editor.save({ ...data, items: next }, "cms: aktuality — poradie");
   }
 
-  async function uploadPdf(index: number, file: File, asAttachment = false) {
-    if (!data) return;
-    const item = data.items[index];
-    const uploaded = await editor.uploadFile({
-      file,
-      kind: "pdf",
-      folder: "aktuality",
-      baseName: item.title || item.id,
-    });
-    if (!uploaded) return;
-    if (item.kind === "pdf" && !asAttachment) {
-      updateItem(index, { ...item, pdfHref: uploaded.url });
-    } else if (item.kind === "article") {
-      updateItem(index, {
-        ...item,
-        attachments: [
-          ...(item.attachments ?? []),
-          { title: file.name.replace(/\.pdf$/i, ""), href: uploaded.url },
-        ],
+  async function uploadAttachment(file: File, replaceIndex?: number) {
+    if (!draft) return;
+    setUploading(true);
+    setFormError(null);
+    try {
+      const uploaded = await editor.uploadFile({
+        file,
+        kind: "pdf",
+        folder: "aktuality",
+        baseName: draft.title || draft.id,
       });
+      if (!uploaded) return;
+      const att: Attachment = {
+        title: file.name.replace(/\.pdf$/i, "") || "Príloha",
+        href: uploaded.url,
+      };
+      setDraft((prev) => {
+        if (!prev) return prev;
+        if (typeof replaceIndex === "number") {
+          const attachments = [...prev.attachments];
+          attachments[replaceIndex] = att;
+          return { ...prev, attachments };
+        }
+        return { ...prev, attachments: [...prev.attachments, att] };
+      });
+    } finally {
+      setUploading(false);
     }
+  }
+
+  async function saveDraft() {
+    if (!data || !draft) return;
+    const result = draftToNotice(draft);
+    if ("error" in result) {
+      setFormError(result.error);
+      return;
+    }
+    setFormError(null);
+    const itemsNext = [...data.items];
+    if (mode === "create") {
+      itemsNext.unshift(result);
+    } else if (editIndex !== null) {
+      itemsNext[editIndex] = result;
+    }
+    const next = { ...data, items: itemsNext };
+    editor.setData(next);
+    const ok = await editor.save(
+      next,
+      mode === "create"
+        ? "cms: aktuality — nová aktualita"
+        : "cms: aktuality — úprava",
+    );
+    if (ok) closePanel();
+  }
+
+  async function deleteCurrent() {
+    if (!data || editIndex === null) return;
+    const itemsNext = data.items.filter((_, i) => i !== editIndex);
+    const next = { ...data, items: itemsNext };
+    editor.setData(next);
+    const ok = await editor.save(next, "cms: aktuality — zmazanie");
+    if (ok) closePanel();
   }
 
   return (
     <AdminShell title="Aktuality">
       {editor.loading || !data ? (
-        <p className="text-ink-muted">Načítavam z GitHub…</p>
+        <p className="text-ink-muted">Načítavam…</p>
       ) : (
         <>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Nadpis sekcie">
-              <input
-                className={inputClass}
-                value={data.headline}
-                onChange={(e) =>
-                  editor.setData({ ...data, headline: e.target.value })
-                }
-              />
-            </Field>
-            <Field label="Podnadpis">
-              <input
-                className={inputClass}
-                value={data.support}
-                onChange={(e) =>
-                  editor.setData({ ...data, support: e.target.value })
-                }
-              />
-            </Field>
-          </div>
-
-          <div className="mt-6 flex flex-wrap gap-2">
-            <button
-              type="button"
-              className="rounded-md border border-forest/20 bg-white px-3 py-2 text-[0.88rem] font-semibold text-forest"
-              onClick={() =>
-                editor.setData({ ...data, items: [emptyPdf(), ...data.items] })
-              }
-            >
-              + PDF oznámenie
-            </button>
-            <button
-              type="button"
-              className="rounded-md border border-forest/20 bg-white px-3 py-2 text-[0.88rem] font-semibold text-forest"
-              onClick={() =>
-                editor.setData({
-                  ...data,
-                  items: [emptyArticle(), ...data.items],
-                })
-              }
-            >
-              + Textový článok
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <p className="max-w-xl text-[0.95rem] leading-relaxed text-ink-muted">
+              Pridávajte oznamy pre vlastníkov. Stačí nadpis, dátum a voliteľne
+              text alebo PDF.
+            </p>
+            <button type="button" className={btnPrimary} onClick={openCreate}>
+              + Pridať aktualitu
             </button>
           </div>
 
-          <ul className="mt-5 space-y-4">
-            {data.items.map((item, index) => (
-              <li
-                key={item.id}
-                className="rounded-lg border border-forest/10 bg-white p-4"
-              >
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="rounded bg-soft-sage px-2 py-0.5 text-[0.72rem] font-semibold tracking-wide text-forest uppercase">
-                    {item.kind === "pdf" ? "PDF" : "Článok"}
-                  </span>
-                  <label className="ml-auto inline-flex items-center gap-2 text-[0.88rem]">
-                    <input
-                      type="checkbox"
-                      checked={item.active}
-                      onChange={(e) =>
-                        updateItem(index, {
-                          ...item,
-                          active: e.target.checked,
-                        })
-                      }
-                    />
-                    Aktívne
-                  </label>
-                  <button
-                    type="button"
-                    className="text-[0.82rem] font-semibold text-forest"
-                    onClick={() => move(index, -1)}
-                  >
-                    ↑
-                  </button>
-                  <button
-                    type="button"
-                    className="text-[0.82rem] font-semibold text-forest"
-                    onClick={() => move(index, 1)}
-                  >
-                    ↓
-                  </button>
-                  <button
-                    type="button"
-                    className="text-[0.82rem] font-semibold text-red-700"
-                    onClick={() =>
-                      editor.setData({
-                        ...data,
-                        items: data.items.filter((_, i) => i !== index),
-                      })
-                    }
-                  >
-                    Zmazať
-                  </button>
-                </div>
+          {editor.error && mode === "closed" ? (
+            <p className="mt-4 text-[0.92rem] font-medium text-red-700">
+              {editor.error}
+            </p>
+          ) : null}
+          {editor.message && mode === "closed" ? (
+            <p className="mt-4 text-[0.92rem] font-medium text-forest">
+              ✓ {editor.message}
+              {editor.hint ? (
+                <span className="ml-1 font-normal text-ink-muted">
+                  {editor.hint}
+                </span>
+              ) : null}
+            </p>
+          ) : null}
 
-                <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                  <Field label="Nadpis">
-                    <input
-                      className={inputClass}
-                      value={item.title}
-                      onChange={(e) =>
-                        updateItem(index, { ...item, title: e.target.value })
-                      }
-                    />
-                  </Field>
-                  <Field label="Dátum (YYYY-MM-DD)">
-                    <input
-                      className={inputClass}
-                      value={item.publishedAt}
-                      onChange={(e) =>
-                        updateItem(index, {
-                          ...item,
-                          publishedAt: e.target.value,
-                        })
-                      }
-                    />
-                  </Field>
-                </div>
+          {items.length === 0 ? (
+            <div className="mt-8 rounded-lg border border-dashed border-forest/20 bg-white px-5 py-12 text-center">
+              <p className="text-[1.05rem] font-semibold text-ink">
+                Zatiaľ žiadne aktuality
+              </p>
+              <p className={helperClass}>
+                Začnite prvou aktualitou tlačidlom vyššie.
+              </p>
+            </div>
+          ) : (
+            <ul className="mt-6 space-y-2.5">
+              {items.map((item, index) => (
+                <ListRow
+                  key={item.id}
+                  title={item.title}
+                  onEdit={() => openEdit(index)}
+                  meta={
+                    <>
+                      <span className="text-[0.88rem] text-ink-muted">
+                        {formatDateSk(item.publishedAt)}
+                      </span>
+                      <KindBadge label={kindLabel(item)} />
+                      <StatusBadge active={item.active} />
+                    </>
+                  }
+                  menuItems={[
+                    {
+                      label: "Presunúť vyššie",
+                      onClick: () => moveItem(index, -1),
+                    },
+                    {
+                      label: "Presunúť nižšie",
+                      onClick: () => moveItem(index, 1),
+                    },
+                    {
+                      label: "Upraviť",
+                      onClick: () => openEdit(index),
+                    },
+                  ]}
+                />
+              ))}
+            </ul>
+          )}
 
-                {item.kind === "pdf" ? (
-                  <div className="mt-3 space-y-2">
-                    <Field label="PDF URL">
-                      <input
-                        className={inputClass}
-                        value={item.pdfHref}
-                        onChange={(e) =>
-                          updateItem(index, {
-                            ...item,
-                            pdfHref: e.target.value,
-                          })
-                        }
-                      />
-                    </Field>
-                    <input
-                      type="file"
-                      accept="application/pdf,.pdf"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) void uploadPdf(index, file);
-                      }}
-                    />
+          <EditPanel
+            open={mode !== "closed" && !!draft}
+            title={panelTitle}
+            onClose={closePanel}
+            primaryLabel={
+              editor.saving
+                ? "Ukladá sa…"
+                : mode === "create"
+                  ? "Uložiť aktualitu"
+                  : "Uložiť zmeny"
+            }
+            primaryDisabled={editor.saving || uploading}
+            onPrimary={() => void saveDraft()}
+            error={formError || editor.error}
+            message={editor.message}
+            footerExtra={
+              mode === "edit" ? (
+                confirmDelete ? (
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-[0.84rem] text-red-700">
+                      Naozaj vymazať?
+                    </span>
+                    <button
+                      type="button"
+                      className="text-[0.84rem] font-semibold text-red-700"
+                      onClick={() => void deleteCurrent()}
+                    >
+                      Áno, vymazať
+                    </button>
+                    <button
+                      type="button"
+                      className="text-[0.84rem] font-semibold text-ink-muted"
+                      onClick={() => setConfirmDelete(false)}
+                    >
+                      Nie
+                    </button>
                   </div>
                 ) : (
-                  <div className="mt-3 space-y-3">
-                    <Field label="Text (odseky oddelené prázdnym riadkom)">
-                      <textarea
-                        className={textareaClass}
-                        value={item.body.join("\n\n")}
-                        onChange={(e) =>
-                          updateItem(index, {
-                            ...item,
-                            body: e.target.value
-                              .split(/\n\s*\n/)
-                              .map((p) => p.trim())
-                              .filter(Boolean),
-                          })
-                        }
-                      />
-                    </Field>
-                    <div>
-                      <p className="text-[0.84rem] font-medium text-ink">
-                        Prílohy PDF
-                      </p>
-                      <ul className="mt-2 space-y-2">
-                        {(item.attachments ?? []).map((att, aIndex) => (
-                          <li
-                            key={`${att.href}-${aIndex}`}
-                            className="flex flex-wrap gap-2"
-                          >
-                            <input
-                              className={inputClass}
-                              value={att.title}
-                              onChange={(e) => {
-                                const attachments = [
-                                  ...(item.attachments ?? []),
-                                ];
-                                attachments[aIndex] = {
-                                  ...att,
-                                  title: e.target.value,
-                                };
-                                updateItem(index, { ...item, attachments });
-                              }}
-                            />
-                            <input
-                              className={inputClass}
-                              value={att.href}
-                              onChange={(e) => {
-                                const attachments = [
-                                  ...(item.attachments ?? []),
-                                ];
-                                attachments[aIndex] = {
-                                  ...att,
-                                  href: e.target.value,
-                                };
-                                updateItem(index, { ...item, attachments });
-                              }}
-                            />
-                            <button
-                              type="button"
-                              className="text-[0.82rem] font-semibold text-red-700"
-                              onClick={() =>
-                                updateItem(index, {
-                                  ...item,
-                                  attachments: (item.attachments ?? []).filter(
-                                    (_, i) => i !== aIndex,
-                                  ),
-                                })
-                              }
-                            >
-                              Odstrániť
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                      <input
-                        className="mt-2"
-                        type="file"
-                        accept="application/pdf,.pdf"
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) void uploadPdf(index, file, true);
-                        }}
-                      />
-                    </div>
-                  </div>
-                )}
-              </li>
-            ))}
-          </ul>
-
-          <SaveBar
-            saving={editor.saving}
-            message={editor.message}
-            hint={editor.hint}
-            error={editor.error}
-            onSave={() =>
-              void editor.save(data, "cms: aktuality — úprava zoznamu")
+                  <button
+                    type="button"
+                    className="text-[0.84rem] text-ink-muted underline-offset-2 hover:text-red-700 hover:underline"
+                    onClick={() => setConfirmDelete(true)}
+                  >
+                    Vymazať aktualitu
+                  </button>
+                )
+              ) : null
             }
-          />
+          >
+            {draft ? (
+              <div className="space-y-5">
+                <Field label="Nadpis">
+                  <input
+                    className={inputClass}
+                    value={draft.title}
+                    onChange={(e) =>
+                      setDraft({ ...draft, title: e.target.value })
+                    }
+                    placeholder="Napr. ENERGOPOMOC r. 2026"
+                  />
+                </Field>
+
+                <Field label="Dátum">
+                  <input
+                    type="date"
+                    className={inputClass}
+                    value={draft.publishedAt}
+                    onChange={(e) =>
+                      setDraft({ ...draft, publishedAt: e.target.value })
+                    }
+                  />
+                </Field>
+
+                <Field
+                  label="Text aktuality"
+                  helper="Text môžete nechať prázdny, ak pridávate iba PDF oznámenie."
+                >
+                  <textarea
+                    className={textareaClass}
+                    value={draft.bodyText}
+                    onChange={(e) =>
+                      setDraft({ ...draft, bodyText: e.target.value })
+                    }
+                    placeholder="Voliteľný text oznámenia…"
+                  />
+                </Field>
+
+                <div className="space-y-3">
+                  {draft.attachments.length === 0 ? (
+                    <PdfAttachment
+                      helper="PDF môžete pridať, ak ho k aktualite máte."
+                      uploading={uploading}
+                      onUpload={(file) => void uploadAttachment(file)}
+                      allowExternalLink
+                      onSetExternalLink={(url) =>
+                        setDraft({
+                          ...draft,
+                          attachments: [{ title: "Príloha", href: url }],
+                        })
+                      }
+                    />
+                  ) : (
+                    <>
+                      {draft.attachments.map((att, aIndex) => (
+                        <PdfAttachment
+                          key={`${att.href}-${aIndex}`}
+                          label={
+                            draft.attachments.length > 1
+                              ? `Príloha ${aIndex + 1}`
+                              : "Príloha"
+                          }
+                          href={att.href}
+                          uploading={uploading}
+                          onUpload={(file) =>
+                            void uploadAttachment(file, aIndex)
+                          }
+                          onClear={() =>
+                            setDraft({
+                              ...draft,
+                              attachments: draft.attachments.filter(
+                                (_, i) => i !== aIndex,
+                              ),
+                            })
+                          }
+                          allowExternalLink
+                          onSetExternalLink={(url) => {
+                            const attachments = [...draft.attachments];
+                            attachments[aIndex] = { ...att, href: url };
+                            setDraft({ ...draft, attachments });
+                          }}
+                        />
+                      ))}
+                      <PdfAttachment
+                        label="Ďalšia príloha"
+                        helper="Voliteľné — pridajte ďalšie PDF, ak ich potrebujete."
+                        uploading={uploading}
+                        onUpload={(file) => void uploadAttachment(file)}
+                      />
+                    </>
+                  )}
+                </div>
+
+                <fieldset>
+                  <legend className="text-[0.9rem] font-medium text-ink">
+                    Zobraziť na webe
+                  </legend>
+                  <div className="mt-2.5 flex flex-col gap-2">
+                    <label className="inline-flex items-center gap-2.5 text-[0.95rem]">
+                      <input
+                        type="radio"
+                        name="active"
+                        checked={draft.active}
+                        onChange={() => setDraft({ ...draft, active: true })}
+                      />
+                      Aktívna
+                    </label>
+                    <label className="inline-flex items-center gap-2.5 text-[0.95rem]">
+                      <input
+                        type="radio"
+                        name="active"
+                        checked={!draft.active}
+                        onChange={() => setDraft({ ...draft, active: false })}
+                      />
+                      Skrytá
+                    </label>
+                  </div>
+                </fieldset>
+              </div>
+            ) : null}
+          </EditPanel>
         </>
       )}
     </AdminShell>

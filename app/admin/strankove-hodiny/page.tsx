@@ -14,7 +14,7 @@ export default function AdminHodinyPage() {
   return (
     <AdminShell title="Stránkové hodiny">
       {!data || !hours || editor.loading ? (
-        <p className="text-ink-muted">Načítavam z GitHub…</p>
+        <p className="text-ink-muted">Načítavam…</p>
       ) : (
         <>
           <Field label="Nadpis">
@@ -204,6 +204,7 @@ export default function AdminHodinyPage() {
             message={editor.message}
             hint={editor.hint}
             error={editor.error}
+            label="Uložiť stránkové hodiny"
             onSave={() =>
               void editor.save(data, "cms: kontakty — stránkové hodiny")
             }

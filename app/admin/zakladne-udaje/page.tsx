@@ -13,7 +13,7 @@ export default function AdminZakladneUdajePage() {
   return (
     <AdminShell title="Základné údaje">
       {!data || editor.loading ? (
-        <p className="text-ink-muted">Načítavam z GitHub…</p>
+        <p className="text-ink-muted">Načítavam…</p>
       ) : (
         <>
           <section className="rounded-lg border border-forest/10 bg-white p-4">
@@ -57,7 +57,7 @@ export default function AdminZakladneUdajePage() {
                   }
                 />
               </Field>
-              <Field label="Telefón (zobrazenie)">
+              <Field label="Telefón">
                 <input
                   className={inputClass}
                   value={data.contact.phoneDisplay}
@@ -132,7 +132,7 @@ export default function AdminZakladneUdajePage() {
           <section className="mt-5 rounded-lg border border-forest/10 bg-white p-4">
             <h2 className="text-[1.05rem] font-semibold text-forest">Mapa</h2>
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
-              <Field label="Google Maps URL" className="sm:col-span-2">
+              <Field label="Odkaz na mapu" className="sm:col-span-2">
                 <input
                   className={inputClass}
                   value={data.map.mapsUrl}
@@ -146,7 +146,7 @@ export default function AdminZakladneUdajePage() {
                   }}
                 />
               </Field>
-              <Field label="Zemepisná šírka">
+              <Field label="Pozícia — šírka">
                 <input
                   className={inputClass}
                   type="number"
@@ -162,7 +162,7 @@ export default function AdminZakladneUdajePage() {
                   }}
                 />
               </Field>
-              <Field label="Zemepisná dĺžka">
+              <Field label="Pozícia — dĺžka">
                 <input
                   className={inputClass}
                   type="number"
@@ -242,6 +242,7 @@ export default function AdminZakladneUdajePage() {
             message={editor.message}
             hint={editor.hint}
             error={editor.error}
+            label="Uložiť základné údaje"
             onSave={() => void editor.save(data, "cms: site — základné údaje")}
           />
         </>

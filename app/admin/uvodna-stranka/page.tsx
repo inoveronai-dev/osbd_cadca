@@ -13,7 +13,7 @@ export default function AdminUvodnaStrankaPage() {
   return (
     <AdminShell title="Úvodná stránka">
       {!data || editor.loading ? (
-        <p className="text-ink-muted">Načítavam z GitHub…</p>
+        <p className="text-ink-muted">Načítavam…</p>
       ) : (
         <div className="space-y-5">
           <p className="text-[0.9rem] text-ink-muted">
@@ -24,7 +24,7 @@ export default function AdminUvodnaStrankaPage() {
           <section className="rounded-lg border border-forest/10 bg-white p-4">
             <h2 className="text-[1.05rem] font-semibold text-forest">Hero</h2>
             <div className="mt-3 grid gap-3">
-              <Field label="Eyebrow">
+              <Field label="Malý nadpis nad hlavným textom">
                 <input
                   className={inputClass}
                   value={data.hero.eyebrow}
@@ -180,7 +180,7 @@ export default function AdminUvodnaStrankaPage() {
 
           <section className="rounded-lg border border-forest/10 bg-white p-4">
             <h2 className="text-[1.05rem] font-semibold text-forest">O nás</h2>
-            <Field label="Eyebrow" className="mt-3">
+            <Field label="Malý nadpis nad hlavným textom" className="mt-3">
               <input
                 className={inputClass}
                 value={data.about.eyebrow}
@@ -531,6 +531,7 @@ export default function AdminUvodnaStrankaPage() {
             message={editor.message}
             hint={editor.hint}
             error={editor.error}
+            label="Uložiť úvodnú stránku"
             onSave={() =>
               void editor.save(data, "cms: homepage — úprava obsahu")
             }

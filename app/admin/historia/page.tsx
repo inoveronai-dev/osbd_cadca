@@ -13,7 +13,7 @@ export default function AdminHistoriaPage() {
   return (
     <AdminShell title="História">
       {!data || editor.loading ? (
-        <p className="text-ink-muted">Načítavam z GitHub…</p>
+        <p className="text-ink-muted">Načítavam…</p>
       ) : (
         <>
           <p className="mb-3 text-[0.9rem] text-ink-muted">
@@ -39,6 +39,7 @@ export default function AdminHistoriaPage() {
             message={editor.message}
             hint={editor.hint}
             error={editor.error}
+            label="Uložiť históriu"
             onSave={() => void editor.save(data, "cms: historia — úprava")}
           />
         </>

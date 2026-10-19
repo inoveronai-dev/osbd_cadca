@@ -1,8 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { AdminShell } from "@/components/admin/AdminShell";
-import { Field, inputClass, textareaClass } from "@/components/admin/Field";
-import { SaveBar } from "@/components/admin/SaveBar";
+import { Field, inputClass } from "@/components/admin/Field";
+import { EditPanel } from "@/components/admin/EditPanel";
+import { ListRow } from "@/components/admin/ListRow";
+import { btnPrimary, helperClass } from "@/components/admin/admin-ui";
 import { useContentEditor } from "@/components/admin/useContentEditor";
 import type { KontaktyContent } from "@/lib/content/schema";
 
@@ -17,306 +20,334 @@ const ICONS = [
   "key",
 ] as const;
 
+type Block = KontaktyContent["faultContacts"]["blocks"][number];
+
+type Draft = {
+  index: number | null;
+  title: string;
+  subtitle: string;
+  person: string;
+  phones: string[];
+  emails: string[];
+  icon: (typeof ICONS)[number];
+  primary: boolean;
+};
+
+function blockToDraft(block: Block, index: number): Draft {
+  return {
+    index,
+    title: block.title,
+    subtitle: block.subtitle ?? "",
+    person: block.person ?? "",
+    phones: block.phones?.length ? [...block.phones] : [""],
+    emails: block.emails?.length ? [...block.emails] : [""],
+    icon: block.icon,
+    primary: block.primary ?? false,
+  };
+}
+
 export default function AdminPoruchyPage() {
   const editor = useContentEditor<KontaktyContent>("kontakty.json");
   const data = editor.data;
   const faults = data?.faultContacts;
+  const [draft, setDraft] = useState<Draft | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+
+  function move(index: number, dir: -1 | 1) {
+    if (!data || !faults) return;
+    const target = index + dir;
+    if (target < 0 || target >= faults.blocks.length) return;
+    const blocks = [...faults.blocks];
+    const [row] = blocks.splice(index, 1);
+    blocks.splice(target, 0, row);
+    const next = { ...data, faultContacts: { ...faults, blocks } };
+    editor.setData(next);
+    void editor.save(next, "cms: kontakty — poradie porúch");
+  }
+
+  async function saveBlock() {
+    if (!data || !faults || !draft) return;
+    if (!draft.title.trim()) {
+      setFormError("Zadajte názov.");
+      return;
+    }
+    setFormError(null);
+    const phones = draft.phones.map((p) => p.trim()).filter(Boolean);
+    const emails = draft.emails.map((e) => e.trim()).filter(Boolean);
+    const base =
+      draft.index === null
+        ? {
+            id: `porucha-${Date.now()}`,
+            providers: undefined,
+            schedule: undefined,
+            phoneNotes: undefined,
+          }
+        : faults.blocks[draft.index];
+    const block: Block = {
+      ...base,
+      title: draft.title.trim(),
+      subtitle: draft.subtitle.trim() || undefined,
+      person: draft.person.trim() || undefined,
+      phones: phones.length ? phones : undefined,
+      emails: emails.length ? emails : undefined,
+      icon: draft.icon,
+      primary: draft.primary || undefined,
+    };
+    const blocks = [...faults.blocks];
+    if (draft.index === null) blocks.push(block);
+    else blocks[draft.index] = block;
+    const next = { ...data, faultContacts: { ...faults, blocks } };
+    editor.setData(next);
+    const ok = await editor.save(next, "cms: kontakty — poruchy");
+    if (ok) setDraft(null);
+  }
+
+  async function deleteBlock() {
+    if (!data || !faults || !draft || draft.index === null) return;
+    const blocks = faults.blocks.filter((_, i) => i !== draft.index);
+    const next = { ...data, faultContacts: { ...faults, blocks } };
+    editor.setData(next);
+    const ok = await editor.save(next, "cms: kontakty — zmazanie poruchy");
+    if (ok) setDraft(null);
+  }
 
   return (
     <AdminShell title="Poruchy a závady">
       {!data || !faults || editor.loading ? (
-        <p className="text-ink-muted">Načítavam z GitHub…</p>
+        <p className="text-ink-muted">Načítavam…</p>
       ) : (
         <>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <Field label="Nadpis">
-              <input
-                className={inputClass}
-                value={faults.headline}
-                onChange={(e) =>
-                  editor.setData({
-                    ...data,
-                    faultContacts: { ...faults, headline: e.target.value },
-                  })
-                }
-              />
-            </Field>
-            <Field label="Podnadpis">
-              <input
-                className={inputClass}
-                value={faults.support}
-                onChange={(e) =>
-                  editor.setData({
-                    ...data,
-                    faultContacts: { ...faults, support: e.target.value },
-                  })
-                }
-              />
-            </Field>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <p className="max-w-xl text-[0.95rem] text-ink-muted">
+              Kontakty na nahlásenie porúch. Upravujte po jednom bloku.
+            </p>
+            <button
+              type="button"
+              className={btnPrimary}
+              onClick={() => {
+                setDraft({
+                  index: null,
+                  title: "",
+                  subtitle: "",
+                  person: "",
+                  phones: [""],
+                  emails: [""],
+                  icon: "droplets",
+                  primary: false,
+                });
+                setFormError(null);
+                setConfirmDelete(false);
+              }}
+            >
+              + Pridať kontakt
+            </button>
           </div>
 
-          <button
-            type="button"
-            className="mt-4 rounded-md border border-forest/20 bg-white px-3 py-2 text-[0.88rem] font-semibold text-forest"
-            onClick={() =>
-              editor.setData({
-                ...data,
-                faultContacts: {
-                  ...faults,
-                  blocks: [
-                    ...faults.blocks,
-                    {
-                      id: `porucha-${Date.now()}`,
-                      title: "Nový kontakt",
-                      phones: [],
-                      icon: "droplets",
-                    },
-                  ],
-                },
-              })
-            }
-          >
-            + Blok
-          </button>
-
-          <ul className="mt-5 space-y-4">
+          <ul className="mt-6 space-y-2.5">
             {faults.blocks.map((block, index) => (
-              <li
+              <ListRow
                 key={block.id}
-                className="rounded-lg border border-forest/10 bg-white p-4"
-              >
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    className="text-[0.82rem] font-semibold text-forest"
-                    onClick={() => {
-                      if (index === 0) return;
-                      const blocks = [...faults.blocks];
-                      const [row] = blocks.splice(index, 1);
-                      blocks.splice(index - 1, 0, row);
-                      editor.setData({
-                        ...data,
-                        faultContacts: { ...faults, blocks },
-                      });
-                    }}
-                  >
-                    ↑
-                  </button>
-                  <button
-                    type="button"
-                    className="text-[0.82rem] font-semibold text-forest"
-                    onClick={() => {
-                      if (index >= faults.blocks.length - 1) return;
-                      const blocks = [...faults.blocks];
-                      const [row] = blocks.splice(index, 1);
-                      blocks.splice(index + 1, 0, row);
-                      editor.setData({
-                        ...data,
-                        faultContacts: { ...faults, blocks },
-                      });
-                    }}
-                  >
-                    ↓
-                  </button>
-                  <button
-                    type="button"
-                    className="ml-auto text-[0.82rem] font-semibold text-red-700"
-                    onClick={() =>
-                      editor.setData({
-                        ...data,
-                        faultContacts: {
-                          ...faults,
-                          blocks: faults.blocks.filter((_, i) => i !== index),
-                        },
-                      })
-                    }
-                  >
-                    Zmazať
-                  </button>
-                </div>
-                <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                  <Field label="Nadpis">
-                    <input
-                      className={inputClass}
-                      value={block.title}
-                      onChange={(e) => {
-                        const blocks = [...faults.blocks];
-                        blocks[index] = { ...block, title: e.target.value };
-                        editor.setData({
-                          ...data,
-                          faultContacts: { ...faults, blocks },
-                        });
-                      }}
-                    />
-                  </Field>
-                  <Field label="Podtitul">
-                    <input
-                      className={inputClass}
-                      value={block.subtitle ?? ""}
-                      onChange={(e) => {
-                        const blocks = [...faults.blocks];
-                        blocks[index] = {
-                          ...block,
-                          subtitle: e.target.value || undefined,
-                        };
-                        editor.setData({
-                          ...data,
-                          faultContacts: { ...faults, blocks },
-                        });
-                      }}
-                    />
-                  </Field>
-                  <Field label="Osoba">
-                    <input
-                      className={inputClass}
-                      value={block.person ?? ""}
-                      onChange={(e) => {
-                        const blocks = [...faults.blocks];
-                        blocks[index] = {
-                          ...block,
-                          person: e.target.value || undefined,
-                        };
-                        editor.setData({
-                          ...data,
-                          faultContacts: { ...faults, blocks },
-                        });
-                      }}
-                    />
-                  </Field>
-                  <Field label="Ikona">
-                    <select
-                      className={inputClass}
-                      value={block.icon}
-                      onChange={(e) => {
-                        const blocks = [...faults.blocks];
-                        blocks[index] = {
-                          ...block,
-                          icon: e.target.value as (typeof ICONS)[number],
-                        };
-                        editor.setData({
-                          ...data,
-                          faultContacts: { ...faults, blocks },
-                        });
-                      }}
-                    >
-                      {ICONS.map((icon) => (
-                        <option key={icon} value={icon}>
-                          {icon}
-                        </option>
-                      ))}
-                    </select>
-                  </Field>
-                  <Field label="Telefóny (čiarkou)">
-                    <input
-                      className={inputClass}
-                      value={(block.phones ?? []).join(", ")}
-                      onChange={(e) => {
-                        const phones = e.target.value
-                          .split(",")
-                          .map((v) => v.trim())
-                          .filter(Boolean);
-                        const blocks = [...faults.blocks];
-                        blocks[index] = {
-                          ...block,
-                          phones: phones.length ? phones : undefined,
-                        };
-                        editor.setData({
-                          ...data,
-                          faultContacts: { ...faults, blocks },
-                        });
-                      }}
-                    />
-                  </Field>
-                  <Field label="E-maily (čiarkou)">
-                    <input
-                      className={inputClass}
-                      value={(block.emails ?? []).join(", ")}
-                      onChange={(e) => {
-                        const emails = e.target.value
-                          .split(",")
-                          .map((v) => v.trim())
-                          .filter(Boolean);
-                        const blocks = [...faults.blocks];
-                        blocks[index] = {
-                          ...block,
-                          emails: emails.length ? emails : undefined,
-                        };
-                        editor.setData({
-                          ...data,
-                          faultContacts: { ...faults, blocks },
-                        });
-                      }}
-                    />
-                  </Field>
-                </div>
-                <Field label="Poskytovatelia (meno|telefóny; ďalší…)" className="mt-3">
-                  <textarea
-                    className={textareaClass}
-                    value={(block.providers ?? [])
-                      .map(
-                        (p) =>
-                          `${p.name}|${(p.phones ?? []).join(", ")}`,
-                      )
-                      .join("\n")}
-                    onChange={(e) => {
-                      const providers = e.target.value
-                        .split("\n")
-                        .map((line) => line.trim())
-                        .filter(Boolean)
-                        .map((line) => {
-                          const [name, phonesRaw = ""] = line.split("|");
-                          const phones = phonesRaw
-                            .split(",")
-                            .map((v) => v.trim())
-                            .filter(Boolean);
-                          return {
-                            name: name.trim(),
-                            phones: phones.length ? phones : undefined,
-                          };
-                        });
-                      const blocks = [...faults.blocks];
-                      blocks[index] = {
-                        ...block,
-                        providers: providers.length ? providers : undefined,
-                      };
-                      editor.setData({
-                        ...data,
-                        faultContacts: { ...faults, blocks },
-                      });
-                    }}
-                  />
-                </Field>
-                <label className="mt-3 inline-flex items-center gap-2 text-[0.88rem]">
-                  <input
-                    type="checkbox"
-                    checked={block.primary ?? false}
-                    onChange={(e) => {
-                      const blocks = [...faults.blocks];
-                      blocks[index] = {
-                        ...block,
-                        primary: e.target.checked || undefined,
-                      };
-                      editor.setData({
-                        ...data,
-                        faultContacts: { ...faults, blocks },
-                      });
-                    }}
-                  />
-                  Primárny blok
-                </label>
-              </li>
+                title={block.title}
+                onEdit={() => {
+                  setDraft(blockToDraft(block, index));
+                  setFormError(null);
+                  setConfirmDelete(false);
+                }}
+                meta={
+                  <>
+                    {block.person ? (
+                      <span className="text-[0.84rem] text-ink-muted">
+                        {block.person}
+                      </span>
+                    ) : null}
+                    {block.phones?.[0] ? (
+                      <span className="text-[0.84rem] text-ink-muted">
+                        {block.phones[0]}
+                      </span>
+                    ) : (
+                      <span className={helperClass}>Bez telefónu</span>
+                    )}
+                  </>
+                }
+                menuItems={[
+                  {
+                    label: "Presunúť vyššie",
+                    onClick: () => move(index, -1),
+                  },
+                  {
+                    label: "Presunúť nižšie",
+                    onClick: () => move(index, 1),
+                  },
+                ]}
+              />
             ))}
           </ul>
 
-          <SaveBar
-            saving={editor.saving}
+          {editor.message && !draft ? (
+            <p className="mt-4 text-[0.92rem] font-medium text-forest">
+              ✓ {editor.message}
+            </p>
+          ) : null}
+
+          <EditPanel
+            open={!!draft}
+            title={draft?.index === null ? "Nový kontakt" : "Upraviť kontakt"}
+            onClose={() => setDraft(null)}
+            primaryLabel={editor.saving ? "Ukladá sa…" : "Uložiť kontakt"}
+            primaryDisabled={editor.saving}
+            onPrimary={() => void saveBlock()}
+            error={formError || editor.error}
             message={editor.message}
-            hint={editor.hint}
-            error={editor.error}
-            onSave={() =>
-              void editor.save(data, "cms: kontakty — poruchy a závady")
+            footerExtra={
+              draft?.index !== null && draft ? (
+                confirmDelete ? (
+                  <div className="flex flex-wrap gap-2 text-[0.84rem]">
+                    <span className="text-red-700">Naozaj vymazať?</span>
+                    <button
+                      type="button"
+                      className="font-semibold text-red-700"
+                      onClick={() => void deleteBlock()}
+                    >
+                      Áno
+                    </button>
+                    <button
+                      type="button"
+                      className="text-ink-muted"
+                      onClick={() => setConfirmDelete(false)}
+                    >
+                      Nie
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    className="text-[0.84rem] text-ink-muted hover:text-red-700 hover:underline"
+                    onClick={() => setConfirmDelete(true)}
+                  >
+                    Vymazať kontakt
+                  </button>
+                )
+              ) : null
             }
-          />
+          >
+            {draft ? (
+              <div className="space-y-5">
+                <Field label="Názov">
+                  <input
+                    className={inputClass}
+                    value={draft.title}
+                    onChange={(e) =>
+                      setDraft({ ...draft, title: e.target.value })
+                    }
+                  />
+                </Field>
+                <Field label="Doplňujúci text">
+                  <input
+                    className={inputClass}
+                    value={draft.subtitle}
+                    onChange={(e) =>
+                      setDraft({ ...draft, subtitle: e.target.value })
+                    }
+                  />
+                </Field>
+                <Field label="Osoba">
+                  <input
+                    className={inputClass}
+                    value={draft.person}
+                    onChange={(e) =>
+                      setDraft({ ...draft, person: e.target.value })
+                    }
+                  />
+                </Field>
+
+                <div>
+                  <p className="text-[0.9rem] font-medium text-ink">Telefón</p>
+                  <div className="mt-1.5 space-y-2">
+                    {draft.phones.map((phone, i) => (
+                      <input
+                        key={i}
+                        className={inputClass}
+                        value={phone}
+                        onChange={(e) => {
+                          const phones = [...draft.phones];
+                          phones[i] = e.target.value;
+                          setDraft({ ...draft, phones });
+                        }}
+                      />
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    className="mt-2 text-[0.9rem] font-semibold text-forest hover:underline"
+                    onClick={() =>
+                      setDraft({ ...draft, phones: [...draft.phones, ""] })
+                    }
+                  >
+                    + Pridať ďalší telefón
+                  </button>
+                </div>
+
+                <div>
+                  <p className="text-[0.9rem] font-medium text-ink">E-mail</p>
+                  <div className="mt-1.5 space-y-2">
+                    {draft.emails.map((email, i) => (
+                      <input
+                        key={i}
+                        type="email"
+                        className={inputClass}
+                        value={email}
+                        onChange={(e) => {
+                          const emails = [...draft.emails];
+                          emails[i] = e.target.value;
+                          setDraft({ ...draft, emails });
+                        }}
+                      />
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    className="mt-2 text-[0.9rem] font-semibold text-forest hover:underline"
+                    onClick={() =>
+                      setDraft({ ...draft, emails: [...draft.emails, ""] })
+                    }
+                  >
+                    + Pridať ďalší e-mail
+                  </button>
+                </div>
+
+                <Field label="Ikona na webe">
+                  <select
+                    className={inputClass}
+                    value={draft.icon}
+                    onChange={(e) =>
+                      setDraft({
+                        ...draft,
+                        icon: e.target.value as (typeof ICONS)[number],
+                      })
+                    }
+                  >
+                    {ICONS.map((icon) => (
+                      <option key={icon} value={icon}>
+                        {icon}
+                      </option>
+                    ))}
+                  </select>
+                </Field>
+
+                <label className="inline-flex items-center gap-2.5 text-[0.95rem]">
+                  <input
+                    type="checkbox"
+                    checked={draft.primary}
+                    onChange={(e) =>
+                      setDraft({ ...draft, primary: e.target.checked })
+                    }
+                  />
+                  Zvýrazniť ako hlavný kontakt
+                </label>
+              </div>
+            ) : null}
+          </EditPanel>
         </>
       )}
     </AdminShell>

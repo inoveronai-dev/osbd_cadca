@@ -2,56 +2,68 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
+import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const NAV = [
-  { href: "/admin", label: "Prehľad", exact: true },
-  { href: "/admin/aktuality", label: "Aktuality" },
-  { href: "/admin/dokumenty-tlaciva", label: "Dokumenty a tlačivá" },
-  { href: "/admin/kontakty-druzstva", label: "Kontakty družstva" },
-  { href: "/admin/poruchy", label: "Poruchy a závady" },
-  { href: "/admin/strankove-hodiny", label: "Stránkové hodiny" },
-  { href: "/admin/zakladne-udaje", label: "Základné údaje" },
-  { href: "/admin/organy", label: "Orgány družstva" },
-  { href: "/admin/stanovy", label: "Stanovy OSBD" },
-  { href: "/admin/domovy-poriadok", label: "Domový poriadok" },
-  { href: "/admin/historia", label: "História" },
-  { href: "/admin/kablova-tv", label: "Káblová TV a internet" },
-  { href: "/admin/uvodna-stranka", label: "Úvodná stránka" },
-] as const;
+type NavItem = { href: string; label: string; exact?: boolean };
 
-export function AdminShell({
-  title,
-  children,
+const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
+  {
+    label: "",
+    items: [{ href: "/admin", label: "Prehľad", exact: true }],
+  },
+  {
+    label: "Obsah",
+    items: [
+      { href: "/admin/aktuality", label: "Aktuality" },
+      { href: "/admin/dokumenty-tlaciva", label: "Dokumenty a tlačivá" },
+    ],
+  },
+  {
+    label: "Kontakty",
+    items: [
+      { href: "/admin/kontakty-druzstva", label: "Kontakty družstva" },
+      { href: "/admin/poruchy", label: "Poruchy a závady" },
+      { href: "/admin/strankove-hodiny", label: "Stránkové hodiny" },
+      { href: "/admin/zakladne-udaje", label: "Základné údaje" },
+    ],
+  },
+  {
+    label: "O družstve",
+    items: [
+      { href: "/admin/organy", label: "Orgány družstva" },
+      { href: "/admin/stanovy", label: "Stanovy OSBD" },
+      { href: "/admin/domovy-poriadok", label: "Domový poriadok" },
+      { href: "/admin/historia", label: "História" },
+      { href: "/admin/kablova-tv", label: "Káblová TV a internet" },
+    ],
+  },
+  {
+    label: "Web",
+    items: [{ href: "/admin/uvodna-stranka", label: "Úvodná stránka" }],
+  },
+];
+
+function NavLinks({
+  pathname,
+  onNavigate,
 }: {
-  title: string;
-  children: React.ReactNode;
+  pathname: string;
+  onNavigate?: () => void;
 }) {
-  const pathname = usePathname();
-  const router = useRouter();
-
-  async function logout() {
-    await fetch("/api/admin/logout", { method: "POST" });
-    router.replace("/admin/login");
-    router.refresh();
-  }
-
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-[88rem] flex-col lg:flex-row">
-      <aside className="border-b border-forest/10 bg-white lg:w-64 lg:shrink-0 lg:border-r lg:border-b-0">
-        <div className="px-5 py-5">
-          <p className="text-[0.7rem] font-semibold tracking-[0.14em] text-forest/60 uppercase">
-            OSBD Čadca
-          </p>
-          <p className="mt-1 text-[1.05rem] font-semibold text-forest">
-            Administrácia
-          </p>
-        </div>
-        <nav className="px-2 pb-4" aria-label="Admin menu">
+    <nav className="px-2 pb-4" aria-label="Admin menu">
+      {NAV_GROUPS.map((group) => (
+        <div key={group.label || "home"} className="mb-3">
+          {group.label ? (
+            <p className="px-3 pt-2 pb-1 text-[0.68rem] font-semibold tracking-[0.12em] text-ink-muted uppercase">
+              {group.label}
+            </p>
+          ) : null}
           <ul className="space-y-0.5">
-            {NAV.map((item) => {
-              const exact = "exact" in item && item.exact;
-              const active = exact
+            {group.items.map((item) => {
+              const active = item.exact
                 ? pathname === item.href
                 : pathname === item.href ||
                   pathname.startsWith(`${item.href}/`);
@@ -59,8 +71,9 @@ export function AdminShell({
                 <li key={item.href}>
                   <Link
                     href={item.href}
+                    onClick={onNavigate}
                     className={cn(
-                      "block rounded-md px-3 py-2 text-[0.92rem] transition-colors",
+                      "block rounded-md px-3 py-2.5 text-[0.95rem] transition-colors",
                       active
                         ? "bg-forest text-white"
                         : "text-ink hover:bg-soft-sage hover:text-forest",
@@ -72,12 +85,84 @@ export function AdminShell({
               );
             })}
           </ul>
-        </nav>
+        </div>
+      ))}
+    </nav>
+  );
+}
+
+export function AdminShell({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  const pathname = usePathname();
+  const router = useRouter();
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  async function logout() {
+    await fetch("/api/admin/logout", { method: "POST" });
+    router.replace("/admin/login");
+    router.refresh();
+  }
+
+  return (
+    <div className="mx-auto flex min-h-screen w-full max-w-[88rem] flex-col lg:flex-row">
+      {/* Mobile top bar */}
+      <div className="flex items-center justify-between border-b border-forest/10 bg-white px-4 py-3 lg:hidden">
+        <div>
+          <p className="text-[0.68rem] font-semibold tracking-[0.12em] text-forest/55 uppercase">
+            OSBD Čadca
+          </p>
+          <p className="text-[1rem] font-semibold text-forest">Administrácia</p>
+        </div>
+        <button
+          type="button"
+          className="inline-flex size-11 items-center justify-center rounded-md text-ink hover:bg-[#f3f1ea]"
+          aria-label={menuOpen ? "Zavrieť menu" : "Otvoriť menu"}
+          onClick={() => setMenuOpen((v) => !v)}
+        >
+          {menuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+        </button>
+      </div>
+
+      {menuOpen ? (
+        <div className="border-b border-forest/10 bg-white lg:hidden">
+          <NavLinks
+            pathname={pathname}
+            onNavigate={() => setMenuOpen(false)}
+          />
+          <div className="border-t border-forest/10 px-4 py-4">
+            <button
+              type="button"
+              onClick={logout}
+              className="text-[0.9rem] font-semibold text-forest/70 hover:text-forest"
+            >
+              Odhlásiť sa
+            </button>
+          </div>
+        </div>
+      ) : null}
+
+      <aside className="hidden border-r border-forest/10 bg-white lg:flex lg:w-64 lg:shrink-0 lg:flex-col">
+        <div className="px-5 py-5">
+          <p className="text-[0.7rem] font-semibold tracking-[0.14em] text-forest/55 uppercase">
+            OSBD Čadca
+          </p>
+          <p className="mt-1 text-[1.05rem] font-semibold text-forest">
+            Administrácia
+          </p>
+        </div>
+        <div className="flex-1 overflow-y-auto">
+          <NavLinks pathname={pathname} />
+        </div>
         <div className="border-t border-forest/10 px-4 py-4">
           <button
             type="button"
             onClick={logout}
-            className="text-[0.88rem] font-semibold text-forest/70 hover:text-forest"
+            className="text-[0.9rem] font-semibold text-forest/70 hover:text-forest"
           >
             Odhlásiť sa
           </button>
@@ -85,7 +170,7 @@ export function AdminShell({
       </aside>
 
       <div className="flex-1 px-5 py-6 sm:px-8 sm:py-8">
-        <h1 className="text-[1.55rem] font-semibold tracking-tight text-forest sm:text-[1.75rem]">
+        <h1 className="text-[1.55rem] font-semibold tracking-tight text-ink sm:text-[1.75rem]">
           {title}
         </h1>
         <div className="mt-6">{children}</div>

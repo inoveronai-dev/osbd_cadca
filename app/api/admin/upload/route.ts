@@ -70,8 +70,8 @@ export async function POST(request: Request) {
       path: repoPath,
       url: publicUrlFromUploadPath(repoPath),
       commitSha: result.commitSha,
-      message: "Zmeny boli uložené. Web sa aktualizuje.",
-      hint: "Nasadenie novej verzie môže chvíľu trvať.",
+      message: "Súbor bol nahratý.",
+      hint: "Nezabudnite uložiť zmeny.",
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Upload zlyhal.";

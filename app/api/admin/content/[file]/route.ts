@@ -66,7 +66,7 @@ export async function PUT(request: Request, { params }: Params) {
 
   if (!process.env.GITHUB_TOKEN || !process.env.GITHUB_REPO) {
     return jsonError(
-      "Uloženie vyžaduje GITHUB_TOKEN a GITHUB_REPO v prostredí servera.",
+      "Uloženie zatiaľ nie je pripravené. Skúste to neskôr alebo kontaktujte správcu.",
       503,
     );
   }
@@ -84,8 +84,8 @@ export async function PUT(request: Request, { params }: Params) {
       ok: true,
       commitSha: result.commitSha,
       branch: result.branch,
-      message: "Zmeny boli uložené. Web sa aktualizuje.",
-      hint: "Nasadenie novej verzie môže chvíľu trvať.",
+      message: "Zmeny boli uložené.",
+      hint: "Web sa aktualizuje.",
     });
   } catch (err) {
     if (err instanceof Error && err.message === "CONTENT_CONFLICT") {

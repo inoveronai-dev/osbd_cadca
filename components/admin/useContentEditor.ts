@@ -31,7 +31,7 @@ export function useContentEditor<T>(file: string) {
       setSha(json.sha ?? null);
       if (json.source === "local") {
         setHint(
-          "Lokálny režim: obsah načítaný z disku. Uloženie vyžaduje GITHUB_TOKEN.",
+          "Lokálny režim: uloženie na web vyžaduje pripojenie k úložisku.",
         );
       } else {
         setHint(null);
@@ -76,8 +76,8 @@ export function useContentEditor<T>(file: string) {
         if (!res.ok) {
           throw new Error(json.error || "Uloženie zlyhalo.");
         }
-        setMessage(json.message || "Zmeny boli uložené. Web sa aktualizuje.");
-        setHint(json.hint || "Nasadenie novej verzie môže chvíľu trvať.");
+        setMessage(json.message || "Zmeny boli uložené.");
+        setHint(json.hint || "Web sa aktualizuje.");
         if (json.commitSha) {
           try {
             localStorage.setItem(
@@ -125,11 +125,11 @@ export function useContentEditor<T>(file: string) {
       commitSha?: string;
     };
     if (!res.ok || !json.url) {
-      setError(json.error || "Upload zlyhal.");
+      setError(json.error || "Nahratie súboru zlyhalo.");
       return null;
     }
-    setMessage(json.message || "Zmeny boli uložené. Web sa aktualizuje.");
-    setHint(json.hint || "Nasadenie novej verzie môže chvíľu trvať.");
+    setMessage(json.message || "Súbor bol nahratý.");
+    setHint(json.hint || "Nezabudnite uložiť zmeny.");
     if (json.commitSha) {
       try {
         localStorage.setItem(

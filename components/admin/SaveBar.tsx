@@ -1,17 +1,21 @@
 "use client";
 
+import { btnPrimary } from "@/components/admin/admin-ui";
+
 export function SaveBar({
   saving,
   message,
   hint,
   error,
   onSave,
+  label = "Uložiť",
 }: {
   saving: boolean;
   message?: string | null;
   hint?: string | null;
   error?: string | null;
   onSave: () => void;
+  label?: string;
 }) {
   return (
     <div className="sticky bottom-0 z-10 -mx-5 mt-8 border-t border-forest/10 bg-[#f3f1ea]/95 px-5 py-4 backdrop-blur sm:-mx-8 sm:px-8">
@@ -21,9 +25,14 @@ export function SaveBar({
             <p className="text-[0.92rem] font-medium text-red-700">{error}</p>
           ) : null}
           {message ? (
-            <p className="text-[0.92rem] font-medium text-forest">{message}</p>
+            <p className="text-[0.92rem] font-medium text-forest">
+              ✓ {message}
+            </p>
           ) : null}
-          {hint ? (
+          {hint && !message ? (
+            <p className="text-[0.84rem] text-ink-muted">{hint}</p>
+          ) : null}
+          {hint && message ? (
             <p className="text-[0.84rem] text-ink-muted">{hint}</p>
           ) : null}
         </div>
@@ -31,9 +40,9 @@ export function SaveBar({
           type="button"
           onClick={onSave}
           disabled={saving}
-          className="inline-flex min-h-11 items-center justify-center rounded-md bg-forest px-5 text-[0.95rem] font-semibold text-white transition-colors hover:bg-[var(--forest-soft)] disabled:opacity-60"
+          className={btnPrimary}
         >
-          {saving ? "Ukladá sa…" : "Uložiť"}
+          {saving ? "Ukladá sa…" : label}
         </button>
       </div>
     </div>

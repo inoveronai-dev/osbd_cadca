@@ -3,34 +3,34 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AdminShell } from "@/components/admin/AdminShell";
+import { btnPrimary, helperClass } from "@/components/admin/admin-ui";
 
-const ACTIONS = [
-  { href: "/admin/aktuality", label: "Upraviť aktuality" },
+const SECONDARY = [
+  { href: "/admin/kontakty-druzstva", label: "Upraviť kontakty" },
+  { href: "/admin/strankove-hodiny", label: "Upraviť stránkové hodiny" },
+  { href: "/admin/zakladne-udaje", label: "Upraviť základné údaje" },
   { href: "/admin/dokumenty-tlaciva", label: "Dokumenty a tlačivá" },
-  { href: "/admin/kontakty-druzstva", label: "Kontakty družstva" },
-  { href: "/admin/poruchy", label: "Poruchy a závady" },
-  { href: "/admin/strankove-hodiny", label: "Stránkové hodiny" },
-  { href: "/admin/zakladne-udaje", label: "Základné údaje" },
-] as const;
-
-const SHORTCUTS = [
-  { href: "/", label: "Úvodná stránka" },
-  { href: "/aktuality", label: "Aktuality" },
-  { href: "/kontakty", label: "Kontakty" },
-  { href: "/dokumenty-tlaciva", label: "Dokumenty" },
 ] as const;
 
 export default function AdminDashboardPage() {
-  const [lastCommit, setLastCommit] = useState<{
-    sha: string;
-    at: string;
-    file: string;
-  } | null>(null);
+  const [lastSaved, setLastSaved] = useState<string | null>(null);
 
   useEffect(() => {
     try {
       const raw = localStorage.getItem("osbd_cms_last_commit");
-      if (raw) setLastCommit(JSON.parse(raw) as typeof lastCommit);
+      if (!raw) return;
+      const parsed = JSON.parse(raw) as { at?: string };
+      if (parsed.at) {
+        setLastSaved(
+          new Date(parsed.at).toLocaleString("sk-SK", {
+            day: "numeric",
+            month: "numeric",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+        );
+      }
     } catch {
       /* ignore */
     }
@@ -38,63 +38,65 @@ export default function AdminDashboardPage() {
 
   return (
     <AdminShell title="Prehľad">
-      <div className="space-y-8">
-        <section className="rounded-lg border border-forest/10 bg-white p-5">
-          <h2 className="text-[1.05rem] font-semibold text-forest">
-            Rýchle akcie
+      <div className="max-w-2xl space-y-8">
+        <section className="rounded-lg border border-forest/10 bg-white px-5 py-6 sm:px-7 sm:py-8">
+          <p className="text-[0.72rem] font-semibold tracking-[0.12em] text-forest/55 uppercase">
+            Vitajte
+          </p>
+          <h2 className="mt-2 text-[1.35rem] font-semibold tracking-tight text-ink sm:text-[1.5rem]">
+            Čo chcete dnes upraviť?
           </h2>
-          <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-            {ACTIONS.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="rounded-md border border-forest/12 px-4 py-3 text-[0.95rem] font-semibold text-ink transition-colors hover:border-forest/30 hover:bg-soft-sage"
-              >
-                {item.label}
-              </Link>
-            ))}
+          <p className={`mt-2 max-w-md ${helperClass}`}>
+            Vyberte akciu. Zmeny sa po uložení zobrazia na webe.
+          </p>
+
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+            <Link href="/admin/aktuality" className={btnPrimary}>
+              + Pridať aktualitu
+            </Link>
+            <Link
+              href="/admin/dokumenty-tlaciva"
+              className="inline-flex min-h-11 items-center justify-center rounded-md border border-forest/15 bg-white px-5 text-[0.95rem] font-semibold text-ink hover:bg-[#f7f6f2]"
+            >
+              + Pridať dokument
+            </Link>
           </div>
         </section>
 
-        <section className="rounded-lg border border-forest/10 bg-white p-5">
-          <h2 className="text-[1.05rem] font-semibold text-forest">
-            Posledné uloženie
-          </h2>
-          {lastCommit ? (
-            <p className="mt-3 text-[0.95rem] leading-relaxed text-ink-muted">
-              Commit{" "}
-              <code className="rounded bg-soft-sage px-1.5 py-0.5 text-[0.85rem] text-forest">
-                {lastCommit.sha.slice(0, 7)}
-              </code>{" "}
-              ({lastCommit.file}) —{" "}
-              {new Date(lastCommit.at).toLocaleString("sk-SK")}
-            </p>
-          ) : (
-            <p className="mt-3 text-[0.95rem] text-ink-muted">
-              Zatiaľ nebolo v tomto prehliadači uložené žiadne CMS zmeny.
-            </p>
-          )}
-        </section>
-
-        <section className="rounded-lg border border-forest/10 bg-white p-5">
-          <h2 className="text-[1.05rem] font-semibold text-forest">
-            Verejný web
-          </h2>
-          <ul className="mt-3 space-y-2">
-            {SHORTCUTS.map((item) => (
+        <section>
+          <h3 className="text-[0.84rem] font-semibold tracking-[0.08em] text-ink-muted uppercase">
+            Ďalšie úpravy
+          </h3>
+          <ul className="mt-3 space-y-1">
+            {SECONDARY.map((item) => (
               <li key={item.href}>
-                <a
+                <Link
                   href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[0.95rem] font-semibold text-forest hover:underline"
+                  className="block rounded-md px-3 py-3 text-[1rem] font-medium text-ink transition-colors hover:bg-white hover:text-forest"
                 >
                   {item.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
         </section>
+
+        {lastSaved ? (
+          <p className="text-[0.88rem] text-ink-muted">
+            Posledné uloženie v tomto prehliadači: {lastSaved}
+          </p>
+        ) : null}
+
+        <p className="text-[0.88rem] text-ink-muted">
+          <a
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-forest hover:underline"
+          >
+            Otvoriť verejný web
+          </a>
+        </p>
       </div>
     </AdminShell>
   );
