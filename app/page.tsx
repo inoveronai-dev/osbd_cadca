@@ -1,5 +1,6 @@
 import { SageAtmosphere } from "@/components/layout/SageAtmosphere";
 import { About } from "@/components/sections/About";
+import { ElectronicDeliveryBanner } from "@/components/sections/ElectronicDeliveryBanner";
 import { Hero } from "@/components/sections/Hero";
 import { LocationMap } from "@/components/sections/LocationMap";
 import { MainAdvantages } from "@/components/sections/MainAdvantages";
@@ -13,6 +14,7 @@ export default function HomePage() {
   return (
     <main id="obsah">
       <Hero />
+      <ElectronicDeliveryBanner />
       <QuickAccess />
       <About />
       <SageAtmosphere>
