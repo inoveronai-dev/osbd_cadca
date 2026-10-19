@@ -231,13 +231,19 @@ export default function AdminAktualityPage() {
     if (ok) closePanel();
   }
 
-  async function deleteCurrent() {
-    if (!data || editIndex === null) return;
-    const itemsNext = data.items.filter((_, i) => i !== editIndex);
+  async function deleteAt(index: number) {
+    if (!data) return;
+    const itemsNext = data.items.filter((_, i) => i !== index);
     const next = { ...data, items: itemsNext };
     editor.setData(next);
     const ok = await editor.save(next, "cms: aktuality — zmazanie");
     if (ok) closePanel();
+    return ok;
+  }
+
+  async function deleteCurrent() {
+    if (editIndex === null) return;
+    await deleteAt(editIndex);
   }
 
   return (
@@ -299,6 +305,10 @@ export default function AdminAktualityPage() {
                   }
                   menuItems={[
                     {
+                      label: "Upraviť",
+                      onClick: () => openEdit(index),
+                    },
+                    {
                       label: "Presunúť vyššie",
                       onClick: () => moveItem(index, -1),
                     },
@@ -307,8 +317,17 @@ export default function AdminAktualityPage() {
                       onClick: () => moveItem(index, 1),
                     },
                     {
-                      label: "Upraviť",
-                      onClick: () => openEdit(index),
+                      label: "Vymazať",
+                      danger: true,
+                      onClick: () => {
+                        if (
+                          window.confirm(
+                            `Naozaj vymazať aktualitu „${item.title}"?`,
+                          )
+                        ) {
+                          void deleteAt(index);
+                        }
+                      },
                     },
                   ]}
                 />
@@ -334,29 +353,29 @@ export default function AdminAktualityPage() {
             footerExtra={
               mode === "edit" ? (
                 confirmDelete ? (
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-[0.84rem] text-red-700">
-                      Naozaj vymazať?
+                  <div className="flex flex-wrap items-center gap-2 rounded-md bg-red-50 px-3 py-2">
+                    <span className="text-[0.9rem] text-red-800">
+                      Naozaj vymazať túto aktualitu?
                     </span>
                     <button
                       type="button"
-                      className="text-[0.84rem] font-semibold text-red-700"
+                      className="text-[0.9rem] font-semibold text-red-800 underline"
                       onClick={() => void deleteCurrent()}
                     >
                       Áno, vymazať
                     </button>
                     <button
                       type="button"
-                      className="text-[0.84rem] font-semibold text-ink-muted"
+                      className="text-[0.9rem] font-semibold text-ink-muted"
                       onClick={() => setConfirmDelete(false)}
                     >
-                      Nie
+                      Zrušiť
                     </button>
                   </div>
                 ) : (
                   <button
                     type="button"
-                    className="text-[0.84rem] text-ink-muted underline-offset-2 hover:text-red-700 hover:underline"
+                    className="text-[0.9rem] font-semibold text-red-700 hover:underline"
                     onClick={() => setConfirmDelete(true)}
                   >
                     Vymazať aktualitu

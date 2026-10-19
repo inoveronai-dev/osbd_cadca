@@ -103,18 +103,24 @@ export default function AdminDokumentyPage() {
     if (ok) setDraft(null);
   }
 
-  async function deleteDoc() {
-    if (!data || !draft || draft.docIndex === null) return;
+  async function deleteAt(groupIndex: number, docIndex: number) {
+    if (!data) return;
     const groups = [...data.groups];
-    const group = groups[draft.groupIndex];
-    groups[draft.groupIndex] = {
+    const group = groups[groupIndex];
+    groups[groupIndex] = {
       ...group,
-      documents: group.documents.filter((_, i) => i !== draft.docIndex),
+      documents: group.documents.filter((_, i) => i !== docIndex),
     };
     const next = { ...data, groups };
     editor.setData(next);
     const ok = await editor.save(next, "cms: dokumenty-tlaciva — zmazanie");
     if (ok) setDraft(null);
+    return ok;
+  }
+
+  async function deleteDoc() {
+    if (!draft || draft.docIndex === null) return;
+    await deleteAt(draft.groupIndex, draft.docIndex);
   }
 
   return (
@@ -188,6 +194,25 @@ export default function AdminDokumentyPage() {
                                   PDF
                                 </span>
                               }
+                              menuItems={[
+                                {
+                                  label: "Upraviť",
+                                  onClick: () => openEdit(gIndex, dIndex),
+                                },
+                                {
+                                  label: "Vymazať",
+                                  danger: true,
+                                  onClick: () => {
+                                    if (
+                                      window.confirm(
+                                        `Naozaj vymazať dokument „${doc.title}"?`,
+                                      )
+                                    ) {
+                                      void deleteAt(gIndex, dIndex);
+                                    }
+                                  },
+                                },
+                              ]}
                             />
                           ))}
                         </ul>
@@ -230,27 +255,29 @@ export default function AdminDokumentyPage() {
             footerExtra={
               draft?.docIndex !== null && draft ? (
                 confirmDelete ? (
-                  <div className="flex flex-wrap gap-2 text-[0.84rem]">
-                    <span className="text-red-700">Naozaj vymazať?</span>
+                  <div className="flex flex-wrap gap-2 rounded-md bg-red-50 px-3 py-2 text-[0.9rem]">
+                    <span className="text-red-800">
+                      Naozaj vymazať tento dokument?
+                    </span>
                     <button
                       type="button"
-                      className="font-semibold text-red-700"
+                      className="font-semibold text-red-800 underline"
                       onClick={() => void deleteDoc()}
                     >
-                      Áno
+                      Áno, vymazať
                     </button>
                     <button
                       type="button"
-                      className="text-ink-muted"
+                      className="font-semibold text-ink-muted"
                       onClick={() => setConfirmDelete(false)}
                     >
-                      Nie
+                      Zrušiť
                     </button>
                   </div>
                 ) : (
                   <button
                     type="button"
-                    className="text-[0.84rem] text-ink-muted hover:text-red-700 hover:underline"
+                    className="text-[0.9rem] font-semibold text-red-700 hover:underline"
                     onClick={() => setConfirmDelete(true)}
                   >
                     Vymazať dokument
