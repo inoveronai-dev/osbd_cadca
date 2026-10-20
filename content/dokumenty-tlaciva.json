@@ -1,12 +1,6 @@
 {
   "groups": [
     {
-      "id": "skupina-test-1792516665033",
-      "title": "TEST UX skupina 2",
-      "defaultOpen": true,
-      "documents": []
-    },
-    {
       "id": "cennik",
       "title": "Cenník služieb",
       "defaultOpen": true,
