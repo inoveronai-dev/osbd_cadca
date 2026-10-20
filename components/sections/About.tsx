@@ -19,14 +19,14 @@ export function About() {
       <div className="container-site">
         <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:gap-12 xl:gap-14">
           <Reveal className="order-1">
-            <div className="media-frame aspect-[4/5] max-h-[28rem] border border-[var(--border-subtle)] lg:max-h-[32rem]">
+            <div className="media-frame aspect-[5/4] max-h-[28rem] border border-[var(--border-subtle)] lg:max-h-[32rem]">
               <div className="img-zoom relative h-full w-full">
                 <Image
                   src="/images/about-osbd-hq.png"
                   alt={aboutSection.imageSlot.description}
                   fill
                   sizes="(max-width: 1024px) 100vw, 42vw"
-                  className="object-cover object-[center_18%] sm:object-[center_20%] lg:object-center"
+                  className="object-cover object-center"
                 />
               </div>
             </div>
