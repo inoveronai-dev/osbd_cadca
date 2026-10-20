@@ -104,17 +104,6 @@
           "href": "http://osbdcadca.sk/wp-content/uploads/2020/02/INFORMCIE__o_nariadeniach_Europskho_parlamentu__a_Rady_2015-2120.pdf"
         }
       ]
-    },
-    {
-      "id": "skupina-ktv-1792516677509",
-      "title": "TEST KTV skupina",
-      "defaultOpen": true,
-      "documents": [
-        {
-          "title": "TEST ktv doc",
-          "href": "https://example.com/ktv.pdf"
-        }
-      ]
     }
   ]
 }
