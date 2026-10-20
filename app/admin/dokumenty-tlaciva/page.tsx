@@ -4,9 +4,9 @@ import { useState } from "react";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { Field, inputClass } from "@/components/admin/Field";
 import { EditPanel } from "@/components/admin/EditPanel";
-import { ListRow } from "@/components/admin/ListRow";
+import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
+import { ListRow, RowMenu } from "@/components/admin/ListRow";
 import { PdfAttachment } from "@/components/admin/PdfAttachment";
-import { SaveBar } from "@/components/admin/SaveBar";
 import {
   btnPrimary,
   helperClass,
@@ -16,10 +16,26 @@ import type { DokumentyTlacivaContent } from "@/lib/content/schema";
 
 type DocDraft = {
   groupIndex: number;
-  docIndex: number | null; // null = create
+  docIndex: number | null;
   title: string;
   href: string;
 };
+
+type GroupDraft = {
+  mode: "create" | "rename";
+  groupIndex: number | null;
+  title: string;
+};
+
+type PendingDelete =
+  | { kind: "doc"; groupIndex: number; docIndex: number; title: string }
+  | { kind: "group"; groupIndex: number; title: string; count: number };
+
+function docsLabel(n: number) {
+  if (n === 1) return "1 dokument";
+  if (n >= 2 && n <= 4) return `${n} dokumenty`;
+  return `${n} dokumentov`;
+}
 
 export default function AdminDokumentyPage() {
   const editor = useContentEditor<DokumentyTlacivaContent>(
@@ -28,19 +44,21 @@ export default function AdminDokumentyPage() {
   const data = editor.data;
   const [openGroup, setOpenGroup] = useState<number | null>(0);
   const [draft, setDraft] = useState<DocDraft | null>(null);
+  const [groupDraft, setGroupDraft] = useState<GroupDraft | null>(null);
   const [uploading, setUploading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
-  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState<PendingDelete | null>(
+    null,
+  );
 
-  function openCreate(groupIndex: number) {
+  function openCreateDoc(groupIndex: number) {
     setDraft({ groupIndex, docIndex: null, title: "", href: "" });
     setFormError(null);
-    setConfirmDelete(false);
     editor.setMessage(null);
     editor.setError(null);
   }
 
-  function openEdit(groupIndex: number, docIndex: number) {
+  function openEditDoc(groupIndex: number, docIndex: number) {
     if (!data) return;
     const doc = data.groups[groupIndex].documents[docIndex];
     setDraft({
@@ -50,7 +68,6 @@ export default function AdminDokumentyPage() {
       href: doc.href,
     });
     setFormError(null);
-    setConfirmDelete(false);
     editor.setMessage(null);
     editor.setError(null);
   }
@@ -88,14 +105,8 @@ export default function AdminDokumentyPage() {
     const group = groups[draft.groupIndex];
     const documents = [...group.documents];
     const row = { title, href: draft.href };
-    if (draft.docIndex === null) {
-      documents.push(row);
-    } else {
-      documents[draft.docIndex] = {
-        ...documents[draft.docIndex],
-        ...row,
-      };
-    }
+    if (draft.docIndex === null) documents.push(row);
+    else documents[draft.docIndex] = { ...documents[draft.docIndex], ...row };
     groups[draft.groupIndex] = { ...group, documents };
     const next = { ...data, groups };
     editor.setData(next);
@@ -103,24 +114,84 @@ export default function AdminDokumentyPage() {
     if (ok) setDraft(null);
   }
 
-  async function deleteAt(groupIndex: number, docIndex: number) {
-    if (!data) return;
+  async function saveGroup() {
+    if (!data || !groupDraft) return;
+    const title = groupDraft.title.trim();
+    if (!title) {
+      setFormError("Zadajte názov skupiny.");
+      return;
+    }
+    setFormError(null);
     const groups = [...data.groups];
-    const group = groups[groupIndex];
-    groups[groupIndex] = {
-      ...group,
-      documents: group.documents.filter((_, i) => i !== docIndex),
+    if (groupDraft.mode === "create") {
+      groups.push({
+        id: `skupina-${Date.now()}`,
+        title,
+        defaultOpen: true,
+        documents: [],
+      });
+      const next = { ...data, groups };
+      editor.setData(next);
+      const ok = await editor.save(next, "cms: dokumenty-tlaciva — nová skupina");
+      if (ok) {
+        setGroupDraft(null);
+        setOpenGroup(groups.length - 1);
+      }
+      return;
+    }
+    if (groupDraft.groupIndex === null) return;
+    groups[groupDraft.groupIndex] = {
+      ...groups[groupDraft.groupIndex],
+      title,
     };
     const next = { ...data, groups };
     editor.setData(next);
-    const ok = await editor.save(next, "cms: dokumenty-tlaciva — zmazanie");
-    if (ok) setDraft(null);
-    return ok;
+    const ok = await editor.save(next, "cms: dokumenty-tlaciva — premenovanie");
+    if (ok) setGroupDraft(null);
   }
 
-  async function deleteDoc() {
-    if (!draft || draft.docIndex === null) return;
-    await deleteAt(draft.groupIndex, draft.docIndex);
+  function moveGroup(index: number, dir: -1 | 1) {
+    if (!data) return;
+    const target = index + dir;
+    if (target < 0 || target >= data.groups.length) return;
+    const groups = [...data.groups];
+    const [row] = groups.splice(index, 1);
+    groups.splice(target, 0, row);
+    const next = { ...data, groups };
+    editor.setData(next);
+    setOpenGroup((cur) => {
+      if (cur === index) return target;
+      if (cur === target) return index;
+      return cur;
+    });
+    void editor.save(next, "cms: dokumenty-tlaciva — poradie skupín");
+  }
+
+  async function confirmPendingDelete() {
+    if (!data || !pendingDelete) return;
+    if (pendingDelete.kind === "doc") {
+      const groups = [...data.groups];
+      const group = groups[pendingDelete.groupIndex];
+      groups[pendingDelete.groupIndex] = {
+        ...group,
+        documents: group.documents.filter(
+          (_, i) => i !== pendingDelete.docIndex,
+        ),
+      };
+      const next = { ...data, groups };
+      editor.setData(next);
+      await editor.save(next, "cms: dokumenty-tlaciva — zmazanie dokumentu");
+      setDraft(null);
+    } else {
+      const groups = data.groups.filter(
+        (_, i) => i !== pendingDelete.groupIndex,
+      );
+      const next = { ...data, groups };
+      editor.setData(next);
+      await editor.save(next, "cms: dokumenty-tlaciva — zmazanie skupiny");
+      setOpenGroup(null);
+    }
+    setPendingDelete(null);
   }
 
   return (
@@ -129,10 +200,33 @@ export default function AdminDokumentyPage() {
         <p className="text-ink-muted">Načítavam…</p>
       ) : (
         <>
-          <p className="max-w-xl text-[0.95rem] text-ink-muted">
-            Dokumenty sú zoradené podľa skupín. Nahrajte PDF zo svojho počítača —
-            odkaz nemusíte zadávať.
-          </p>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <p className="max-w-xl text-[0.95rem] text-ink-muted">
+              Dokumenty sú zoradené podľa skupín. Nahrajte PDF zo svojho počítača
+              — odkaz nemusíte zadávať.
+            </p>
+            <button
+              type="button"
+              className={btnPrimary}
+              onClick={() => {
+                setGroupDraft({ mode: "create", groupIndex: null, title: "" });
+                setFormError(null);
+              }}
+            >
+              + Pridať skupinu
+            </button>
+          </div>
+
+          {editor.message && !draft && !groupDraft ? (
+            <p className="mt-4 text-[0.92rem] font-medium text-forest">
+              ✓ {editor.message}
+            </p>
+          ) : null}
+          {editor.error && !draft && !groupDraft ? (
+            <p className="mt-4 text-[0.92rem] font-medium text-red-700">
+              {editor.error}
+            </p>
+          ) : null}
 
           <ul className="mt-6 space-y-3">
             {data.groups.map((group, gIndex) => {
@@ -140,32 +234,63 @@ export default function AdminDokumentyPage() {
               return (
                 <li
                   key={group.id}
-                  className="overflow-hidden rounded-lg border border-forest/10 bg-white"
+                  className="rounded-lg border border-forest/10 bg-white"
                 >
-                  <button
-                    type="button"
-                    className="flex w-full items-center justify-between gap-3 px-5 py-4 text-left"
-                    onClick={() =>
-                      setOpenGroup(isOpen ? null : gIndex)
-                    }
-                  >
-                    <div>
+                  <div className="flex items-center gap-1 px-2 sm:px-3">
+                    <button
+                      type="button"
+                      className="min-w-0 flex-1 px-3 py-4 text-left"
+                      onClick={() =>
+                        setOpenGroup(isOpen ? null : gIndex)
+                      }
+                    >
                       <p className="text-[1.05rem] font-semibold text-ink">
                         {group.title}
                       </p>
                       <p className={helperClass}>
-                        {group.documents.length}{" "}
-                        {group.documents.length === 1
-                          ? "dokument"
-                          : group.documents.length < 5
-                            ? "dokumenty"
-                            : "dokumentov"}
+                        {docsLabel(group.documents.length)}
                       </p>
-                    </div>
-                    <span className="text-[0.9rem] font-semibold text-forest">
-                      {isOpen ? "Skryť" : "Upraviť"}
-                    </span>
-                  </button>
+                    </button>
+                    <RowMenu
+                      items={[
+                        {
+                          label: isOpen ? "Skryť" : "Otvoriť",
+                          onClick: () =>
+                            setOpenGroup(isOpen ? null : gIndex),
+                        },
+                        {
+                          label: "Premenovať",
+                          onClick: () => {
+                            setGroupDraft({
+                              mode: "rename",
+                              groupIndex: gIndex,
+                              title: group.title,
+                            });
+                            setFormError(null);
+                          },
+                        },
+                        {
+                          label: "Presunúť vyššie",
+                          onClick: () => moveGroup(gIndex, -1),
+                        },
+                        {
+                          label: "Presunúť nižšie",
+                          onClick: () => moveGroup(gIndex, 1),
+                        },
+                        {
+                          label: "Vymazať",
+                          danger: true,
+                          onClick: () =>
+                            setPendingDelete({
+                              kind: "group",
+                              groupIndex: gIndex,
+                              title: group.title,
+                              count: group.documents.length,
+                            }),
+                        },
+                      ]}
+                    />
+                  </div>
 
                   {isOpen ? (
                     <div className="border-t border-forest/8 px-4 py-4 sm:px-5">
@@ -173,7 +298,7 @@ export default function AdminDokumentyPage() {
                         <button
                           type="button"
                           className={btnPrimary}
-                          onClick={() => openCreate(gIndex)}
+                          onClick={() => openCreateDoc(gIndex)}
                         >
                           + Pridať dokument
                         </button>
@@ -186,9 +311,9 @@ export default function AdminDokumentyPage() {
                         <ul className="space-y-2">
                           {group.documents.map((doc, dIndex) => (
                             <ListRow
-                              key={`${doc.href}-${dIndex}`}
+                              key={`${group.id}-${dIndex}-${doc.href}`}
                               title={doc.title}
-                              onEdit={() => openEdit(gIndex, dIndex)}
+                              onEdit={() => openEditDoc(gIndex, dIndex)}
                               meta={
                                 <span className="text-[0.84rem] text-ink-muted">
                                   PDF
@@ -197,20 +322,18 @@ export default function AdminDokumentyPage() {
                               menuItems={[
                                 {
                                   label: "Upraviť",
-                                  onClick: () => openEdit(gIndex, dIndex),
+                                  onClick: () => openEditDoc(gIndex, dIndex),
                                 },
                                 {
                                   label: "Vymazať",
                                   danger: true,
-                                  onClick: () => {
-                                    if (
-                                      window.confirm(
-                                        `Naozaj vymazať dokument „${doc.title}"?`,
-                                      )
-                                    ) {
-                                      void deleteAt(gIndex, dIndex);
-                                    }
-                                  },
+                                  onClick: () =>
+                                    setPendingDelete({
+                                      kind: "doc",
+                                      groupIndex: gIndex,
+                                      docIndex: dIndex,
+                                      title: doc.title,
+                                    }),
                                 },
                               ]}
                             />
@@ -224,16 +347,39 @@ export default function AdminDokumentyPage() {
             })}
           </ul>
 
-          <SaveBar
-            saving={editor.saving && !draft}
-            message={!draft ? editor.message : null}
-            hint={!draft ? editor.hint : null}
-            error={!draft ? editor.error : null}
-            label="Uložiť poradie skupín"
-            onSave={() =>
-              void editor.save(data, "cms: dokumenty-tlaciva — úprava")
+          <EditPanel
+            open={!!groupDraft}
+            title={
+              groupDraft?.mode === "create"
+                ? "Nová skupina"
+                : "Premenovať skupinu"
             }
-          />
+            onClose={() => setGroupDraft(null)}
+            primaryLabel={
+              editor.saving
+                ? "Ukladá sa…"
+                : groupDraft?.mode === "create"
+                  ? "Pridať skupinu"
+                  : "Uložiť názov"
+            }
+            primaryDisabled={editor.saving}
+            onPrimary={() => void saveGroup()}
+            error={formError || editor.error}
+            message={editor.message}
+          >
+            {groupDraft ? (
+              <Field label="Názov skupiny">
+                <input
+                  className={inputClass}
+                  value={groupDraft.title}
+                  onChange={(e) =>
+                    setGroupDraft({ ...groupDraft, title: e.target.value })
+                  }
+                  placeholder="Napr. Nové tlačivá"
+                />
+              </Field>
+            ) : null}
+          </EditPanel>
 
           <EditPanel
             open={!!draft}
@@ -254,35 +400,20 @@ export default function AdminDokumentyPage() {
             message={editor.message}
             footerExtra={
               draft?.docIndex !== null && draft ? (
-                confirmDelete ? (
-                  <div className="flex flex-wrap gap-2 rounded-md bg-red-50 px-3 py-2 text-[0.9rem]">
-                    <span className="text-red-800">
-                      Naozaj vymazať tento dokument?
-                    </span>
-                    <button
-                      type="button"
-                      className="font-semibold text-red-800 underline"
-                      onClick={() => void deleteDoc()}
-                    >
-                      Áno, vymazať
-                    </button>
-                    <button
-                      type="button"
-                      className="font-semibold text-ink-muted"
-                      onClick={() => setConfirmDelete(false)}
-                    >
-                      Zrušiť
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    type="button"
-                    className="text-[0.9rem] font-semibold text-red-700 hover:underline"
-                    onClick={() => setConfirmDelete(true)}
-                  >
-                    Vymazať dokument
-                  </button>
-                )
+                <button
+                  type="button"
+                  className="text-[0.9rem] font-semibold text-red-700 hover:underline"
+                  onClick={() =>
+                    setPendingDelete({
+                      kind: "doc",
+                      groupIndex: draft.groupIndex,
+                      docIndex: draft.docIndex!,
+                      title: draft.title || "dokument",
+                    })
+                  }
+                >
+                  Vymazať dokument
+                </button>
               ) : null
             }
           >
@@ -311,6 +442,20 @@ export default function AdminDokumentyPage() {
               </div>
             ) : null}
           </EditPanel>
+
+          <ConfirmDialog
+            open={!!pendingDelete}
+            title="Vymazať?"
+            message={
+              pendingDelete?.kind === "group"
+                ? pendingDelete.count > 0
+                  ? `Táto skupina obsahuje ${docsLabel(pendingDelete.count)}. Vymazaním skupiny sa vymažú aj tieto položky.`
+                  : "Naozaj chcete túto skupinu vymazať?"
+                : "Naozaj chcete túto položku vymazať?"
+            }
+            onCancel={() => setPendingDelete(null)}
+            onConfirm={() => void confirmPendingDelete()}
+          />
         </>
       )}
     </AdminShell>

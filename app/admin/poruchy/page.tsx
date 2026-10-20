@@ -4,6 +4,7 @@ import { useState } from "react";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { Field, inputClass } from "@/components/admin/Field";
 import { EditPanel } from "@/components/admin/EditPanel";
+import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { ListRow } from "@/components/admin/ListRow";
 import { btnPrimary, helperClass } from "@/components/admin/admin-ui";
 import { useContentEditor } from "@/components/admin/useContentEditor";
@@ -52,7 +53,9 @@ export default function AdminPoruchyPage() {
   const faults = data?.faultContacts;
   const [draft, setDraft] = useState<Draft | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
-  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [pendingDeleteIndex, setPendingDeleteIndex] = useState<number | null>(
+    null,
+  );
 
   function move(index: number, dir: -1 | 1) {
     if (!data || !faults) return;
@@ -103,12 +106,13 @@ export default function AdminPoruchyPage() {
     if (ok) setDraft(null);
   }
 
-  async function deleteBlock() {
-    if (!data || !faults || !draft || draft.index === null) return;
-    const blocks = faults.blocks.filter((_, i) => i !== draft.index);
+  async function confirmPendingDelete() {
+    if (!data || !faults || pendingDeleteIndex === null) return;
+    const blocks = faults.blocks.filter((_, i) => i !== pendingDeleteIndex);
     const next = { ...data, faultContacts: { ...faults, blocks } };
     editor.setData(next);
     const ok = await editor.save(next, "cms: kontakty — zmazanie poruchy");
+    setPendingDeleteIndex(null);
     if (ok) setDraft(null);
   }
 
@@ -137,7 +141,6 @@ export default function AdminPoruchyPage() {
                   primary: false,
                 });
                 setFormError(null);
-                setConfirmDelete(false);
               }}
             >
               + Pridať kontakt
@@ -152,7 +155,6 @@ export default function AdminPoruchyPage() {
                 onEdit={() => {
                   setDraft(blockToDraft(block, index));
                   setFormError(null);
-                  setConfirmDelete(false);
                 }}
                 meta={
                   <>
@@ -172,12 +174,24 @@ export default function AdminPoruchyPage() {
                 }
                 menuItems={[
                   {
+                    label: "Upraviť",
+                    onClick: () => {
+                      setDraft(blockToDraft(block, index));
+                      setFormError(null);
+                    },
+                  },
+                  {
                     label: "Presunúť vyššie",
                     onClick: () => move(index, -1),
                   },
                   {
                     label: "Presunúť nižšie",
                     onClick: () => move(index, 1),
+                  },
+                  {
+                    label: "Vymazať",
+                    danger: true,
+                    onClick: () => setPendingDeleteIndex(index),
                   },
                 ]}
               />
@@ -201,33 +215,13 @@ export default function AdminPoruchyPage() {
             message={editor.message}
             footerExtra={
               draft?.index !== null && draft ? (
-                confirmDelete ? (
-                  <div className="flex flex-wrap gap-2 text-[0.84rem]">
-                    <span className="text-red-700">Naozaj vymazať?</span>
-                    <button
-                      type="button"
-                      className="font-semibold text-red-700"
-                      onClick={() => void deleteBlock()}
-                    >
-                      Áno
-                    </button>
-                    <button
-                      type="button"
-                      className="text-ink-muted"
-                      onClick={() => setConfirmDelete(false)}
-                    >
-                      Nie
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    type="button"
-                    className="text-[0.84rem] text-ink-muted hover:text-red-700 hover:underline"
-                    onClick={() => setConfirmDelete(true)}
-                  >
-                    Vymazať kontakt
-                  </button>
-                )
+                <button
+                  type="button"
+                  className="text-[0.9rem] font-semibold text-red-700 hover:underline"
+                  onClick={() => setPendingDeleteIndex(draft.index)}
+                >
+                  Vymazať kontakt
+                </button>
               ) : null
             }
           >
@@ -348,6 +342,14 @@ export default function AdminPoruchyPage() {
               </div>
             ) : null}
           </EditPanel>
+
+          <ConfirmDialog
+            open={pendingDeleteIndex !== null}
+            title="Vymazať?"
+            message="Naozaj chcete túto položku vymazať?"
+            onCancel={() => setPendingDeleteIndex(null)}
+            onConfirm={() => void confirmPendingDelete()}
+          />
         </>
       )}
     </AdminShell>

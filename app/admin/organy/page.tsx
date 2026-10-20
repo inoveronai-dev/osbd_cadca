@@ -4,6 +4,7 @@ import { useState } from "react";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { Field, inputClass, textareaClass } from "@/components/admin/Field";
 import { EditPanel } from "@/components/admin/EditPanel";
+import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { ListRow } from "@/components/admin/ListRow";
 import { SaveBar } from "@/components/admin/SaveBar";
 import { btnPrimary, helperClass } from "@/components/admin/admin-ui";
@@ -19,18 +20,37 @@ type Draft = {
   role: string;
 };
 
+type PendingDelete = {
+  key: MemberKey;
+  index: number;
+};
+
 export default function AdminOrganyPage() {
   const editor = useContentEditor<OrganyContent>("organy.json");
   const data = editor.data;
   const [openKey, setOpenKey] = useState<MemberKey | null>("predstavenstvo");
   const [draft, setDraft] = useState<Draft | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
-  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState<PendingDelete | null>(
+    null,
+  );
 
   const groups: { key: MemberKey; title: string }[] = [
     { key: "predstavenstvo", title: "Predstavenstvo" },
     { key: "kontrolnaKomisia", title: "Kontrolná komisia" },
   ];
+
+  function moveMember(key: MemberKey, index: number, dir: -1 | 1) {
+    if (!data) return;
+    const members = [...data[key]];
+    const target = index + dir;
+    if (target < 0 || target >= members.length) return;
+    const [row] = members.splice(index, 1);
+    members.splice(target, 0, row);
+    const next = { ...data, [key]: members };
+    editor.setData(next);
+    void editor.save(next, "cms: organy — poradie");
+  }
 
   async function saveMember() {
     if (!data || !draft) return;
@@ -49,12 +69,15 @@ export default function AdminOrganyPage() {
     if (ok) setDraft(null);
   }
 
-  async function deleteMember() {
-    if (!data || !draft || draft.index === null) return;
-    const members = data[draft.key].filter((_, i) => i !== draft.index);
-    const next = { ...data, [draft.key]: members };
+  async function confirmPendingDelete() {
+    if (!data || !pendingDelete) return;
+    const members = data[pendingDelete.key].filter(
+      (_, i) => i !== pendingDelete.index,
+    );
+    const next = { ...data, [pendingDelete.key]: members };
     editor.setData(next);
     const ok = await editor.save(next, "cms: organy — zmazanie");
+    setPendingDelete(null);
     if (ok) setDraft(null);
   }
 
@@ -71,7 +94,7 @@ export default function AdminOrganyPage() {
               return (
                 <li
                   key={key}
-                  className="overflow-hidden rounded-lg border border-forest/10 bg-white"
+                  className="rounded-lg border border-forest/10 bg-white"
                 >
                   <button
                     type="button"
@@ -105,7 +128,6 @@ export default function AdminOrganyPage() {
                               role: "",
                             });
                             setFormError(null);
-                            setConfirmDelete(false);
                           }}
                         >
                           + Pridať člena
@@ -124,13 +146,40 @@ export default function AdminOrganyPage() {
                                 role: member.role,
                               });
                               setFormError(null);
-                              setConfirmDelete(false);
                             }}
                             meta={
                               <span className="text-[0.84rem] text-ink-muted">
                                 {member.role}
                               </span>
                             }
+                            menuItems={[
+                              {
+                                label: "Upraviť",
+                                onClick: () => {
+                                  setDraft({
+                                    key,
+                                    index,
+                                    name: member.name,
+                                    role: member.role,
+                                  });
+                                  setFormError(null);
+                                },
+                              },
+                              {
+                                label: "Presunúť vyššie",
+                                onClick: () => moveMember(key, index, -1),
+                              },
+                              {
+                                label: "Presunúť nižšie",
+                                onClick: () => moveMember(key, index, 1),
+                              },
+                              {
+                                label: "Vymazať",
+                                danger: true,
+                                onClick: () =>
+                                  setPendingDelete({ key, index }),
+                              },
+                            ]}
                           />
                         ))}
                       </ul>
@@ -172,33 +221,18 @@ export default function AdminOrganyPage() {
             message={editor.message}
             footerExtra={
               draft?.index !== null && draft ? (
-                confirmDelete ? (
-                  <div className="flex flex-wrap gap-2 text-[0.84rem]">
-                    <span className="text-red-700">Naozaj vymazať?</span>
-                    <button
-                      type="button"
-                      className="font-semibold text-red-700"
-                      onClick={() => void deleteMember()}
-                    >
-                      Áno
-                    </button>
-                    <button
-                      type="button"
-                      className="text-ink-muted"
-                      onClick={() => setConfirmDelete(false)}
-                    >
-                      Nie
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    type="button"
-                    className="text-[0.84rem] text-ink-muted hover:text-red-700 hover:underline"
-                    onClick={() => setConfirmDelete(true)}
-                  >
-                    Vymazať člena
-                  </button>
-                )
+                <button
+                  type="button"
+                  className="text-[0.9rem] font-semibold text-red-700 hover:underline"
+                  onClick={() =>
+                    setPendingDelete({
+                      key: draft.key,
+                      index: draft.index!,
+                    })
+                  }
+                >
+                  Vymazať člena
+                </button>
               ) : null
             }
           >
@@ -225,6 +259,14 @@ export default function AdminOrganyPage() {
               </div>
             ) : null}
           </EditPanel>
+
+          <ConfirmDialog
+            open={!!pendingDelete}
+            title="Vymazať?"
+            message="Naozaj chcete túto položku vymazať?"
+            onCancel={() => setPendingDelete(null)}
+            onConfirm={() => void confirmPendingDelete()}
+          />
         </>
       )}
     </AdminShell>

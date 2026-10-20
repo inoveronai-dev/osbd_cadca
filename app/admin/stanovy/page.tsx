@@ -4,64 +4,191 @@ import { useState } from "react";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { Field, inputClass } from "@/components/admin/Field";
 import { EditPanel } from "@/components/admin/EditPanel";
-import { ListRow } from "@/components/admin/ListRow";
+import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
+import { ListRow, RowMenu } from "@/components/admin/ListRow";
 import { PdfAttachment } from "@/components/admin/PdfAttachment";
+import {
+  btnPrimary,
+  helperClass,
+} from "@/components/admin/admin-ui";
 import { useContentEditor } from "@/components/admin/useContentEditor";
 import type { StanovyContent } from "@/lib/content/schema";
+
+type DocDraft = {
+  groupIndex: number;
+  docIndex: number | null;
+  title: string;
+  href: string;
+};
+
+type GroupDraft = {
+  mode: "create" | "rename";
+  groupIndex: number | null;
+  title: string;
+};
+
+type PendingDelete =
+  | { kind: "doc"; groupIndex: number; docIndex: number; title: string }
+  | { kind: "group"; groupIndex: number; title: string; count: number };
+
+function docsLabel(n: number) {
+  if (n === 1) return "1 dokument";
+  if (n >= 2 && n <= 4) return `${n} dokumenty`;
+  return `${n} dokumentov`;
+}
 
 export default function AdminStanovyPage() {
   const editor = useContentEditor<StanovyContent>("stanovy.json");
   const data = editor.data;
-  const [edit, setEdit] = useState<{
-    gIndex: number;
-    dIndex: number;
-    title: string;
-    href: string;
-  } | null>(null);
+  const [openGroup, setOpenGroup] = useState<number | null>(0);
+  const [draft, setDraft] = useState<DocDraft | null>(null);
+  const [groupDraft, setGroupDraft] = useState<GroupDraft | null>(null);
   const [uploading, setUploading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [pendingDelete, setPendingDelete] = useState<PendingDelete | null>(
+    null,
+  );
+
+  function openCreateDoc(groupIndex: number) {
+    setDraft({ groupIndex, docIndex: null, title: "", href: "" });
+    setFormError(null);
+    editor.setMessage(null);
+    editor.setError(null);
+  }
+
+  function openEditDoc(groupIndex: number, docIndex: number) {
+    if (!data) return;
+    const doc = data.groups[groupIndex].documents[docIndex];
+    setDraft({
+      groupIndex,
+      docIndex,
+      title: doc.title,
+      href: doc.href,
+    });
+    setFormError(null);
+    editor.setMessage(null);
+    editor.setError(null);
+  }
 
   async function uploadPdf(file: File) {
-    if (!edit) return;
+    if (!draft) return;
     setUploading(true);
     try {
       const uploaded = await editor.uploadFile({
         file,
         kind: "pdf",
         folder: "stanovy",
-        baseName: edit.title || "stanovy",
+        baseName: draft.title || "stanovy",
       });
       if (!uploaded) return;
-      setEdit({ ...edit, href: uploaded.url });
+      setDraft({ ...draft, href: uploaded.url });
     } finally {
       setUploading(false);
     }
   }
 
   async function saveDoc() {
-    if (!data || !edit) return;
-    if (!edit.title.trim()) {
+    if (!data || !draft) return;
+    const title = draft.title.trim();
+    if (!title) {
       setFormError("Zadajte názov dokumentu.");
       return;
     }
-    if (!edit.href.trim()) {
+    if (!draft.href.trim()) {
       setFormError("Nahrajte PDF súbor.");
       return;
     }
     setFormError(null);
     const groups = [...data.groups];
-    const group = groups[edit.gIndex];
+    const group = groups[draft.groupIndex];
     const documents = [...group.documents];
-    documents[edit.dIndex] = {
-      ...documents[edit.dIndex],
-      title: edit.title.trim(),
-      href: edit.href,
-    };
-    groups[edit.gIndex] = { ...group, documents };
+    const row = { title, href: draft.href };
+    if (draft.docIndex === null) documents.push(row);
+    else documents[draft.docIndex] = { ...documents[draft.docIndex], ...row };
+    groups[draft.groupIndex] = { ...group, documents };
     const next = { ...data, groups };
     editor.setData(next);
-    const ok = await editor.save(next, "cms: stanovy — úprava");
-    if (ok) setEdit(null);
+    const ok = await editor.save(next, "cms: stanovy — dokument");
+    if (ok) setDraft(null);
+  }
+
+  async function saveGroup() {
+    if (!data || !groupDraft) return;
+    const title = groupDraft.title.trim();
+    if (!title) {
+      setFormError("Zadajte názov skupiny.");
+      return;
+    }
+    setFormError(null);
+    const groups = [...data.groups];
+    if (groupDraft.mode === "create") {
+      groups.push({
+        id: `skupina-${Date.now()}`,
+        title,
+        documents: [],
+      });
+      const next = { ...data, groups };
+      editor.setData(next);
+      const ok = await editor.save(next, "cms: stanovy — nová skupina");
+      if (ok) {
+        setGroupDraft(null);
+        setOpenGroup(groups.length - 1);
+      }
+      return;
+    }
+    if (groupDraft.groupIndex === null) return;
+    groups[groupDraft.groupIndex] = {
+      ...groups[groupDraft.groupIndex],
+      title,
+    };
+    const next = { ...data, groups };
+    editor.setData(next);
+    const ok = await editor.save(next, "cms: stanovy — premenovanie");
+    if (ok) setGroupDraft(null);
+  }
+
+  function moveGroup(index: number, dir: -1 | 1) {
+    if (!data) return;
+    const target = index + dir;
+    if (target < 0 || target >= data.groups.length) return;
+    const groups = [...data.groups];
+    const [row] = groups.splice(index, 1);
+    groups.splice(target, 0, row);
+    const next = { ...data, groups };
+    editor.setData(next);
+    setOpenGroup((cur) => {
+      if (cur === index) return target;
+      if (cur === target) return index;
+      return cur;
+    });
+    void editor.save(next, "cms: stanovy — poradie skupín");
+  }
+
+  async function confirmPendingDelete() {
+    if (!data || !pendingDelete) return;
+    if (pendingDelete.kind === "doc") {
+      const groups = [...data.groups];
+      const group = groups[pendingDelete.groupIndex];
+      groups[pendingDelete.groupIndex] = {
+        ...group,
+        documents: group.documents.filter(
+          (_, i) => i !== pendingDelete.docIndex,
+        ),
+      };
+      const next = { ...data, groups };
+      editor.setData(next);
+      await editor.save(next, "cms: stanovy — zmazanie dokumentu");
+      setDraft(null);
+    } else {
+      const groups = data.groups.filter(
+        (_, i) => i !== pendingDelete.groupIndex,
+      );
+      const next = { ...data, groups };
+      editor.setData(next);
+      await editor.save(next, "cms: stanovy — zmazanie skupiny");
+      setOpenGroup(null);
+    }
+    setPendingDelete(null);
   }
 
   return (
@@ -70,80 +197,262 @@ export default function AdminStanovyPage() {
         <p className="text-ink-muted">Načítavam…</p>
       ) : (
         <>
-          <p className="max-w-xl text-[0.95rem] text-ink-muted">
-            Kliknite na dokument a nahraďte PDF zo svojho počítača.
-          </p>
-          <ul className="mt-6 space-y-6">
-            {data.groups.map((group, gIndex) => (
-              <li key={group.id}>
-                <h2 className="mb-2.5 text-[0.84rem] font-semibold tracking-[0.08em] text-ink-muted uppercase">
-                  {group.title}
-                </h2>
-                <ul className="space-y-2">
-                  {group.documents.map((doc, dIndex) => (
-                    <ListRow
-                      key={`${doc.href}-${dIndex}`}
-                      title={doc.title}
-                      onEdit={() => {
-                        setEdit({
-                          gIndex,
-                          dIndex,
-                          title: doc.title,
-                          href: doc.href,
-                        });
-                        setFormError(null);
-                        editor.setError(null);
-                        editor.setMessage(null);
-                      }}
-                      meta={
-                        <span className="text-[0.84rem] text-ink-muted">
-                          PDF
-                        </span>
-                      }
-                    />
-                  ))}
-                </ul>
-              </li>
-            ))}
-          </ul>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <p className="max-w-xl text-[0.95rem] text-ink-muted">
+              Dokumenty sú zoradené podľa skupín. Nahrajte PDF zo svojho počítača
+              — odkaz nemusíte zadávať.
+            </p>
+            <button
+              type="button"
+              className={btnPrimary}
+              onClick={() => {
+                setGroupDraft({ mode: "create", groupIndex: null, title: "" });
+                setFormError(null);
+              }}
+            >
+              + Pridať skupinu
+            </button>
+          </div>
 
-          {editor.message && !edit ? (
+          {editor.message && !draft && !groupDraft ? (
             <p className="mt-4 text-[0.92rem] font-medium text-forest">
               ✓ {editor.message}
             </p>
           ) : null}
+          {editor.error && !draft && !groupDraft ? (
+            <p className="mt-4 text-[0.92rem] font-medium text-red-700">
+              {editor.error}
+            </p>
+          ) : null}
+
+          <ul className="mt-6 space-y-3">
+            {data.groups.map((group, gIndex) => {
+              const isOpen = openGroup === gIndex;
+              return (
+                <li
+                  key={group.id}
+                  className="rounded-lg border border-forest/10 bg-white"
+                >
+                  <div className="flex items-center gap-1 px-2 sm:px-3">
+                    <button
+                      type="button"
+                      className="min-w-0 flex-1 px-3 py-4 text-left"
+                      onClick={() =>
+                        setOpenGroup(isOpen ? null : gIndex)
+                      }
+                    >
+                      <p className="text-[1.05rem] font-semibold text-ink">
+                        {group.title}
+                      </p>
+                      <p className={helperClass}>
+                        {docsLabel(group.documents.length)}
+                      </p>
+                    </button>
+                    <RowMenu
+                      items={[
+                        {
+                          label: isOpen ? "Skryť" : "Otvoriť",
+                          onClick: () =>
+                            setOpenGroup(isOpen ? null : gIndex),
+                        },
+                        {
+                          label: "Premenovať",
+                          onClick: () => {
+                            setGroupDraft({
+                              mode: "rename",
+                              groupIndex: gIndex,
+                              title: group.title,
+                            });
+                            setFormError(null);
+                          },
+                        },
+                        {
+                          label: "Presunúť vyššie",
+                          onClick: () => moveGroup(gIndex, -1),
+                        },
+                        {
+                          label: "Presunúť nižšie",
+                          onClick: () => moveGroup(gIndex, 1),
+                        },
+                        {
+                          label: "Vymazať",
+                          danger: true,
+                          onClick: () =>
+                            setPendingDelete({
+                              kind: "group",
+                              groupIndex: gIndex,
+                              title: group.title,
+                              count: group.documents.length,
+                            }),
+                        },
+                      ]}
+                    />
+                  </div>
+
+                  {isOpen ? (
+                    <div className="border-t border-forest/8 px-4 py-4 sm:px-5">
+                      <div className="mb-3 flex justify-end">
+                        <button
+                          type="button"
+                          className={btnPrimary}
+                          onClick={() => openCreateDoc(gIndex)}
+                        >
+                          + Pridať dokument
+                        </button>
+                      </div>
+                      {group.documents.length === 0 ? (
+                        <p className="py-6 text-center text-[0.92rem] text-ink-muted">
+                          V tejto skupine zatiaľ nie sú dokumenty.
+                        </p>
+                      ) : (
+                        <ul className="space-y-2">
+                          {group.documents.map((doc, dIndex) => (
+                            <ListRow
+                              key={`${group.id}-${dIndex}-${doc.href}`}
+                              title={doc.title}
+                              onEdit={() => openEditDoc(gIndex, dIndex)}
+                              meta={
+                                <span className="text-[0.84rem] text-ink-muted">
+                                  PDF
+                                </span>
+                              }
+                              menuItems={[
+                                {
+                                  label: "Upraviť",
+                                  onClick: () => openEditDoc(gIndex, dIndex),
+                                },
+                                {
+                                  label: "Vymazať",
+                                  danger: true,
+                                  onClick: () =>
+                                    setPendingDelete({
+                                      kind: "doc",
+                                      groupIndex: gIndex,
+                                      docIndex: dIndex,
+                                      title: doc.title,
+                                    }),
+                                },
+                              ]}
+                            />
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  ) : null}
+                </li>
+              );
+            })}
+          </ul>
 
           <EditPanel
-            open={!!edit}
-            title="Upraviť dokument"
-            onClose={() => setEdit(null)}
-            primaryLabel={editor.saving ? "Ukladá sa…" : "Uložiť dokument"}
+            open={!!groupDraft}
+            title={
+              groupDraft?.mode === "create"
+                ? "Nová skupina"
+                : "Premenovať skupinu"
+            }
+            onClose={() => setGroupDraft(null)}
+            primaryLabel={
+              editor.saving
+                ? "Ukladá sa…"
+                : groupDraft?.mode === "create"
+                  ? "Pridať skupinu"
+                  : "Uložiť názov"
+            }
+            primaryDisabled={editor.saving}
+            onPrimary={() => void saveGroup()}
+            error={formError || editor.error}
+            message={editor.message}
+          >
+            {groupDraft ? (
+              <Field label="Názov skupiny">
+                <input
+                  className={inputClass}
+                  value={groupDraft.title}
+                  onChange={(e) =>
+                    setGroupDraft({ ...groupDraft, title: e.target.value })
+                  }
+                  placeholder="Napr. Nový poriadok"
+                />
+              </Field>
+            ) : null}
+          </EditPanel>
+
+          <EditPanel
+            open={!!draft}
+            title={
+              draft?.docIndex === null ? "Nový dokument" : "Upraviť dokument"
+            }
+            onClose={() => setDraft(null)}
+            primaryLabel={
+              editor.saving
+                ? "Ukladá sa…"
+                : draft?.docIndex === null
+                  ? "Pridať dokument"
+                  : "Uložiť dokument"
+            }
             primaryDisabled={editor.saving || uploading}
             onPrimary={() => void saveDoc()}
             error={formError || editor.error}
             message={editor.message}
+            footerExtra={
+              draft?.docIndex !== null && draft ? (
+                <button
+                  type="button"
+                  className="text-[0.9rem] font-semibold text-red-700 hover:underline"
+                  onClick={() =>
+                    setPendingDelete({
+                      kind: "doc",
+                      groupIndex: draft.groupIndex,
+                      docIndex: draft.docIndex!,
+                      title: draft.title || "dokument",
+                    })
+                  }
+                >
+                  Vymazať dokument
+                </button>
+              ) : null
+            }
           >
-            {edit ? (
+            {draft ? (
               <div className="space-y-5">
                 <Field label="Názov dokumentu">
                   <input
                     className={inputClass}
-                    value={edit.title}
+                    value={draft.title}
                     onChange={(e) =>
-                      setEdit({ ...edit, title: e.target.value })
+                      setDraft({ ...draft, title: e.target.value })
                     }
                   />
                 </Field>
                 <PdfAttachment
-                  href={edit.href}
+                  label="Súbor"
+                  href={draft.href || null}
                   uploading={uploading}
                   onUpload={(file) => void uploadPdf(file)}
+                  onClear={() => setDraft({ ...draft, href: "" })}
                   allowExternalLink
-                  onSetExternalLink={(url) => setEdit({ ...edit, href: url })}
+                  onSetExternalLink={(url) =>
+                    setDraft({ ...draft, href: url })
+                  }
                 />
               </div>
             ) : null}
           </EditPanel>
+
+          <ConfirmDialog
+            open={!!pendingDelete}
+            title="Vymazať?"
+            message={
+              pendingDelete?.kind === "group"
+                ? pendingDelete.count > 0
+                  ? `Táto skupina obsahuje ${docsLabel(pendingDelete.count)}. Vymazaním skupiny sa vymažú aj tieto položky.`
+                  : "Naozaj chcete túto skupinu vymazať?"
+                : "Naozaj chcete túto položku vymazať?"
+            }
+            onCancel={() => setPendingDelete(null)}
+            onConfirm={() => void confirmPendingDelete()}
+          />
         </>
       )}
     </AdminShell>

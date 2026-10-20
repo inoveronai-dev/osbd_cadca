@@ -4,7 +4,8 @@ import { useState } from "react";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { Field, inputClass } from "@/components/admin/Field";
 import { EditPanel } from "@/components/admin/EditPanel";
-import { ListRow } from "@/components/admin/ListRow";
+import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
+import { ListRow, RowMenu } from "@/components/admin/ListRow";
 import {
   btnPrimary,
   helperClass,
@@ -21,14 +22,33 @@ type PersonDraft = {
   emails: string[];
 };
 
+type GroupDraft = {
+  mode: "create" | "rename";
+  groupIndex: number | null;
+  title: string;
+};
+
+type PendingDelete =
+  | { kind: "person"; groupIndex: number; personIndex: number; title: string }
+  | { kind: "group"; groupIndex: number; title: string; count: number };
+
+function peopleLabel(n: number) {
+  if (n === 1) return "1 kontakt";
+  if (n >= 2 && n <= 4) return `${n} kontakty`;
+  return `${n} kontaktov`;
+}
+
 export default function AdminKontaktyDruzstvaPage() {
   const editor = useContentEditor<KontaktyContent>("kontakty.json");
   const data = editor.data;
   const staff = data?.staffDirectory;
   const [openGroup, setOpenGroup] = useState<number | null>(0);
   const [draft, setDraft] = useState<PersonDraft | null>(null);
+  const [groupDraft, setGroupDraft] = useState<GroupDraft | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
-  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState<PendingDelete | null>(
+    null,
+  );
 
   function openCreate(groupIndex: number) {
     setDraft({
@@ -40,7 +60,6 @@ export default function AdminKontaktyDruzstvaPage() {
       emails: [""],
     });
     setFormError(null);
-    setConfirmDelete(false);
     editor.setError(null);
     editor.setMessage(null);
   }
@@ -57,7 +76,6 @@ export default function AdminKontaktyDruzstvaPage() {
       emails: person.emails?.length ? [...person.emails] : [""],
     });
     setFormError(null);
-    setConfirmDelete(false);
     editor.setError(null);
     editor.setMessage(null);
   }
@@ -96,21 +114,98 @@ export default function AdminKontaktyDruzstvaPage() {
     if (ok) setDraft(null);
   }
 
-  async function deletePerson() {
-    if (!data || !staff || !draft || draft.personIndex === null) return;
+  async function saveGroup() {
+    if (!data || !staff || !groupDraft) return;
+    const title = groupDraft.title.trim();
+    if (!title) {
+      setFormError("Zadajte názov skupiny.");
+      return;
+    }
+    setFormError(null);
     const groups = [...staff.groups];
-    const group = groups[draft.groupIndex];
-    groups[draft.groupIndex] = {
-      ...group,
-      people: group.people.filter((_, i) => i !== draft.personIndex),
+    if (groupDraft.mode === "create") {
+      groups.push({
+        id: `skupina-${Date.now()}`,
+        title,
+        people: [],
+      });
+      const next = {
+        ...data,
+        staffDirectory: { ...staff, groups },
+      };
+      editor.setData(next);
+      const ok = await editor.save(next, "cms: kontakty — nová skupina");
+      if (ok) {
+        setGroupDraft(null);
+        setOpenGroup(groups.length - 1);
+      }
+      return;
+    }
+    if (groupDraft.groupIndex === null) return;
+    groups[groupDraft.groupIndex] = {
+      ...groups[groupDraft.groupIndex],
+      title,
     };
     const next = {
       ...data,
       staffDirectory: { ...staff, groups },
     };
     editor.setData(next);
-    const ok = await editor.save(next, "cms: kontakty — zmazanie osoby");
-    if (ok) setDraft(null);
+    const ok = await editor.save(next, "cms: kontakty — premenovanie skupiny");
+    if (ok) setGroupDraft(null);
+  }
+
+  function moveGroup(index: number, dir: -1 | 1) {
+    if (!data || !staff) return;
+    const target = index + dir;
+    if (target < 0 || target >= staff.groups.length) return;
+    const groups = [...staff.groups];
+    const [row] = groups.splice(index, 1);
+    groups.splice(target, 0, row);
+    const next = {
+      ...data,
+      staffDirectory: { ...staff, groups },
+    };
+    editor.setData(next);
+    setOpenGroup((cur) => {
+      if (cur === index) return target;
+      if (cur === target) return index;
+      return cur;
+    });
+    void editor.save(next, "cms: kontakty — poradie skupín");
+  }
+
+  async function confirmPendingDelete() {
+    if (!data || !staff || !pendingDelete) return;
+    if (pendingDelete.kind === "person") {
+      const groups = [...staff.groups];
+      const group = groups[pendingDelete.groupIndex];
+      groups[pendingDelete.groupIndex] = {
+        ...group,
+        people: group.people.filter(
+          (_, i) => i !== pendingDelete.personIndex,
+        ),
+      };
+      const next = {
+        ...data,
+        staffDirectory: { ...staff, groups },
+      };
+      editor.setData(next);
+      await editor.save(next, "cms: kontakty — zmazanie osoby");
+      setDraft(null);
+    } else {
+      const groups = staff.groups.filter(
+        (_, i) => i !== pendingDelete.groupIndex,
+      );
+      const next = {
+        ...data,
+        staffDirectory: { ...staff, groups },
+      };
+      editor.setData(next);
+      await editor.save(next, "cms: kontakty — zmazanie skupiny");
+      setOpenGroup(null);
+    }
+    setPendingDelete(null);
   }
 
   return (
@@ -119,9 +214,32 @@ export default function AdminKontaktyDruzstvaPage() {
         <p className="text-ink-muted">Načítavam…</p>
       ) : (
         <>
-          <p className="max-w-xl text-[0.95rem] text-ink-muted">
-            Vyberte skupinu a potom osobu, ktorú chcete upraviť.
-          </p>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <p className="max-w-xl text-[0.95rem] text-ink-muted">
+              Vyberte skupinu a potom osobu, ktorú chcete upraviť.
+            </p>
+            <button
+              type="button"
+              className={btnPrimary}
+              onClick={() => {
+                setGroupDraft({ mode: "create", groupIndex: null, title: "" });
+                setFormError(null);
+              }}
+            >
+              + Pridať skupinu
+            </button>
+          </div>
+
+          {editor.message && !draft && !groupDraft ? (
+            <p className="mt-4 text-[0.92rem] font-medium text-forest">
+              ✓ {editor.message}
+            </p>
+          ) : null}
+          {editor.error && !draft && !groupDraft ? (
+            <p className="mt-4 text-[0.92rem] font-medium text-red-700">
+              {editor.error}
+            </p>
+          ) : null}
 
           <ul className="mt-6 space-y-3">
             {staff.groups.map((group, gIndex) => {
@@ -129,30 +247,61 @@ export default function AdminKontaktyDruzstvaPage() {
               return (
                 <li
                   key={group.id}
-                  className="overflow-hidden rounded-lg border border-forest/10 bg-white"
+                  className="rounded-lg border border-forest/10 bg-white"
                 >
-                  <button
-                    type="button"
-                    className="flex w-full items-center justify-between gap-3 px-5 py-4 text-left"
-                    onClick={() => setOpenGroup(isOpen ? null : gIndex)}
-                  >
-                    <div>
+                  <div className="flex items-center gap-1 px-2 sm:px-3">
+                    <button
+                      type="button"
+                      className="min-w-0 flex-1 px-3 py-4 text-left"
+                      onClick={() => setOpenGroup(isOpen ? null : gIndex)}
+                    >
                       <p className="text-[1.05rem] font-semibold text-ink">
                         {group.title}
                       </p>
                       <p className={helperClass}>
-                        {group.people.length}{" "}
-                        {group.people.length === 1
-                          ? "kontakt"
-                          : group.people.length < 5
-                            ? "kontakty"
-                            : "kontaktov"}
+                        {peopleLabel(group.people.length)}
                       </p>
-                    </div>
-                    <span className="text-[0.9rem] font-semibold text-forest">
-                      {isOpen ? "Skryť" : "Upraviť"}
-                    </span>
-                  </button>
+                    </button>
+                    <RowMenu
+                      items={[
+                        {
+                          label: isOpen ? "Skryť" : "Otvoriť",
+                          onClick: () =>
+                            setOpenGroup(isOpen ? null : gIndex),
+                        },
+                        {
+                          label: "Premenovať",
+                          onClick: () => {
+                            setGroupDraft({
+                              mode: "rename",
+                              groupIndex: gIndex,
+                              title: group.title,
+                            });
+                            setFormError(null);
+                          },
+                        },
+                        {
+                          label: "Presunúť vyššie",
+                          onClick: () => moveGroup(gIndex, -1),
+                        },
+                        {
+                          label: "Presunúť nižšie",
+                          onClick: () => moveGroup(gIndex, 1),
+                        },
+                        {
+                          label: "Vymazať",
+                          danger: true,
+                          onClick: () =>
+                            setPendingDelete({
+                              kind: "group",
+                              groupIndex: gIndex,
+                              title: group.title,
+                              count: group.people.length,
+                            }),
+                        },
+                      ]}
+                    />
+                  </div>
 
                   {isOpen ? (
                     <div className="border-t border-forest/8 px-4 py-4 sm:px-5">
@@ -165,29 +314,52 @@ export default function AdminKontaktyDruzstvaPage() {
                           + Pridať osobu
                         </button>
                       </div>
-                      <ul className="space-y-2">
-                        {group.people.map((person, pIndex) => (
-                          <ListRow
-                            key={`${group.id}-${pIndex}`}
-                            title={person.name || "Bez mena"}
-                            onEdit={() => openEdit(gIndex, pIndex)}
-                            meta={
-                              <>
-                                {person.room ? (
-                                  <span className="text-[0.84rem] text-ink-muted">
-                                    {person.room}
-                                  </span>
-                                ) : null}
-                                {person.phones?.[0] ? (
-                                  <span className="text-[0.84rem] text-ink-muted">
-                                    {person.phones[0]}
-                                  </span>
-                                ) : null}
-                              </>
-                            }
-                          />
-                        ))}
-                      </ul>
+                      {group.people.length === 0 ? (
+                        <p className="py-6 text-center text-[0.92rem] text-ink-muted">
+                          V tejto skupine zatiaľ nie sú kontakty.
+                        </p>
+                      ) : (
+                        <ul className="space-y-2">
+                          {group.people.map((person, pIndex) => (
+                            <ListRow
+                              key={`${group.id}-${pIndex}`}
+                              title={person.name || "Bez mena"}
+                              onEdit={() => openEdit(gIndex, pIndex)}
+                              meta={
+                                <>
+                                  {person.room ? (
+                                    <span className="text-[0.84rem] text-ink-muted">
+                                      {person.room}
+                                    </span>
+                                  ) : null}
+                                  {person.phones?.[0] ? (
+                                    <span className="text-[0.84rem] text-ink-muted">
+                                      {person.phones[0]}
+                                    </span>
+                                  ) : null}
+                                </>
+                              }
+                              menuItems={[
+                                {
+                                  label: "Upraviť",
+                                  onClick: () => openEdit(gIndex, pIndex),
+                                },
+                                {
+                                  label: "Vymazať",
+                                  danger: true,
+                                  onClick: () =>
+                                    setPendingDelete({
+                                      kind: "person",
+                                      groupIndex: gIndex,
+                                      personIndex: pIndex,
+                                      title: person.name || "kontakt",
+                                    }),
+                                },
+                              ]}
+                            />
+                          ))}
+                        </ul>
+                      )}
                     </div>
                   ) : null}
                 </li>
@@ -195,11 +367,39 @@ export default function AdminKontaktyDruzstvaPage() {
             })}
           </ul>
 
-          {editor.message && !draft ? (
-            <p className="mt-4 text-[0.92rem] font-medium text-forest">
-              ✓ {editor.message}
-            </p>
-          ) : null}
+          <EditPanel
+            open={!!groupDraft}
+            title={
+              groupDraft?.mode === "create"
+                ? "Nová skupina"
+                : "Premenovať skupinu"
+            }
+            onClose={() => setGroupDraft(null)}
+            primaryLabel={
+              editor.saving
+                ? "Ukladá sa…"
+                : groupDraft?.mode === "create"
+                  ? "Pridať skupinu"
+                  : "Uložiť názov"
+            }
+            primaryDisabled={editor.saving}
+            onPrimary={() => void saveGroup()}
+            error={formError || editor.error}
+            message={editor.message}
+          >
+            {groupDraft ? (
+              <Field label="Názov skupiny">
+                <input
+                  className={inputClass}
+                  value={groupDraft.title}
+                  onChange={(e) =>
+                    setGroupDraft({ ...groupDraft, title: e.target.value })
+                  }
+                  placeholder="Napr. Nové oddelenie"
+                />
+              </Field>
+            ) : null}
+          </EditPanel>
 
           <EditPanel
             open={!!draft}
@@ -218,33 +418,20 @@ export default function AdminKontaktyDruzstvaPage() {
             message={editor.message}
             footerExtra={
               draft?.personIndex !== null && draft ? (
-                confirmDelete ? (
-                  <div className="flex flex-wrap gap-2 text-[0.84rem]">
-                    <span className="text-red-700">Naozaj vymazať?</span>
-                    <button
-                      type="button"
-                      className="font-semibold text-red-700"
-                      onClick={() => void deletePerson()}
-                    >
-                      Áno
-                    </button>
-                    <button
-                      type="button"
-                      className="text-ink-muted"
-                      onClick={() => setConfirmDelete(false)}
-                    >
-                      Nie
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    type="button"
-                    className="text-[0.84rem] text-ink-muted hover:text-red-700 hover:underline"
-                    onClick={() => setConfirmDelete(true)}
-                  >
-                    Vymazať kontakt
-                  </button>
-                )
+                <button
+                  type="button"
+                  className="text-[0.9rem] font-semibold text-red-700 hover:underline"
+                  onClick={() =>
+                    setPendingDelete({
+                      kind: "person",
+                      groupIndex: draft.groupIndex,
+                      personIndex: draft.personIndex!,
+                      title: draft.name || "kontakt",
+                    })
+                  }
+                >
+                  Vymazať kontakt
+                </button>
               ) : null
             }
           >
@@ -356,6 +543,20 @@ export default function AdminKontaktyDruzstvaPage() {
               </div>
             ) : null}
           </EditPanel>
+
+          <ConfirmDialog
+            open={!!pendingDelete}
+            title="Vymazať?"
+            message={
+              pendingDelete?.kind === "group"
+                ? pendingDelete.count > 0
+                  ? `Táto skupina obsahuje ${peopleLabel(pendingDelete.count)}. Vymazaním skupiny sa vymažú aj tieto položky.`
+                  : "Naozaj chcete túto skupinu vymazať?"
+                : "Naozaj chcete túto položku vymazať?"
+            }
+            onCancel={() => setPendingDelete(null)}
+            onConfirm={() => void confirmPendingDelete()}
+          />
         </>
       )}
     </AdminShell>

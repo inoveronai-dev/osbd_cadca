@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { Field, inputClass, textareaClass } from "@/components/admin/Field";
 import { EditPanel } from "@/components/admin/EditPanel";
+import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { KindBadge, ListRow, StatusBadge } from "@/components/admin/ListRow";
 import { PdfAttachment } from "@/components/admin/PdfAttachment";
 import {
@@ -127,7 +128,9 @@ export default function AdminAktualityPage() {
   const [draft, setDraft] = useState<Draft | null>(null);
   const [uploading, setUploading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
-  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [pendingDeleteIndex, setPendingDeleteIndex] = useState<number | null>(
+    null,
+  );
 
   const items = data?.items ?? [];
 
@@ -141,7 +144,6 @@ export default function AdminAktualityPage() {
     setEditIndex(null);
     setMode("create");
     setFormError(null);
-    setConfirmDelete(false);
     editor.setError(null);
     editor.setMessage(null);
   }
@@ -152,7 +154,6 @@ export default function AdminAktualityPage() {
     setEditIndex(index);
     setMode("edit");
     setFormError(null);
-    setConfirmDelete(false);
     editor.setError(null);
     editor.setMessage(null);
   }
@@ -162,7 +163,6 @@ export default function AdminAktualityPage() {
     setDraft(null);
     setEditIndex(null);
     setFormError(null);
-    setConfirmDelete(false);
   }
 
   function moveItem(index: number, dir: -1 | 1) {
@@ -231,19 +231,15 @@ export default function AdminAktualityPage() {
     if (ok) closePanel();
   }
 
-  async function deleteAt(index: number) {
-    if (!data) return;
+  async function confirmPendingDelete() {
+    if (!data || pendingDeleteIndex === null) return;
+    const index = pendingDeleteIndex;
     const itemsNext = data.items.filter((_, i) => i !== index);
     const next = { ...data, items: itemsNext };
     editor.setData(next);
     const ok = await editor.save(next, "cms: aktuality — zmazanie");
-    if (ok) closePanel();
-    return ok;
-  }
-
-  async function deleteCurrent() {
-    if (editIndex === null) return;
-    await deleteAt(editIndex);
+    setPendingDeleteIndex(null);
+    if (ok && (mode === "edit" || mode === "create")) closePanel();
   }
 
   return (
@@ -319,15 +315,7 @@ export default function AdminAktualityPage() {
                     {
                       label: "Vymazať",
                       danger: true,
-                      onClick: () => {
-                        if (
-                          window.confirm(
-                            `Naozaj vymazať aktualitu „${item.title}"?`,
-                          )
-                        ) {
-                          void deleteAt(index);
-                        }
-                      },
+                      onClick: () => setPendingDeleteIndex(index),
                     },
                   ]}
                 />
@@ -351,36 +339,14 @@ export default function AdminAktualityPage() {
             error={formError || editor.error}
             message={editor.message}
             footerExtra={
-              mode === "edit" ? (
-                confirmDelete ? (
-                  <div className="flex flex-wrap items-center gap-2 rounded-md bg-red-50 px-3 py-2">
-                    <span className="text-[0.9rem] text-red-800">
-                      Naozaj vymazať túto aktualitu?
-                    </span>
-                    <button
-                      type="button"
-                      className="text-[0.9rem] font-semibold text-red-800 underline"
-                      onClick={() => void deleteCurrent()}
-                    >
-                      Áno, vymazať
-                    </button>
-                    <button
-                      type="button"
-                      className="text-[0.9rem] font-semibold text-ink-muted"
-                      onClick={() => setConfirmDelete(false)}
-                    >
-                      Zrušiť
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    type="button"
-                    className="text-[0.9rem] font-semibold text-red-700 hover:underline"
-                    onClick={() => setConfirmDelete(true)}
-                  >
-                    Vymazať aktualitu
-                  </button>
-                )
+              mode === "edit" && editIndex !== null ? (
+                <button
+                  type="button"
+                  className="text-[0.9rem] font-semibold text-red-700 hover:underline"
+                  onClick={() => setPendingDeleteIndex(editIndex)}
+                >
+                  Vymazať aktualitu
+                </button>
               ) : null
             }
           >
@@ -505,6 +471,14 @@ export default function AdminAktualityPage() {
               </div>
             ) : null}
           </EditPanel>
+
+          <ConfirmDialog
+            open={pendingDeleteIndex !== null}
+            title="Vymazať?"
+            message="Naozaj chcete túto položku vymazať?"
+            onCancel={() => setPendingDeleteIndex(null)}
+            onConfirm={() => void confirmPendingDelete()}
+          />
         </>
       )}
     </AdminShell>
