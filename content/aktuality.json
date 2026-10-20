@@ -3,14 +3,6 @@
   "support": "Aktuálne oznamy a informácie pre vlastníkov bytov.",
   "items": [
     {
-      "id": "aktualita-1792488258723",
-      "kind": "pdf",
-      "title": "Vianočné prianie",
-      "publishedAt": "2026-10-20",
-      "pdfHref": "/uploads/documents/aktuality/aktualita-1792488258723-mvghb3e6.pdf",
-      "active": true
-    },
-    {
       "id": "elektricke-zariadenia",
       "kind": "pdf",
       "title": "Zmena dodávateľa odborných prehliadok a odborných skúšok elektrických zariadení",
