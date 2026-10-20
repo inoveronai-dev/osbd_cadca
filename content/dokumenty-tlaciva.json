@@ -4,12 +4,7 @@
       "id": "skupina-test-1792516665033",
       "title": "TEST UX skupina 2",
       "defaultOpen": true,
-      "documents": [
-        {
-          "title": "TEST dokument",
-          "href": "https://example.com/test.pdf"
-        }
-      ]
+      "documents": []
     },
     {
       "id": "cennik",
