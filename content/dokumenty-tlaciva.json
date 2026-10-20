@@ -1,6 +1,17 @@
 {
   "groups": [
     {
+      "id": "skupina-test-1792516665033",
+      "title": "TEST UX skupina 2",
+      "defaultOpen": true,
+      "documents": [
+        {
+          "title": "TEST dokument",
+          "href": "https://example.com/test.pdf"
+        }
+      ]
+    },
+    {
       "id": "cennik",
       "title": "Cenník služieb",
       "defaultOpen": true,
@@ -106,12 +117,6 @@
           "href": "http://osbdcadca.sk/wp-content/uploads/2020/02/Postup_obst_tov_a_sl_CA.pdf"
         }
       ]
-    },
-    {
-      "id": "skupina-test-1792516665033",
-      "title": "TEST UX skupina 2",
-      "defaultOpen": true,
-      "documents": []
     }
   ]
 }
