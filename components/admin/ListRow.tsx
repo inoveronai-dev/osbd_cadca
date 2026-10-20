@@ -108,7 +108,7 @@ export function RowMenu({ items }: { items: MenuItem[] }) {
             <div
               ref={menuRef}
               role="menu"
-              className="fixed z-[100] min-w-[11rem] overflow-hidden rounded-md border border-forest/10 bg-white py-1 shadow-[0_12px_32px_rgba(7,35,26,0.16)]"
+              className="fixed z-[9999] min-w-[11rem] rounded-md border border-forest/10 bg-white py-1 shadow-[0_12px_32px_rgba(7,35,26,0.16)]"
               style={{ top: pos.top, left: pos.left }}
             >
               {items.map((item) => (
