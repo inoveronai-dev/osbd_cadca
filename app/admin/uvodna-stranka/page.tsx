@@ -1,14 +1,48 @@
 "use client";
 
+import { useState } from "react";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { Field, inputClass, textareaClass } from "@/components/admin/Field";
+import { ImageAttachment } from "@/components/admin/ImageAttachment";
 import { SaveBar } from "@/components/admin/SaveBar";
 import { useContentEditor } from "@/components/admin/useContentEditor";
 import type { HomepageContent } from "@/lib/content/schema";
 
+const DEFAULT_HERO_SRC = "/images/hero-cadca-kysuce.png";
+const DEFAULT_ABOUT_SRC = "/images/about-osbd-hq.png";
+const DEFAULT_BANNER_SRC = "/images/banner-elektronicke-dorucovanie.png";
+const DEFAULT_SERVICE_SRCS = [
+  "/images/service-technicka.png",
+  "/images/service-ekonomicka.png",
+  "/images/service-obnova.png",
+  "/images/service-poradenstvo.png",
+] as const;
+
 export default function AdminUvodnaStrankaPage() {
   const editor = useContentEditor<HomepageContent>("homepage.json");
   const data = editor.data;
+  const [uploadingKey, setUploadingKey] = useState<string | null>(null);
+
+  async function uploadImage(options: {
+    key: string;
+    file: File;
+    baseName: string;
+    apply: (url: string) => void;
+  }) {
+    setUploadingKey(options.key);
+    try {
+      const uploaded = await editor.uploadFile({
+        file: options.file,
+        kind: "image",
+        folder: "homepage",
+        baseName: options.baseName,
+      });
+      if (!uploaded) return;
+      options.apply(uploaded.url);
+    } finally {
+      setUploadingKey(null);
+    }
+  }
 
   return (
     <AdminShell title="Úvodná stránka">
@@ -17,8 +51,8 @@ export default function AdminUvodnaStrankaPage() {
       ) : (
         <div className="space-y-5">
           <p className="text-[0.9rem] text-ink-muted">
-            Upravujte iba schválené texty a obrázky. Rozloženie, farby ani počet
-            kariet sa tu nemenía.
+            Upravujte texty a fotografie úvodnej stránky. Fotografie môžete
+            nahrať, vymeniť alebo vrátiť na pôvodné.
           </p>
 
           <section className="rounded-lg border border-forest/10 bg-white p-4">
@@ -114,6 +148,93 @@ export default function AdminUvodnaStrankaPage() {
                   }
                 />
               </Field>
+              <ImageAttachment
+                label="Hero fotografia"
+                helper="Veľká fotografia na pozadí úvodného banneru."
+                src={data.hero.imageSlot.src}
+                uploading={uploadingKey === "hero"}
+                onUpload={(file) =>
+                  void uploadImage({
+                    key: "hero",
+                    file,
+                    baseName: "hero",
+                    apply: (url) =>
+                      editor.setData({
+                        ...data,
+                        hero: {
+                          ...data.hero,
+                          imageSlot: { ...data.hero.imageSlot, src: url },
+                        },
+                      }),
+                  })
+                }
+                onClear={() =>
+                  editor.setData({
+                    ...data,
+                    hero: {
+                      ...data.hero,
+                      imageSlot: {
+                        ...data.hero.imageSlot,
+                        src: DEFAULT_HERO_SRC,
+                      },
+                    },
+                  })
+                }
+                clearLabel="Obnoviť pôvodnú fotografiu"
+              />
+            </div>
+          </section>
+
+          <section className="rounded-lg border border-forest/10 bg-white p-4">
+            <h2 className="text-[1.05rem] font-semibold text-forest">
+              Banner elektronického doručovania
+            </h2>
+            <div className="mt-3 grid gap-3">
+              <Field label="Popis fotky (alt)">
+                <input
+                  className={inputClass}
+                  value={data.electronicDeliveryBanner.alt}
+                  onChange={(e) =>
+                    editor.setData({
+                      ...data,
+                      electronicDeliveryBanner: {
+                        ...data.electronicDeliveryBanner,
+                        alt: e.target.value,
+                      },
+                    })
+                  }
+                />
+              </Field>
+              <ImageAttachment
+                label="Banner fotografia"
+                src={data.electronicDeliveryBanner.src}
+                uploading={uploadingKey === "banner"}
+                onUpload={(file) =>
+                  void uploadImage({
+                    key: "banner",
+                    file,
+                    baseName: "banner-elektronicke-dorucovanie",
+                    apply: (url) =>
+                      editor.setData({
+                        ...data,
+                        electronicDeliveryBanner: {
+                          ...data.electronicDeliveryBanner,
+                          src: url,
+                        },
+                      }),
+                  })
+                }
+                onClear={() =>
+                  editor.setData({
+                    ...data,
+                    electronicDeliveryBanner: {
+                      ...data.electronicDeliveryBanner,
+                      src: DEFAULT_BANNER_SRC,
+                    },
+                  })
+                }
+                clearLabel="Obnoviť pôvodnú fotografiu"
+              />
             </div>
           </section>
 
@@ -240,6 +361,56 @@ export default function AdminUvodnaStrankaPage() {
                 }
               />
             </Field>
+            <Field label="Popis fotky (alt)" className="mt-3">
+              <input
+                className={inputClass}
+                value={data.about.image.alt}
+                onChange={(e) =>
+                  editor.setData({
+                    ...data,
+                    about: {
+                      ...data.about,
+                      image: { ...data.about.image, alt: e.target.value },
+                    },
+                  })
+                }
+              />
+            </Field>
+            <div className="mt-3">
+              <ImageAttachment
+                label="Fotografia pri texte O nás"
+                src={data.about.image.src}
+                uploading={uploadingKey === "about"}
+                onUpload={(file) =>
+                  void uploadImage({
+                    key: "about",
+                    file,
+                    baseName: "about",
+                    apply: (url) =>
+                      editor.setData({
+                        ...data,
+                        about: {
+                          ...data.about,
+                          image: { ...data.about.image, src: url },
+                        },
+                      }),
+                  })
+                }
+                onClear={() =>
+                  editor.setData({
+                    ...data,
+                    about: {
+                      ...data.about,
+                      image: {
+                        ...data.about.image,
+                        src: DEFAULT_ABOUT_SRC,
+                      },
+                    },
+                  })
+                }
+                clearLabel="Obnoviť pôvodnú fotografiu"
+              />
+            </div>
           </section>
 
           <section className="rounded-lg border border-forest/10 bg-white p-4">
@@ -334,7 +505,7 @@ export default function AdminUvodnaStrankaPage() {
             <ul className="mt-3 space-y-3">
               {data.services.categories.map((cat, index) => (
                 <li
-                  key={cat.title}
+                  key={`${cat.title}-${index}`}
                   className="rounded-md border border-forest/8 bg-[#faf9f6] p-3"
                 >
                   <Field label="Názov">
@@ -368,15 +539,15 @@ export default function AdminUvodnaStrankaPage() {
                       }}
                     />
                   </Field>
-                  <Field label="Obrázok URL" className="mt-2">
+                  <Field label="Popis fotky (alt)" className="mt-2">
                     <input
                       className={inputClass}
-                      value={cat.image.src}
+                      value={cat.image.alt}
                       onChange={(e) => {
                         const categories = [...data.services.categories];
                         categories[index] = {
                           ...cat,
-                          image: { ...cat.image, src: e.target.value },
+                          image: { ...cat.image, alt: e.target.value },
                         };
                         editor.setData({
                           ...data,
@@ -385,31 +556,48 @@ export default function AdminUvodnaStrankaPage() {
                       }}
                     />
                   </Field>
-                  <input
-                    className="mt-2"
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
-                    onChange={async (e) => {
-                      const file = e.target.files?.[0];
-                      if (!file) return;
-                      const uploaded = await editor.uploadFile({
-                        file,
-                        kind: "image",
-                        folder: "homepage",
-                        baseName: cat.title || `service-${index}`,
-                      });
-                      if (!uploaded) return;
-                      const categories = [...data.services.categories];
-                      categories[index] = {
-                        ...cat,
-                        image: { ...cat.image, src: uploaded.url },
-                      };
-                      editor.setData({
-                        ...data,
-                        services: { ...data.services, categories },
-                      });
-                    }}
-                  />
+                  <div className="mt-2">
+                    <ImageAttachment
+                      label={`Fotografia — ${cat.title}`}
+                      src={cat.image.src}
+                      uploading={uploadingKey === `service-${index}`}
+                      onUpload={(file) =>
+                        void uploadImage({
+                          key: `service-${index}`,
+                          file,
+                          baseName: cat.title || `service-${index}`,
+                          apply: (url) => {
+                            const categories = [...data.services.categories];
+                            categories[index] = {
+                              ...cat,
+                              image: { ...cat.image, src: url },
+                            };
+                            editor.setData({
+                              ...data,
+                              services: { ...data.services, categories },
+                            });
+                          },
+                        })
+                      }
+                      onClear={() => {
+                        const categories = [...data.services.categories];
+                        categories[index] = {
+                          ...cat,
+                          image: {
+                            ...cat.image,
+                            src:
+                              DEFAULT_SERVICE_SRCS[index] ??
+                              DEFAULT_SERVICE_SRCS[0],
+                          },
+                        };
+                        editor.setData({
+                          ...data,
+                          services: { ...data.services, categories },
+                        });
+                      }}
+                      clearLabel="Obnoviť pôvodnú fotografiu"
+                    />
+                  </div>
                 </li>
               ))}
             </ul>

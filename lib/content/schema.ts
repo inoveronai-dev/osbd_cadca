@@ -245,7 +245,12 @@ export const homepageSchema = z.object({
       label: z.string(),
       description: z.string(),
       aspect: z.string(),
+      src: z.string().min(1),
     }),
+  }),
+  electronicDeliveryBanner: z.object({
+    src: z.string().min(1),
+    alt: z.string().min(1),
   }),
   quickAccess: z.object({
     headline: z.string(),
@@ -272,6 +277,10 @@ export const homepageSchema = z.object({
       label: z.string(),
       href: z.string().nullable(),
       status: z.enum(["pending", "ready", "anchor"]),
+    }),
+    image: z.object({
+      src: z.string().min(1),
+      alt: z.string().min(1),
     }),
   }),
   whyOsbd: z.object({

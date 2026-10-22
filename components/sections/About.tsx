@@ -22,8 +22,8 @@ export function About() {
             <div className="media-frame aspect-[5/4] max-h-[28rem] border border-[var(--border-subtle)] lg:max-h-[32rem]">
               <div className="img-zoom relative h-full w-full">
                 <Image
-                  src="/images/about-osbd-hq.png"
-                  alt={aboutSection.imageSlot.description}
+                  src={aboutSection.image.src}
+                  alt={aboutSection.image.alt}
                   fill
                   sizes="(max-width: 1024px) 100vw, 42vw"
                   className="object-cover object-center"

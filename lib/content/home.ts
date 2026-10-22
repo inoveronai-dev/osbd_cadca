@@ -60,12 +60,13 @@ export const aboutSection = {
   headline: loadHomepage().about.leadTitle,
   paragraphs: loadHomepage().about.introParagraphs,
   link: loadHomepage().about.link,
+  image: loadHomepage().about.image,
   imageSlot: {
     id: "about-osbd-hq",
     label: "about-osbd-hq",
-    description:
-      "Fotografia sídla OSBD Čadca alebo autentická fotografia zamestnancov",
+    description: loadHomepage().about.image.alt,
     aspect: "portrait" as const,
+    src: loadHomepage().about.image.src,
   },
 };
 

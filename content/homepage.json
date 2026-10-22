@@ -32,8 +32,13 @@
       "id": "hero-cadca-kysuce",
       "label": "hero-cadca-kysuce",
       "description": "Široká autentická fotografia Čadce / Kysúc s bytovými domami a krajinou",
-      "aspect": "wide"
+      "aspect": "wide",
+      "src": "/images/hero-cadca-kysuce.png"
     }
+  },
+  "electronicDeliveryBanner": {
+    "src": "/images/banner-elektronicke-dorucovanie.png",
+    "alt": "Elektronické doručovanie dokumentov — dajte si poslať všetko k sebe. Pre viac informácií kliknite."
   },
   "quickAccess": {
     "headline": "Čo potrebujete vybaviť?",
@@ -86,6 +91,10 @@
       "label": "Viac o OSBD Čadca",
       "href": null,
       "status": "pending"
+    },
+    "image": {
+      "src": "/images/about-osbd-hq.png",
+      "alt": "Fotografia sídla OSBD Čadca alebo autentická fotografia zamestnancov"
     }
   },
   "whyOsbd": {

@@ -12,7 +12,7 @@ export function Hero() {
     >
       <div className="absolute inset-0">
         <Image
-          src="/images/hero-cadca-kysuce.png"
+          src={hero.imageSlot.src}
           alt={hero.imageSlot.description}
           fill
           priority
