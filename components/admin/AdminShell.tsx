@@ -18,6 +18,10 @@ const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
     items: [
       { href: "/admin/aktuality", label: "Aktuality" },
       { href: "/admin/dokumenty-tlaciva", label: "Dokumenty a tlačivá" },
+      {
+        href: "/admin/elektronicke-dorucovanie",
+        label: "Elektronické doručovanie",
+      },
     ],
   },
   {

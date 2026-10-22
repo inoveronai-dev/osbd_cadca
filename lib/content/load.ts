@@ -3,6 +3,7 @@ import {
   type AktualityContent,
   type DokumentyTlacivaContent,
   type DomovyPoriadokContent,
+  type ElektronickeDorucovanieContent,
   type HistoriaContent,
   type HomepageContent,
   type KablovaTvContent,
@@ -22,6 +23,7 @@ import stanovyJson from "../../content/stanovy.json";
 import dokumentyTlacivaJson from "../../content/dokumenty-tlaciva.json";
 import domovyPoriadokJson from "../../content/domovy-poriadok.json";
 import kablovaTvJson from "../../content/kablova-tv.json";
+import elektronickeDorucovanieJson from "../../content/elektronicke-dorucovanie.json";
 
 /**
  * Public content is imported from deployed JSON (bundled at build).
@@ -74,4 +76,10 @@ export function loadDomovyPoriadok(): DomovyPoriadokContent {
 
 export function loadKablovaTv(): KablovaTvContent {
   return contentSchemas["kablova-tv.json"].parse(kablovaTvJson);
+}
+
+export function loadElektronickeDorucovanie(): ElektronickeDorucovanieContent {
+  return contentSchemas["elektronicke-dorucovanie.json"].parse(
+    elektronickeDorucovanieJson,
+  );
 }

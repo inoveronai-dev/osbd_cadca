@@ -1,0 +1,21 @@
+{
+  "heroTitle": "Informácia o elektronickom doručovaní",
+  "heroSupport": "Jednoduché informácie k elektronickému doručovaniu dokumentov.",
+  "heading": "Informácia o elektronickom doručovaní",
+  "greeting": "Vážený vlastník/nájomca bytu,",
+  "paragraphs": [
+    "OSBD Čadca, ako správca Vášho bytového domu prevádzkuje rýchlejší a efektívnejší spôsob komunikácie a doručovania dokumentov vlastníkom/nájomcom bytov prostredníctvom elektronického doručovania dokumentov.",
+    "Podmienkou elektronického doručovania je uzatvorenie „Dohody o elektronickom doručovaní“ (ďalej len „Dohoda“) medzi vlastníkom/nájomcom bytu a OSBD Čadca. Formulár „Dohody“:",
+    "Je medzi dokumenty a tlačivá – Dohoda o elektronickom doručovaní dokumentov a Informácia k elektronickému doručovaniu dokumentov.",
+    "Podpísanú dohodu, prosím, doručte na OSBD Čadca poštou alebo osobne na OSBD Čadca, Gočárova 252, 022 47 Čadca.",
+    "Vážený vlastník/nájomca bytu, veríme, že využijete tento nový spôsob doručovania dokumentov a bude pre Vás, ale aj pre nás prínosom."
+  ],
+  "closingLead": "S úctou",
+  "closingName": "Ing. Marián Sihelník",
+  "closingRole": "predseda predstavenstva OSBD Čadca",
+  "pdfSectionTitle": "Dohoda na stiahnutie",
+  "pdf": {
+    "title": "Dohoda o elektronickom doručovaní dokumentov – Otvoriť PDF",
+    "href": "https://osbdcadca.sk/wp-content/uploads/2026/07/Dohoda-o-elektronickom-doru%C4%8Dovan%C3%AD.pdf"
+  }
+}

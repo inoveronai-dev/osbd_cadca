@@ -206,6 +206,19 @@ export const kablovaTvSchema = z.object({
   documentGroups: z.array(documentGroupSchema),
 });
 
+export const elektronickeDorucovanieSchema = z.object({
+  heroTitle: z.string().min(1),
+  heroSupport: z.string(),
+  heading: z.string().min(1),
+  greeting: z.string().min(1),
+  paragraphs: z.array(z.string().min(1)).min(1),
+  closingLead: z.string().min(1),
+  closingName: z.string().min(1),
+  closingRole: z.string().min(1),
+  pdfSectionTitle: z.string().min(1),
+  pdf: pdfDocumentSchema,
+});
+
 export const homepageSchema = z.object({
   hero: z.object({
     eyebrow: z.string(),
@@ -316,6 +329,7 @@ export const contentSchemas = {
   "dokumenty-tlaciva.json": dokumentyTlacivaSchema,
   "domovy-poriadok.json": domovyPoriadokSchema,
   "kablova-tv.json": kablovaTvSchema,
+  "elektronicke-dorucovanie.json": elektronickeDorucovanieSchema,
 } as const;
 
 export type SiteContent = z.infer<typeof siteSchema>;
@@ -328,4 +342,7 @@ export type StanovyContent = z.infer<typeof stanovySchema>;
 export type DokumentyTlacivaContent = z.infer<typeof dokumentyTlacivaSchema>;
 export type DomovyPoriadokContent = z.infer<typeof domovyPoriadokSchema>;
 export type KablovaTvContent = z.infer<typeof kablovaTvSchema>;
+export type ElektronickeDorucovanieContent = z.infer<
+  typeof elektronickeDorucovanieSchema
+>;
 export type Notice = z.infer<typeof noticeSchema>;

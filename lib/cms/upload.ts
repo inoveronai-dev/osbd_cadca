@@ -92,6 +92,7 @@ export function buildUploadRepoPath(options: {
     | "dokumenty-tlaciva"
     | "domovy-poriadok"
     | "kablova-tv"
+    | "elektronicke-dorucovanie"
     | "homepage";
   kind: UploadKind;
   baseName: string;

@@ -32,6 +32,7 @@ export async function POST(request: Request) {
     "dokumenty-tlaciva",
     "domovy-poriadok",
     "kablova-tv",
+    "elektronicke-dorucovanie",
     "homepage",
   ] as const;
   if (!allowedFolders.includes(folder as (typeof allowedFolders)[number])) {

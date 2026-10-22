@@ -10,6 +10,7 @@ export const CONTENT_FILES = [
   "dokumenty-tlaciva.json",
   "domovy-poriadok.json",
   "kablova-tv.json",
+  "elektronicke-dorucovanie.json",
 ] as const;
 
 export type ContentFileName = (typeof CONTENT_FILES)[number];
@@ -21,6 +22,7 @@ export const UPLOAD_PREFIXES = [
   "public/uploads/documents/dokumenty-tlaciva/",
   "public/uploads/documents/domovy-poriadok/",
   "public/uploads/documents/kablova-tv/",
+  "public/uploads/documents/elektronicke-dorucovanie/",
 ] as const;
 
 export const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
