@@ -3,14 +3,6 @@
   "support": "Aktuálne oznamy a informácie pre vlastníkov bytov.",
   "items": [
     {
-      "id": "aktualita-1792650479429",
-      "kind": "pdf",
-      "title": "vianoce",
-      "publishedAt": "2026-10-22",
-      "pdfHref": "/uploads/documents/aktuality/aktualita-1792650479429-mvj5u6xd.pdf",
-      "active": true
-    },
-    {
       "id": "elektricke-zariadenia",
       "kind": "pdf",
       "title": "Zmena dodávateľa odborných prehliadok a odborných skúšok elektrických zariadení",
