@@ -54,20 +54,44 @@ export async function requireSession(): Promise<SessionPayload> {
   return session;
 }
 
+/** Extra admin emails (same ADMIN_PASSWORD_HASH). Prefer ADMIN_EMAILS env for more. */
+const BUILTIN_ADMIN_EMAILS = ["kablovka@osbdcadca.sk"];
+
+/** Allowed admin emails: ADMIN_EMAILS (comma-separated), ADMIN_EMAIL, and builtins. */
+function getAdminEmails(): string[] {
+  const fromList = (process.env.ADMIN_EMAILS ?? "")
+    .split(",")
+    .map((value) => value.trim().toLowerCase())
+    .filter(Boolean);
+  const single = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  const emails = [...fromList];
+  for (const email of BUILTIN_ADMIN_EMAILS) {
+    const normalized = email.trim().toLowerCase();
+    if (normalized && !emails.includes(normalized)) emails.push(normalized);
+  }
+  if (single && !emails.includes(single)) emails.push(single);
+  return emails;
+}
+
 export function verifyAdminCredentials(
   email: string,
   password: string,
 ): boolean {
-  const expectedEmail = process.env.ADMIN_EMAIL;
+  const allowedEmails = getAdminEmails();
   const passwordHash = process.env.ADMIN_PASSWORD_HASH;
-  if (!expectedEmail || !passwordHash) return false;
+  if (!allowedEmails.length || !passwordHash) return false;
 
-  const emailOk =
-    email.length === expectedEmail.length &&
-    timingSafeEqual(
-      createHash("sha256").update(email.toLowerCase()).digest(),
-      createHash("sha256").update(expectedEmail.toLowerCase()).digest(),
-    );
+  const candidate = createHash("sha256")
+    .update(email.trim().toLowerCase())
+    .digest();
+
+  let emailOk = false;
+  for (const expected of allowedEmails) {
+    const expectedHash = createHash("sha256").update(expected).digest();
+    if (timingSafeEqual(candidate, expectedHash)) {
+      emailOk = true;
+    }
+  }
 
   const passwordOk = bcrypt.compareSync(password, passwordHash);
   return emailOk && passwordOk;

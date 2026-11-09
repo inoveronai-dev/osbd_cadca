@@ -37,7 +37,7 @@ Existujúce PDF na `osbdcadca.sk` zostávajú externe, kým ich klient nenahrad�
 ## Admin CMS
 
 - URL: `/admin` (login `/admin/login`)
-- Auth: jeden účet cez `ADMIN_EMAIL` + `ADMIN_PASSWORD_HASH` + `SESSION_SECRET`
+- Auth: `ADMIN_EMAIL` / `ADMIN_EMAILS` (čiarkou oddelené) + spoločný `ADMIN_PASSWORD_HASH` + `SESSION_SECRET`
 - Uloženie: protected API → GitHub commit (allowlist `content/` + `public/uploads/`) → Vercel redeploy
 - Uloženie adminu: `GITHUB_BRANCH=main` (živý web)
 
