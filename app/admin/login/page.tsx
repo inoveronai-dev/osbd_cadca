@@ -19,7 +19,10 @@ export default function AdminLoginPage() {
       const res = await fetch("/api/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({
+          email: email.trim(),
+          password,
+        }),
       });
       const json = (await res.json()) as { error?: string };
       if (!res.ok) {
@@ -48,11 +51,16 @@ export default function AdminLoginPage() {
           <label className="block">
             <span className="text-[0.88rem] font-medium text-ink">E-mail</span>
             <input
-              type="email"
+              type="text"
+              inputMode="email"
               autoComplete="username"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              placeholder="kablovka@osbdcadca.sk"
               className="mt-1.5 w-full rounded-md border border-forest/15 bg-white px-3 py-2.5 text-[0.95rem] outline-none focus:border-forest/40"
             />
           </label>
