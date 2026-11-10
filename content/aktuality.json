@@ -11,19 +11,19 @@
       "active": true
     },
     {
-      "id": "energopomoc",
-      "kind": "pdf",
-      "title": "ENERGOPOMOC r. 2026",
-      "publishedAt": "2026-02-08",
-      "pdfHref": "https://osbdcadca.sk/wp-content/uploads/2026/07/Oznam-energopomoc.pdf",
-      "active": true
-    },
-    {
       "id": "vodne-stocne-2026",
       "kind": "pdf",
       "title": "Zmena ceny vodného a stočného od 05. 01. 2026 – SEVAK, a.s. Žilina",
       "publishedAt": "2026-02-07",
       "pdfHref": "https://osbdcadca.sk/wp-content/uploads/2026/07/Ozn%C3%A1menie-o-zmene-ceny-od-05.-01.-2026.pdf",
+      "active": true
+    },
+    {
+      "id": "energopomoc",
+      "kind": "pdf",
+      "title": "ENERGOPOMOC r. 2026",
+      "publishedAt": "2026-02-08",
+      "pdfHref": "https://osbdcadca.sk/wp-content/uploads/2026/07/Oznam-energopomoc.pdf",
       "active": true
     },
     {
