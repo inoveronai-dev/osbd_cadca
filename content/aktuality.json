@@ -3,19 +3,19 @@
   "support": "Aktuálne oznamy a informácie pre vlastníkov bytov.",
   "items": [
     {
-      "id": "elektricke-zariadenia",
-      "kind": "pdf",
-      "title": "Zmena dodávateľa odborných prehliadok a odborných skúšok elektrických zariadení",
-      "publishedAt": "2026-07-01",
-      "pdfHref": "https://osbdcadca.sk/wp-content/uploads/2026/07/Ozn%C3%A1menie-o-zmene-dod%C3%A1vate%C4%BEa-odborn%C3%BDch-prehliadok-a-odobrn%C3%BDch-sk%C3%BA%C5%A1ok-elektrick%C3%BDch-zariaden%C3%AD.pdf",
-      "active": true
-    },
-    {
       "id": "vodne-stocne-2026",
       "kind": "pdf",
       "title": "Zmena ceny vodného a stočného od 05. 01. 2026 – SEVAK, a.s. Žilina",
       "publishedAt": "2026-02-07",
       "pdfHref": "https://osbdcadca.sk/wp-content/uploads/2026/07/Ozn%C3%A1menie-o-zmene-ceny-od-05.-01.-2026.pdf",
+      "active": true
+    },
+    {
+      "id": "elektricke-zariadenia",
+      "kind": "pdf",
+      "title": "Zmena dodávateľa odborných prehliadok a odborných skúšok elektrických zariadení",
+      "publishedAt": "2026-07-01",
+      "pdfHref": "https://osbdcadca.sk/wp-content/uploads/2026/07/Ozn%C3%A1menie-o-zmene-dod%C3%A1vate%C4%BEa-odborn%C3%BDch-prehliadok-a-odobrn%C3%BDch-sk%C3%BA%C5%A1ok-elektrick%C3%BDch-zariaden%C3%AD.pdf",
       "active": true
     },
     {
