@@ -24,6 +24,9 @@
 .DS_Store
 *.pem
 
+# Older PDF variants for manual comparison — not for the website
+/_na-kontrolu/
+
 # debug
 npm-debug.log*
 yarn-debug.log*

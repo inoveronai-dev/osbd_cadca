@@ -1,41 +1,45 @@
+import "server-only";
+
 import {
   loadDokumentyTlaciva,
   loadDomovyPoriadok,
   loadKablovaTv,
   loadStanovy,
 } from "@/lib/content/load";
+import { withPdfAvailability } from "@/lib/content/pdf-availability";
+import type { DocumentGroup, PdfDocument } from "@/lib/content/document-types";
 
-export type PdfDocument = {
-  title: string;
-  href: string;
-  meta?: string;
-};
+export type { DocumentGroup, PdfDocument } from "@/lib/content/document-types";
 
-export type DocumentGroup = {
-  id: string;
-  title: string;
-  defaultOpen?: boolean;
-  documents: PdfDocument[];
-};
+function withGroupAvailability(groups: DocumentGroup[]): DocumentGroup[] {
+  return groups.map((group) => ({
+    ...group,
+    documents: group.documents.map((doc) => withPdfAvailability(doc)),
+  }));
+}
 
 export function getStanovyGroups() {
-  return loadStanovy().groups;
+  return withGroupAvailability(loadStanovy().groups);
 }
 
 export function getDokumentyTlacivaGroups() {
-  return loadDokumentyTlaciva().groups;
+  return withGroupAvailability(loadDokumentyTlaciva().groups);
 }
 
 export function getDomovyPoriadokDocument() {
-  return loadDomovyPoriadok().document;
+  return withPdfAvailability(loadDomovyPoriadok().document);
 }
 
 export function getKablovaTv() {
-  return loadKablovaTv();
+  const data = loadKablovaTv();
+  return {
+    ...data,
+    documentGroups: withGroupAvailability(data.documentGroups),
+  };
 }
 
-export const stanovyGroups = loadStanovy().groups;
-export const dokumentyTlacivaGroups = loadDokumentyTlaciva().groups;
-export const domovyPoriadokDocument = loadDomovyPoriadok().document;
-export const kablovaBenefits = loadKablovaTv().benefits;
-export const kablovaDocumentGroups = loadKablovaTv().documentGroups;
+export const stanovyGroups = getStanovyGroups();
+export const dokumentyTlacivaGroups = getDokumentyTlacivaGroups();
+export const domovyPoriadokDocument = getDomovyPoriadokDocument();
+export const kablovaBenefits = getKablovaTv().benefits;
+export const kablovaDocumentGroups = getKablovaTv().documentGroups;

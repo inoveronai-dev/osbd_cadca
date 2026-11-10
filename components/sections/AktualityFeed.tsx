@@ -7,7 +7,8 @@ import {
   type Notice,
   type NoticeArticle,
   type NoticePdf,
-} from "@/lib/content/notices";
+} from "@/lib/content/notices-shared";
+import { PDF_OFFICE_MESSAGE } from "@/lib/content/pdf-copy";
 import { cn } from "@/lib/utils";
 
 const PHONE_PATTERN = /(0905 713 605|0907 269 023)/g;
@@ -70,29 +71,61 @@ function ArticleExpanded({ notice }: { notice: NoticeArticle }) {
 
       {notice.attachments?.length ? (
         <ul className="mt-5 space-y-2 sm:mt-6">
-          {notice.attachments.map((doc) => (
-            <li key={doc.href}>
-              <a
-                href={doc.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group/doc flex items-center gap-3 rounded-[0.3rem] border border-forest/12 bg-ivory px-3.5 py-3 transition-[border-color,background-color] hover:border-forest/28 hover:bg-white sm:px-4"
-              >
+          {notice.attachments.map((doc) => {
+            const available = doc.available !== false;
+            const className =
+              "flex items-center gap-3 rounded-[0.3rem] border border-forest/12 bg-ivory px-3.5 py-3 sm:px-4";
+            const inner = (
+              <>
                 <span
                   className="inline-flex size-9 shrink-0 items-center justify-center rounded-[0.25rem] border border-forest/12 bg-forest/[0.05] text-forest"
                   aria-hidden
                 >
                   <FileText className="size-4" />
                 </span>
-                <span className="min-w-0 flex-1 text-[0.95rem] font-semibold tracking-tight text-ink group-hover/doc:text-forest">
-                  {doc.title}
+                <span className="min-w-0 flex-1">
+                  <span
+                    className={cn(
+                      "block text-[0.95rem] font-semibold tracking-tight text-ink",
+                      available && "group-hover/doc:text-forest",
+                    )}
+                  >
+                    {doc.title}
+                  </span>
+                  {!available ? (
+                    <span className="mt-0.5 block text-[0.8rem] text-ink-muted">
+                      {PDF_OFFICE_MESSAGE}
+                    </span>
+                  ) : null}
                 </span>
-                <span className="shrink-0 text-[0.82rem] font-semibold text-forest/80 max-sm:sr-only">
-                  Otvoriť PDF
-                </span>
-              </a>
-            </li>
-          ))}
+                {available ? (
+                  <span className="shrink-0 text-[0.82rem] font-semibold text-forest/80 max-sm:sr-only">
+                    Otvoriť PDF
+                  </span>
+                ) : null}
+              </>
+            );
+
+            return (
+              <li key={`${doc.title}-${doc.href}`}>
+                {available ? (
+                  <a
+                    href={doc.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={cn(
+                      className,
+                      "group/doc transition-[border-color,background-color] hover:border-forest/28 hover:bg-white",
+                    )}
+                  >
+                    {inner}
+                  </a>
+                ) : (
+                  <div className={className}>{inner}</div>
+                )}
+              </li>
+            );
+          })}
         </ul>
       ) : null}
     </div>
@@ -100,13 +133,11 @@ function ArticleExpanded({ notice }: { notice: NoticeArticle }) {
 }
 
 function FeaturedPdf({ notice }: { notice: NoticePdf }) {
-  return (
-    <a
-      href={notice.pdfHref}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="group block rounded-[0.375rem] border border-forest/12 border-l-[4px] border-l-forest bg-warm-white px-5 py-5 transition-[border-color,background-color,box-shadow] duration-200 hover:border-forest/25 hover:bg-white hover:shadow-[0_10px_28px_-20px_rgba(10,56,44,0.45)] sm:px-6 sm:py-6 md:px-7"
-    >
+  const available = notice.available !== false;
+  const className =
+    "block rounded-[0.375rem] border border-forest/12 border-l-[4px] border-l-forest bg-warm-white px-5 py-5 sm:px-6 sm:py-6 md:px-7";
+  const body = (
+    <>
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
         <span className="inline-flex items-center rounded-[0.2rem] bg-forest px-2 py-0.5 text-[0.68rem] font-semibold tracking-[0.12em] text-white uppercase">
           Najnovšie
@@ -126,8 +157,30 @@ function FeaturedPdf({ notice }: { notice: NoticePdf }) {
         {notice.title}
       </h2>
       <div className="mt-4 sm:mt-5">
-        <PdfActionLabel featured />
+        {available ? (
+          <PdfActionLabel featured />
+        ) : (
+          <p className="text-[0.95rem] text-ink-muted">{PDF_OFFICE_MESSAGE}</p>
+        )}
       </div>
+    </>
+  );
+
+  if (!available) {
+    return <div className={className}>{body}</div>;
+  }
+
+  return (
+    <a
+      href={notice.pdfHref}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={cn(
+        className,
+        "group transition-[border-color,background-color,box-shadow] duration-200 hover:border-forest/25 hover:bg-white hover:shadow-[0_10px_28px_-20px_rgba(10,56,44,0.45)]",
+      )}
+    >
+      {body}
     </a>
   );
 }
@@ -185,13 +238,11 @@ function FeaturedArticle({
 }
 
 function CompactPdf({ notice }: { notice: NoticePdf }) {
-  return (
-    <a
-      href={notice.pdfHref}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="group flex h-full flex-col rounded-[0.3rem] border border-forest/10 bg-warm-white px-4 py-3.5 transition-[border-color,background-color,box-shadow] duration-200 hover:border-forest/28 hover:bg-white hover:shadow-[0_8px_22px_-18px_rgba(10,56,44,0.4)] sm:px-4.5 sm:py-4"
-    >
+  const available = notice.available !== false;
+  const className =
+    "flex h-full flex-col rounded-[0.3rem] border border-forest/10 bg-warm-white px-4 py-3.5 sm:px-4.5 sm:py-4";
+  const body = (
+    <>
       <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
         <span className="inline-flex items-center rounded-[0.2rem] border border-forest/15 bg-forest/[0.05] px-1.5 py-0.5 text-[0.64rem] font-semibold tracking-[0.1em] text-forest uppercase">
           Aktualita
@@ -207,12 +258,39 @@ function CompactPdf({ notice }: { notice: NoticePdf }) {
           {formatNoticeDate(notice.publishedAt)}
         </time>
       </div>
-      <h3 className="mt-2 text-[1.05rem] font-semibold leading-snug tracking-tight text-ink transition-colors group-hover:text-forest sm:text-[1.1rem] sm:leading-[1.3]">
+      <h3
+        className={cn(
+          "mt-2 text-[1.05rem] font-semibold leading-snug tracking-tight text-ink sm:text-[1.1rem] sm:leading-[1.3]",
+          available && "transition-colors group-hover:text-forest",
+        )}
+      >
         {notice.title}
       </h3>
       <div className="mt-3">
-        <PdfActionLabel />
+        {available ? (
+          <PdfActionLabel />
+        ) : (
+          <p className="text-[0.88rem] text-ink-muted">{PDF_OFFICE_MESSAGE}</p>
+        )}
       </div>
+    </>
+  );
+
+  if (!available) {
+    return <div className={className}>{body}</div>;
+  }
+
+  return (
+    <a
+      href={notice.pdfHref}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={cn(
+        className,
+        "group transition-[border-color,background-color,box-shadow] duration-200 hover:border-forest/28 hover:bg-white hover:shadow-[0_8px_22px_-18px_rgba(10,56,44,0.4)]",
+      )}
+    >
+      {body}
     </a>
   );
 }

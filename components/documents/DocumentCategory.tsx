@@ -1,7 +1,7 @@
 import { ChevronDown } from "lucide-react";
 import { PdfDocumentRow } from "@/components/documents/PdfDocumentRow";
 import { CollapsibleDetails } from "@/components/documents/CollapsibleDetails";
-import type { DocumentGroup } from "@/lib/content/documents";
+import type { DocumentGroup } from "@/lib/content/document-types";
 import { cn } from "@/lib/utils";
 
 type DocumentCategoryProps = {

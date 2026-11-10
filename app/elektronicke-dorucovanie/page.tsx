@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { FileText } from "lucide-react";
+import { PdfDocumentRow } from "@/components/documents/PdfDocumentRow";
 import { SubpageHero } from "@/components/sections/SubpageHero";
 import { loadElektronickeDorucovanie } from "@/lib/content/load";
+import { withPdfAvailability } from "@/lib/content/pdf-availability";
 
 export const metadata: Metadata = {
   title: "Elektronické doručovanie",
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
 
 export default function ElektronickeDorucovaniePage() {
   const data = loadElektronickeDorucovanie();
+  const pdf = withPdfAvailability(data.pdf);
 
   return (
     <main id="obsah" className="bg-ivory">
@@ -48,21 +50,9 @@ export default function ElektronickeDorucovaniePage() {
             <h2 className="text-[1.15rem] font-semibold tracking-tight text-forest sm:text-[1.25rem]">
               {data.pdfSectionTitle}
             </h2>
-            <a
-              href={data.pdf.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group mt-4 flex items-center gap-4 rounded-xl border border-forest/12 bg-warm-white px-5 py-4 transition-[border-color,background-color,box-shadow] duration-200 hover:border-forest/28 hover:bg-white hover:shadow-[0_10px_28px_-20px_rgba(10,56,44,0.45)] sm:px-6 sm:py-5"
-            >
-              <span className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-forest/8 text-forest">
-                <FileText className="size-5" aria-hidden />
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="block text-[1.02rem] font-semibold leading-snug text-ink transition-colors group-hover:text-forest sm:text-[1.05rem]">
-                  {data.pdf.title}
-                </span>
-              </span>
-            </a>
+            <div className="mt-4">
+              <PdfDocumentRow document={pdf} actionLabel="Otvoriť PDF" prominent />
+            </div>
           </div>
         </div>
       </section>
