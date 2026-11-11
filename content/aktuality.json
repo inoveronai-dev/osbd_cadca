@@ -19,19 +19,19 @@
       "active": true
     },
     {
-      "id": "aktualita-1794405603485",
-      "kind": "pdf",
-      "title": "Cena vodného a stočného od 01. 01. 2024-04. 01. 2026, SEVAK a.s.",
-      "publishedAt": "2026-11-11",
-      "pdfHref": "/uploads/documents/aktuality/cena-vodneho-a-stocneho-od-01-01-2024-04-01-2026-mwc6v16c.pdf",
-      "active": true
-    },
-    {
       "id": "energopomoc",
       "kind": "pdf",
       "title": "ENERGOPOMOC r. 2026",
       "publishedAt": "2026-02-08",
       "pdfHref": "https://osbdcadca.sk/wp-content/uploads/2026/07/Oznam-energopomoc.pdf",
+      "active": true
+    },
+    {
+      "id": "aktualita-1794405603485",
+      "kind": "pdf",
+      "title": "Cena vodného a stočného od 01. 01. 2024-04. 01. 2026, SEVAK a.s.",
+      "publishedAt": "2026-11-11",
+      "pdfHref": "/uploads/documents/aktuality/cena-vodneho-a-stocneho-od-01-01-2024-04-01-2026-mwc6v16c.pdf",
       "active": true
     },
     {
