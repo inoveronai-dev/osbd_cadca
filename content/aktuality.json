@@ -27,14 +27,6 @@
       "active": true
     },
     {
-      "id": "aktualita-1794405603485",
-      "kind": "pdf",
-      "title": "Cena vodného a stočného od 01. 01. 2024-04. 01. 2026, SEVAK a.s.",
-      "publishedAt": "2026-11-11",
-      "pdfHref": "/uploads/documents/aktuality/cena-vodneho-a-stocneho-od-01-01-2024-04-01-2026-mwc6v16c.pdf",
-      "active": true
-    },
-    {
       "id": "cena-tepla-2025-2026",
       "kind": "article",
       "title": "Jednozložková cena tepla roky 2025, 2026",
@@ -61,6 +53,14 @@
           "href": "https://osbdcadca.sk/wp-content/uploads/2026/07/KRASBYT-s.r.o.-Kr%C3%A1sno-nad-Kysucou.pdf"
         }
       ],
+      "active": true
+    },
+    {
+      "id": "aktualita-1794405603485",
+      "kind": "pdf",
+      "title": "Cena vodného a stočného od 01. 01. 2024-04. 01. 2026, SEVAK a.s.",
+      "publishedAt": "2026-11-11",
+      "pdfHref": "/uploads/documents/aktuality/cena-vodneho-a-stocneho-od-01-01-2024-04-01-2026-mwc6v16c.pdf",
       "active": true
     },
     {
