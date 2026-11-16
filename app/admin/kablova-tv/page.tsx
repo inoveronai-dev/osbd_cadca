@@ -10,16 +10,26 @@ import { PdfAttachment } from "@/components/admin/PdfAttachment";
 import { SaveBar } from "@/components/admin/SaveBar";
 import {
   btnPrimary,
+  formatDateSk,
   helperClass,
 } from "@/components/admin/admin-ui";
 import { useContentEditor } from "@/components/admin/useContentEditor";
 import type { KablovaTvContent } from "@/lib/content/schema";
+
+function todayIso() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
 
 type DocDraft = {
   groupIndex: number;
   docIndex: number | null;
   title: string;
   href: string;
+  publishedAt: string;
 };
 
 type GroupDraft = {
@@ -51,7 +61,13 @@ export default function AdminKablovaPage() {
   );
 
   function openCreateDoc(groupIndex: number) {
-    setDraft({ groupIndex, docIndex: null, title: "", href: "" });
+    setDraft({
+      groupIndex,
+      docIndex: null,
+      title: "",
+      href: "",
+      publishedAt: todayIso(),
+    });
     setFormError(null);
     editor.setMessage(null);
     editor.setError(null);
@@ -65,6 +81,7 @@ export default function AdminKablovaPage() {
       docIndex,
       title: doc.title,
       href: doc.href,
+      publishedAt: doc.publishedAt || "",
     });
     setFormError(null);
     editor.setMessage(null);
@@ -99,13 +116,26 @@ export default function AdminKablovaPage() {
       setFormError("Nahrajte PDF súbor.");
       return;
     }
+    if (draft.publishedAt && !/^\d{4}-\d{2}-\d{2}$/.test(draft.publishedAt)) {
+      setFormError("Zadajte platný dátum.");
+      return;
+    }
     setFormError(null);
     const documentGroups = [...data.documentGroups];
     const group = documentGroups[draft.groupIndex];
     const documents = [...group.documents];
-    const row = { title, href: draft.href };
+    const row = {
+      title,
+      href: draft.href,
+      ...(draft.publishedAt ? { publishedAt: draft.publishedAt } : {}),
+    };
     if (draft.docIndex === null) documents.push(row);
-    else documents[draft.docIndex] = { ...documents[draft.docIndex], ...row };
+    else {
+      const prev = documents[draft.docIndex];
+      const nextDoc = { ...prev, ...row };
+      if (!draft.publishedAt) delete nextDoc.publishedAt;
+      documents[draft.docIndex] = nextDoc;
+    }
     documentGroups[draft.groupIndex] = { ...group, documents };
     const next = { ...data, documentGroups };
     editor.setData(next);
@@ -407,7 +437,9 @@ export default function AdminKablovaPage() {
                                 onEdit={() => openEditDoc(gIndex, dIndex)}
                                 meta={
                                   <span className="text-[0.84rem] text-ink-muted">
-                                    PDF
+                                    {doc.publishedAt
+                                      ? formatDateSk(doc.publishedAt)
+                                      : "PDF"}
                                   </span>
                                 }
                                 menuItems={[
@@ -518,6 +550,19 @@ export default function AdminKablovaPage() {
                     value={draft.title}
                     onChange={(e) =>
                       setDraft({ ...draft, title: e.target.value })
+                    }
+                  />
+                </Field>
+                <Field
+                  label="Dátum"
+                  helper="Dátum zverejnenia na webe. Môžete nechať prázdny."
+                >
+                  <input
+                    type="date"
+                    className={inputClass}
+                    value={draft.publishedAt}
+                    onChange={(e) =>
+                      setDraft({ ...draft, publishedAt: e.target.value })
                     }
                   />
                 </Field>

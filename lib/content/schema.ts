@@ -4,6 +4,11 @@ export const pdfDocumentSchema = z.object({
   title: z.string().min(1),
   href: z.string().min(1),
   meta: z.string().optional(),
+  /** Optional publish date (YYYY-MM-DD), same idea as aktuality. */
+  publishedAt: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
 });
 
 export const documentGroupSchema = z.object({

@@ -2,6 +2,7 @@ import { FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { PdfDocument } from "@/lib/content/document-types";
 import { PDF_OFFICE_MESSAGE } from "@/lib/content/pdf-copy";
+import { formatNoticeDate } from "@/lib/content/notices-shared";
 
 type PdfDocumentRowProps = {
   document: PdfDocument;
@@ -52,6 +53,14 @@ export function PdfDocumentRow({
         >
           {document.title}
         </span>
+        {document.publishedAt ? (
+          <time
+            dateTime={document.publishedAt}
+            className="mt-1 block text-[0.82rem] text-ink-muted sm:text-[0.86rem]"
+          >
+            {formatNoticeDate(document.publishedAt)}
+          </time>
+        ) : null}
         {document.meta ? (
           <span className="mt-1 block text-[0.82rem] text-ink-muted sm:text-[0.86rem]">
             {document.meta}
