@@ -3,6 +3,14 @@
   "support": "Aktuálne oznamy a informácie pre vlastníkov bytov.",
   "items": [
     {
+      "id": "aktualita-1795415219987",
+      "kind": "pdf",
+      "title": "Vianočná dovolenka r. 2026",
+      "publishedAt": "2026-11-23",
+      "pdfHref": "/uploads/documents/aktuality/aktualita-1795415219987-mwsvyvd0.pdf",
+      "active": true
+    },
+    {
       "id": "aktualita-1794406908438",
       "kind": "pdf",
       "title": "Zmena ceny vodného a stočného platné od 04. 01. 2027 - 31. 12. 2027, SEVAK a.s. Žilina",
